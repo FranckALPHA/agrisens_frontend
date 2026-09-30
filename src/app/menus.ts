@@ -17,6 +17,13 @@ export type RoleUtilisateur =
 export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
   acheteur: [
     {
+      id: 'tableau_de_bord',
+      libelle: 'Tableau de bord',
+      chemin: '/acheteur',
+      icone: 'LayoutDashboard',
+      pourNavigationBasse: true,
+    },
+    {
       id: 'catalogue',
       libelle: 'Catalogue',
       chemin: '/catalogue',
@@ -42,7 +49,6 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       libelle: 'Mon profil',
       chemin: '/profil',
       icone: 'User',
-      pourNavigationBasse: true,
     },
   ],
   agriculteur: [
@@ -218,4 +224,24 @@ export function obtenirMenuRole(role?: RoleUtilisateur | null): ElementMenu[] {
     return MENUS_PAR_ROLE.acheteur;
   }
   return MENUS_PAR_ROLE[role];
+}
+
+/**
+ * Chemin du tableau de bord provisoire d'un rôle (prompt F-02 frontend
+ * point 3 : « redirection vers le tableau de bord du rôle »).
+ */
+export function cheminTableauDeBord(role?: RoleUtilisateur | null): string {
+  switch (role) {
+    case 'agriculteur':
+      return '/agriculteur';
+    case 'ingenieur_agronome':
+      return '/ingenieur';
+    case 'livreur':
+      return '/livreur';
+    case 'admin':
+    case 'super_admin':
+      return '/admin';
+    default:
+      return '/acheteur';
+  }
 }

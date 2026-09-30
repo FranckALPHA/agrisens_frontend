@@ -4,6 +4,106 @@
  */
 
 export interface paths {
+  '/api/v1/auth/connexion/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Se connecter
+     * @description Identifiant : téléphone E.164 ou email. Message identique si le compte n'existe pas (anti-énumération). Compte suspendu → 403 compte_suspendu.
+     */
+    post: operations['auth_connexion_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/deconnexion/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Se déconnecter
+     * @description POST /auth/deconnexion — révoque la session courante et purge le cookie.
+     */
+    post: operations['auth_deconnexion_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/demande-reinitialisation/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Demander une réinitialisation de mot de passe
+     * @description L'administrateur vérifie l'identité par téléphone puis génère un mot de passe temporaire (F-03). Réponse identique que le compte existe ou non.
+     */
+    post: operations['auth_demande_reinitialisation_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/inscription/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Créer un compte
+     * @description Rôles autorisés : agriculteur, acheteur, ingenieur_agronome, livreur. L'ingénieur est créé en attente de validation administrateur (D-13). Établit la session : jeton d'accès dans la réponse, jeton de rafraîchissement en cookie httpOnly.
+     */
+    post: operations['auth_inscription_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/auth/rafraichir/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Renouveler la session
+     * @description Utilise le cookie httpOnly, révoque le jeton présenté (rotation) et établit une nouvelle session. Réutilisation d'un jeton déjà tourné → révocation de toutes les sessions de l'utilisateur.
+     */
+    post: operations['auth_rafraichir_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/dev/horloge': {
     parameters: {
       query?: never;
@@ -128,10 +228,185 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/utilisateurs/moi/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter son profil
+     * @description GET/PATCH /utilisateurs/moi — profil personnel, y compris compte en attente.
+     */
+    get: operations['utilisateurs_moi_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Modifier son profil
+     * @description Nom, email, région, téléphone ; le rôle n'est jamais modifiable ici.
+     */
+    patch: operations['utilisateurs_moi_partial_update'];
+    trace?: never;
+  };
+  '/api/v1/utilisateurs/moi/adresses/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister ses adresses
+     * @description GET/POST /utilisateurs/moi/adresses.
+     */
+    get: operations['utilisateurs_moi_adresses_list'];
+    put?: never;
+    /**
+     * Ajouter une adresse
+     * @description GET/POST /utilisateurs/moi/adresses.
+     */
+    post: operations['utilisateurs_moi_adresses_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/utilisateurs/moi/adresses/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * Supprimer son adresse
+     * @description PATCH/DELETE /utilisateurs/moi/adresses/{id} — propriétaire uniquement (sinon 404).
+     */
+    delete: operations['utilisateurs_moi_adresses_destroy'];
+    options?: never;
+    head?: never;
+    /**
+     * Modifier son adresse
+     * @description PATCH/DELETE /utilisateurs/moi/adresses/{id} — propriétaire uniquement (sinon 404).
+     */
+    patch: operations['utilisateurs_moi_adresses_partial_update'];
+    trace?: never;
+  };
+  '/api/v1/utilisateurs/moi/mot-de-passe/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Changer son mot de passe
+     * @description PUT /utilisateurs/moi/mot-de-passe — remet doit_changer_mot_de_passe à false.
+     */
+    put: operations['utilisateurs_moi_mot_de_passe_update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** @description ADRESSE — position en GeoJSON Point (conventions §3). */
+    Adresse: {
+      readonly id: string;
+      /** @description Libellé court : « Domicile », « Boutique »… */
+      libelle: string;
+      /** @description Repères (les adresses postales sont rares au Cameroun) */
+      description?: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position: {
+        type: string;
+        coordinates: number[];
+      };
+      ville: string;
+      region: string;
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      readonly maj_le: string;
+    };
+    /** @description ADRESSE — position en GeoJSON Point (conventions §3). */
+    AdresseCreationRequest: {
+      /** @description Libellé court : « Domicile », « Boutique »… */
+      libelle: string;
+      /** @description Repères (les adresses postales sont rares au Cameroun) */
+      description?: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position: {
+        type: string;
+        coordinates: number[];
+      };
+      ville: string;
+      region: string;
+    };
+    /** @description POST /auth/connexion — téléphone E.164 ou email + mot de passe. */
+    ConnexionRequest: {
+      identifiant: string;
+      mot_de_passe: string;
+    };
+    /** @description POST /auth/demande-reinitialisation (Q-23) — téléphone du compte. */
+    DemandeReinitialisationRequest: {
+      telephone: string;
+    };
+    /** @description POST /auth/inscription — rôles agriculteur, acheteur, ingénieur, livreur. */
+    InscriptionRequest: {
+      nom: string;
+      telephone: string;
+      email?: string;
+      mot_de_passe: string;
+      role: components['schemas']['InscriptionRoleEnum'];
+      region?: string;
+    };
+    /**
+     * @description * `acheteur` - acheteur
+     *     * `agriculteur` - agriculteur
+     *     * `ingenieur_agronome` - ingenieur_agronome
+     *     * `livreur` - livreur
+     * @enum {string}
+     */
+    InscriptionRoleEnum: 'acheteur' | 'agriculteur' | 'ingenieur_agronome' | 'livreur';
+    /** @description PUT /utilisateurs/moi/mot-de-passe. */
+    MotDePasseRequest: {
+      mot_de_passe_actuel: string;
+      nouveau_mot_de_passe: string;
+    };
+    /** @description PATCH : tous les champs facultatifs. */
+    PatchedAdresseModificationRequest: {
+      libelle?: string;
+      description?: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position?: {
+        type: string;
+        coordinates: number[];
+      };
+      ville?: string;
+      region?: string;
+    };
+    /** @description PATCH /utilisateurs/moi — nom, email, région, téléphone ; jamais le rôle. */
+    PatchedMiseAJourMoiRequest: {
+      nom?: string;
+      email?: string | null;
+      region?: string | null;
+      telephone?: string;
+    };
     /** @description Représentation d'une entrée de référentiel. */
     Referentiel: {
       /** @description Identifiant code stable utilisé par les autres entités */
@@ -140,6 +415,22 @@ export interface components {
       libelle: string;
       /** @description Ordre de tri pour l'affichage */
       ordre?: number;
+    };
+    /** @description Réponse neutre uniforme (demande de réinitialisation, Q-23). */
+    ReponseMessage: {
+      readonly message: string;
+    };
+    /**
+     * @description Corps commun de /auth/inscription, /connexion et /rafraichir.
+     *
+     *     Sert uniquement à documenter le schéma OpenAPI ; la réponse est construite
+     *     dans `views._reponse_session`.
+     */
+    ReponseSession: {
+      readonly utilisateur: components['schemas']['Utilisateur'];
+      readonly jeton_acces: string;
+      /** Format: date-time */
+      readonly expire_le: string;
     };
     ReponseTache: {
       tache: string;
@@ -160,6 +451,48 @@ export interface components {
       base: string;
       migrations_en_attente: number;
     };
+    /**
+     * @description * `actif` - Actif
+     *     * `en_attente_validation` - En attente de validation
+     *     * `suspendu` - Suspendu
+     *     * `anonymise` - Anonymisé
+     * @enum {string}
+     */
+    StatutCompteEnum: 'actif' | 'en_attente_validation' | 'suspendu' | 'anonymise';
+    /** @description Représentation de « moi » pour tout utilisateur connecté. */
+    Utilisateur: {
+      readonly id: string;
+      /** @description Nom complet ou raison sociale */
+      readonly nom: string;
+      /** @description Numéro de téléphone au format E.164 (+237XXXXXXXXX) */
+      readonly telephone: string;
+      /**
+       * Format: email
+       * @description Adresse email facultative
+       */
+      readonly email: string | null;
+      readonly role: components['schemas']['UtilisateurRoleEnum'];
+      readonly statut_compte: components['schemas']['StatutCompteEnum'];
+      readonly region: string | null;
+      readonly doit_changer_mot_de_passe: boolean;
+      /** Format: date-time */
+      readonly reinitialisation_demandee_le: string | null;
+      /** Format: date-time */
+      readonly derniere_connexion_le: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /**
+     * @description * `agriculteur` - Agriculteur
+     *     * `acheteur` - Acheteur
+     *     * `ingenieur_agronome` - Ingénieur agronome
+     *     * `livreur` - Livreur
+     *     * `admin` - Administrateur
+     *     * `super_admin` - Super administrateur
+     * @enum {string}
+     */
+    UtilisateurRoleEnum:
+      'agriculteur' | 'acheteur' | 'ingenieur_agronome' | 'livreur' | 'admin' | 'super_admin';
   };
   responses: never;
   parameters: never;
@@ -169,6 +502,168 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  auth_connexion_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ConnexionRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReponseSession'];
+        };
+      };
+      /** @description identifiants_invalides */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description compte_suspendu */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description limite_debit_atteinte */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  auth_deconnexion_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Session révoquée, cookie supprimé */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  auth_demande_reinitialisation_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DemandeReinitialisationRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReponseMessage'];
+        };
+      };
+    };
+  };
+  auth_inscription_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InscriptionRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReponseSession'];
+        };
+      };
+      /** @description compte_existant (téléphone ou email déjà utilisé) */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description validation_invalide / telephone_invalide / role_inconnu */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description limite_debit_atteinte */
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  auth_rafraichir_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReponseSession'];
+        };
+      };
+      /** @description session_invalide / sessions_revoquees / session_expiree */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description compte_suspendu */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   dev_horloge_create: {
     parameters: {
       query?: never;
@@ -330,6 +825,193 @@ export interface operations {
         content: {
           'application/json': components['schemas']['SanteReadinessErrorResponse'];
         };
+      };
+    };
+  };
+  utilisateurs_moi_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Utilisateur'];
+        };
+      };
+    };
+  };
+  utilisateurs_moi_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedMiseAJourMoiRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Utilisateur'];
+        };
+      };
+      /** @description compte_existant */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description validation_invalide / telephone_invalide */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  utilisateurs_moi_adresses_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Adresse'][];
+        };
+      };
+    };
+  };
+  utilisateurs_moi_adresses_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AdresseCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Adresse'];
+        };
+      };
+      /** @description geometrie_invalide / hors_emprise_cameroun */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  utilisateurs_moi_adresses_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Adresse supprimée */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  utilisateurs_moi_adresses_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedAdresseModificationRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Adresse'];
+        };
+      };
+      /** @description ressource_introuvable (autre propriétaire ou inexistante) */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  utilisateurs_moi_mot_de_passe_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MotDePasseRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Utilisateur'];
+        };
+      };
+      /** @description mot_de_passe_incorrect / validation_invalide */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
