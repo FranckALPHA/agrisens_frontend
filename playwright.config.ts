@@ -54,6 +54,11 @@ export default defineConfig({
           'mysql+pymysql://agrisens:KYsFaZTVkaLB2tZLy2BQYBe9@127.0.0.1:3306/agrisens_e2e?charset=utf8mb4',
         NOTCHPAY_MODE: 'factice',
         IA_FOURNISSEUR: 'factice',
+        // Débits relevés : la suite enchaîne beaucoup de connexions/
+        // inscriptions depuis la même IP (127.0.0.1) et subirait des 429.
+        DEBIT_CONNEXION: '200/min',
+        DEBIT_INSCRIPTION: '200/min',
+        DEBIT_REINITIALISATION: '200/min',
       },
     },
     {

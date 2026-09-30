@@ -85,4 +85,114 @@ describe('RouteProtegee', () => {
 
     expect(screen.getByText('Mes Exploitations')).toBeInTheDocument();
   });
+
+  it('affiche un écran de chargement tant que la session n’est pas initialisée', () => {
+    useSessionStore.getState().deconnecter();
+    useSessionStore.setState({ estInitialise: false });
+
+    render(
+      <MemoryRouter initialEntries={['/profil']}>
+        <Routes>
+          <Route path="/connexion" element={<div>Page de connexion</div>} />
+          <Route
+            path="/profil"
+            element={
+              <RouteProtegee>
+                <div>Contenu privé</div>
+              </RouteProtegee>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Le message est rendu deux fois (visuel + sr-only) par EtatChargement.
+    expect(screen.getAllByText(/Vérification de votre session/).length).toBeGreaterThan(0);
+    expect(screen.queryByText('Page de connexion')).not.toBeInTheDocument();
+    expect(screen.queryByText('Contenu privé')).not.toBeInTheDocument();
+  });
+
+  it('affiche l’écran « compte suspendu » au lieu du contenu privé', () => {
+    useSessionStore.getState().definirSession('faux_jeton', {
+      id: '2',
+      telephone: '+237690000099',
+      nom: 'Suspendu',
+      role: 'acheteur',
+      statutCompte: 'suspendu',
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/profil']}>
+        <Routes>
+          <Route
+            path="/profil"
+            element={
+              <RouteProtegee>
+                <div>Contenu privé</div>
+              </RouteProtegee>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('ecran-suspendu')).toBeInTheDocument();
+    expect(screen.queryByText('Contenu privé')).not.toBeInTheDocument();
+  });
+
+  it('affiche l’écran « compte en attente » pour un ingénieur non validé (D-13)', () => {
+    useSessionStore.getState().definirSession('faux_jeton', {
+      id: '3',
+      telephone: '+237690000004',
+      nom: 'Nadia',
+      role: 'ingenieur_agronome',
+      statutCompte: 'en_attente_validation',
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/profil']}>
+        <Routes>
+          <Route
+            path="/profil"
+            element={
+              <RouteProtegee>
+                <div>Contenu privé</div>
+              </RouteProtegee>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('ecran-attente')).toBeInTheDocument();
+  });
+
+  it('impose le changement de mot de passe quand le drapeau est levé (Q-23)', () => {
+    useSessionStore.getState().definirSession('faux_jeton', {
+      id: '4',
+      telephone: '+237690000005',
+      nom: 'Jean',
+      role: 'livreur',
+      statutCompte: 'actif',
+      doitChangerMotDePasse: true,
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/profil']}>
+        <Routes>
+          <Route
+            path="/profil"
+            element={
+              <RouteProtegee>
+                <div>Contenu privé</div>
+              </RouteProtegee>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByTestId('ecran-changement-mot-de-passe')).toBeInTheDocument();
+    expect(screen.queryByText('Contenu privé')).not.toBeInTheDocument();
+  });
 });

@@ -62,7 +62,24 @@ export function definirCrochetRafraichissement(fn: () => Promise<string | null>)
   crochetRafraichissementToken = fn;
 }
 
-const authMiddleware: Middleware = {
+// Les routes publiques d'authentification gèrent leurs propres erreurs (401
+// « identifiants_invalides » n'est PAS un jeton expiré) ; le middleware ne
+// doit jamais déclencher de rafraîchissement sur ces chemins, sous peine de
+// récursion avec /auth/rafraichir lui-même.
+const CHEMINS_AUTH_PUBLICS = [
+  '/auth/inscription',
+  '/auth/connexion',
+  '/auth/rafraichir',
+  '/auth/deconnexion',
+  '/auth/demande-reinitialisation',
+];
+
+function estCheminPublic(url: string): boolean {
+  return CHEMINS_AUTH_PUBLICS.some((chemin) => url.includes(chemin));
+}
+
+// Exporté pour les tests unitaires du comportement 401 (prompt F-02 point 7).
+export const authMiddleware: Middleware = {
   async onRequest({ request }) {
     // 1. Délai d'attente maximum par défaut (15 secondes)
     if (!request.signal) {
@@ -85,8 +102,9 @@ const authMiddleware: Middleware = {
   },
 
   async onResponse({ response, request }) {
-    // Gestion du 401 pour rafraîchissement de jeton
-    if (response.status === 401 && crochetRafraichissementToken) {
+    // Gestion du 401 pour rafraîchissement de jeton (une seule rejouée,
+    // jamais sur les routes publiques d'authentification).
+    if (response.status === 401 && crochetRafraichissementToken && !estCheminPublic(request.url)) {
       const nouveauToken = await crochetRafraichissementToken();
       if (nouveauToken) {
         const nouvelleRequete = new Request(request, {
@@ -121,6 +139,12 @@ const urlBrute =
 // Les routes dans schema.d.ts commencent déjà par /api/v1 (ex: /api/v1/sante).
 // On supprime donc tout suffixe /api/v1 pour éviter le dédoublement /api/v1/api/v1/
 const baseUrl = urlBrute.replace(/\/api\/v1\/?$/, '');
+
+/** Origine complète de l'API, sans suffixe /api/v1 (ex: http://localhost:8000). */
+export const URL_API_SANS_PREFICE = baseUrl;
+
+/** Préfixe des routes v1, pour les appels fetch non typés (cookie httpOnly). */
+export const PREFICE_API_V1 = `${baseUrl}/api/v1`;
 
 export const apiClient = createClient<paths>({
   baseUrl,

@@ -8,13 +8,30 @@ import { PageEtat } from '@/pages/Etat';
 import { Page404 } from '@/pages/Page404';
 import { PageAccesInterdit } from '@/pages/PageAccesInterdit';
 import { RouteProtegee } from '@/pages/RouteProtegee';
+import { PageTableauDeBord } from '@/pages/PageTableauDeBord';
+import { PageConnexion } from '@/pages/auth/PageConnexion';
+import { PageInscription } from '@/pages/auth/PageInscription';
+import { PageMotDePasseOublie } from '@/pages/auth/PageMotDePasseOublie';
+import { PageProfil } from '@/pages/profil/PageProfil';
+import { PageConditions, PageConfidentialite } from '@/pages/legal/PagesLegales';
 import { EtatVide } from '@/components/EtatVide';
+import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
 const PageProvisoire: React.FC<{ titre: string; message: string }> = ({ titre, message }) => (
   <div className="py-12">
     <EtatVide titre={titre} message={message} pleinePage />
   </div>
+);
+
+/** Tableau de bord provisoire d'un rôle (F-02 point 6), réservé à ce rôle. */
+const EspaceRole: React.FC<{ role: RoleUtilisateur; rolesAutorises: RoleUtilisateur[] }> = ({
+  role,
+  rolesAutorises,
+}) => (
+  <RouteProtegee rolesAutorises={rolesAutorises}>
+    <PageTableauDeBord role={role} />
+  </RouteProtegee>
 );
 
 export const router = createBrowserRouter([
@@ -34,48 +51,17 @@ export const router = createBrowserRouter([
           />
         ),
       },
-      {
-        path: 'connexion',
-        element: (
-          <PageProvisoire
-            titre="Connexion"
-            message="L'authentification par téléphone et mot de passe sera activée avec la feature F-02."
-          />
-        ),
-      },
-      {
-        path: 'inscription',
-        element: (
-          <PageProvisoire
-            titre="Créer un compte"
-            message="L'inscription des acheteurs, producteurs, ingénieurs et livreurs sera livrée en F-02."
-          />
-        ),
-      },
-      {
-        path: 'conditions',
-        element: (
-          <PageProvisoire
-            titre="Conditions Générales d'Utilisation"
-            message="Plateforme AgriSens régie par le droit camerounais."
-          />
-        ),
-      },
-      {
-        path: 'confidentialite',
-        element: (
-          <PageProvisoire
-            titre="Politique de Confidentialité"
-            message="Vos données personnelles (téléphone, géolocalisation) sont protégées et chiffrées."
-          />
-        ),
-      },
+      { path: 'connexion', element: <PageConnexion /> },
+      { path: 'inscription', element: <PageInscription /> },
+      { path: 'mot-de-passe-oublie', element: <PageMotDePasseOublie /> },
+      { path: 'conditions', element: <PageConditions /> },
+      { path: 'confidentialite', element: <PageConfidentialite /> },
       {
         path: 'contact',
         element: (
           <PageProvisoire
             titre="Contact & Assistance"
-            message="Support technique AgriSens Cameroun disponible 7j/7."
+            message="Support technique AgriSens Cameroun — coordonnées définitives en pré-production (F-16)."
           />
         ),
       },
@@ -110,58 +96,31 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
+        path: 'acheteur/*',
+        element: <EspaceRole role="acheteur" rolesAutorises={['acheteur', 'super_admin']} />,
+      },
+      {
         path: 'agriculteur/*',
-        element: (
-          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
-            <PageProvisoire
-              titre="Espace Agriculteur"
-              message="Gestion de vos parcelles et récoltes livrées en F-04."
-            />
-          </RouteProtegee>
-        ),
+        element: <EspaceRole role="agriculteur" rolesAutorises={['agriculteur', 'super_admin']} />,
       },
       {
         path: 'ingenieur/*',
         element: (
-          <RouteProtegee rolesAutorises={['ingenieur_agronome', 'super_admin']}>
-            <PageProvisoire
-              titre="Espace Ingénieur Agronome"
-              message="Suivi agronomique et validation des missions livrés en F-03 et F-11."
-            />
-          </RouteProtegee>
+          <EspaceRole
+            role="ingenieur_agronome"
+            rolesAutorises={['ingenieur_agronome', 'super_admin']}
+          />
         ),
       },
       {
         path: 'livreur/*',
-        element: (
-          <RouteProtegee rolesAutorises={['livreur', 'super_admin']}>
-            <PageProvisoire
-              titre="Espace Livreur"
-              message="Gestion des livraisons et validation par code remise livrées en F-08."
-            />
-          </RouteProtegee>
-        ),
+        element: <EspaceRole role="livreur" rolesAutorises={['livreur', 'super_admin']} />,
       },
       {
         path: 'admin/*',
-        element: (
-          <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
-            <PageProvisoire
-              titre="Espace Administration"
-              message="Tableau de bord administrateur et paramètres livrés en F-10."
-            />
-          </RouteProtegee>
-        ),
+        element: <EspaceRole role="admin" rolesAutorises={['admin', 'super_admin']} />,
       },
-      {
-        path: 'profil',
-        element: (
-          <PageProvisoire
-            titre="Mon Profil"
-            message="Gestion de vos informations et adresses livrée en F-02."
-          />
-        ),
-      },
+      { path: 'profil', element: <PageProfil /> },
       {
         path: 'panier',
         element: (

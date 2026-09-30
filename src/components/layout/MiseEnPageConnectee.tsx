@@ -1,21 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { BandeauConnexion } from '@/components/BandeauConnexion';
 import { BandeauMiseAJour } from '@/pwa/BandeauMiseAJour';
 import { useSessionStore } from '@/stores/session';
+import { seDeconnecter } from '@/services/sessionService';
 import { obtenirMenuRole, RoleUtilisateur } from '@/app/menus';
 import { MESSAGES } from '@/theme/messages';
 
 export const MiseEnPageConnectee: React.FC = () => {
   const navigate = useNavigate();
-  const { utilisateur, deconnecter } = useSessionStore();
+  const { utilisateur } = useSessionStore();
+  const [deconnexionEnCours, setDeconnexionEnCours] = useState(false);
   const roleActuel = (utilisateur?.role || 'acheteur') as RoleUtilisateur;
   const menuElements = obtenirMenuRole(roleActuel);
 
-  const gererDeconnexion = () => {
-    deconnecter();
+  // Déconnexion complète : révocation côté API (rotation du jeton, Q-25)
+  // puis purge du store mémoire, avant redirection publique.
+  const gererDeconnexion = async () => {
+    setDeconnexionEnCours(true);
+    await seDeconnecter();
     navigate('/');
   };
 
@@ -75,7 +80,8 @@ export const MiseEnPageConnectee: React.FC = () => {
           <button
             type="button"
             onClick={gererDeconnexion}
-            className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-erreur rounded-md hover:bg-erreur-fond transition-colors min-h-tactile"
+            disabled={deconnexionEnCours}
+            className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-erreur rounded-md hover:bg-erreur-fond transition-colors min-h-tactile disabled:opacity-50"
           >
             <LogOut size={18} aria-hidden="true" />
             <span>{MESSAGES.deconnexion}</span>
@@ -98,7 +104,8 @@ export const MiseEnPageConnectee: React.FC = () => {
               type="button"
               onClick={gererDeconnexion}
               aria-label={MESSAGES.deconnexion}
-              className="p-2 text-texte-secondaire hover:text-erreur rounded-md"
+              disabled={deconnexionEnCours}
+              className="p-2 text-texte-secondaire hover:text-erreur rounded-md disabled:opacity-50"
             >
               <LogOut size={20} aria-hidden="true" />
             </button>
