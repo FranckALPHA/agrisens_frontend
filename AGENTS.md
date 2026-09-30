@@ -10,7 +10,9 @@ vite-plugin-pwa) et des tests E2E Playwright de l'application.
    notamment Q-18, Q-24, Q-25.
 3. `../docs/01-conventions-techniques.md` §1bis et §7.
 4. `../docs/09-dossier-frontend.md` — pages, composants, parcours.
-5. Le prompt de la feature en cours dans `../docs/prompts/`.
+5. `../docs/12-plan-tests-playwright.md` — organisation et scénarios
+   E2E (obligatoires).
+6. Le prompt de la feature en cours dans `../docs/prompts/`.
 
 ## Rappels propres au frontend
 
