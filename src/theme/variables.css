@@ -1,0 +1,64 @@
+/* Variables de thème AgriSens (Q-18 et F-01 point 3)
+   Toutes les couleurs, espacements, rayons et ombres sont centralisés ici.
+   Aucune couleur ne doit être codée en dur dans les composants. */
+
+:root {
+  /* Couleurs de marque : vert agricole */
+  --couleur-primaire: #2d6a4f;
+  --couleur-primaire-sombre: #1b4332;
+  --couleur-primaire-claire: #40916c;
+  --couleur-primaire-douce: #d8f3dc;
+  --couleur-primaire-texte: #ffffff;
+
+  /* Couleurs secondaires : terre / paille sobre */
+  --couleur-secondaire: #6c584c;
+  --couleur-secondaire-claire: #f0ead2;
+  --couleur-secondaire-sombre: #3e332a;
+
+  /* États système */
+  --couleur-succes: #2e7d32;
+  --couleur-succes-fond: #e8f5e9;
+  --couleur-succes-texte: #1b5e20;
+
+  --couleur-erreur: #c62828;
+  --couleur-erreur-fond: #ffebee;
+  --couleur-erreur-texte: #b71c1c;
+
+  --couleur-avertissement: #ef6c00;
+  --couleur-avertissement-fond: #fff3e0;
+  --couleur-avertissement-texte: #e65100;
+
+  --couleur-info: #1565c0;
+  --couleur-info-fond: #e3f2fd;
+  --couleur-info-texte: #0d47a1;
+
+  /* Neutres et surfaces */
+  --couleur-fond: #f8fafc;
+  --couleur-surface: #ffffff;
+  --couleur-surface-survol: #f1f5f9;
+  --couleur-bordure: #e2e8f0;
+  --couleur-bordure-forte: #cbd5e1;
+  --couleur-texte: #0f172a;
+  --couleur-texte-secondaire: #475569;
+  --couleur-texte-muet: #94a3b8;
+
+  /* Typographie système (pas de police téléchargée : réseau faible au Cameroun) */
+  --police-principale:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --police-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Rayons de bordure */
+  --rayon-sm: 0.25rem;
+  --rayon-md: 0.5rem;
+  --rayon-lg: 0.75rem;
+  --rayon-xl: 1rem;
+  --rayon-plein: 9999px;
+
+  /* Ombres */
+  --ombre-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --ombre-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --ombre-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Cibles tactiles */
+  --taille-tactile-min: 44px;
+}

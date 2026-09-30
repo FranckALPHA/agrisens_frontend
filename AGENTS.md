@@ -31,12 +31,31 @@ vite-plugin-pwa) et des tests E2E Playwright de l'application.
 
 ## Commandes
 
-À compléter par F-01 avec les commandes réelles :
-
     # installer
-    # démarrer en développement
-    # générer les types d'API
-    # tests unitaires
-    # tests E2E (backend lancé)
-    # lint, format, types
-    # build de production
+    npm install
+
+    # démarrer en développement (port 5173)
+    npm run dev
+
+    # générer les types TypeScript depuis le schéma OpenAPI du backend
+    npm run api:types
+
+    # exécuter les tests unitaires (Vitest)
+    npm run test
+    npm run test:watch
+    npm run test:coverage
+
+    # exécuter les tests E2E Playwright
+    npm run e2e
+    npm run e2e:critique
+    npm run e2e:ui
+
+    # vérification des types, lint et formatage
+    npm run typecheck
+    npm run lint
+    npm run format:check
+    npm run format
+
+    # compilation du bundle PWA de production
+    npm run build
+    npm run preview
