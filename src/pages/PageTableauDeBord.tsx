@@ -16,7 +16,8 @@ const TITRES_PAR_ROLE: Record<RoleUtilisateur, string> = {
 const ATTENTE_PAR_ROLE: Record<RoleUtilisateur, string> = {
   agriculteur:
     'Gérez vos parcelles depuis « Mes parcelles » ; produits et ventes arriveront avec F-05 et F-06.',
-  acheteur: 'Le catalogue, le panier et les commandes arriveront avec les features F-05 et F-06.',
+  acheteur:
+    'Parcourez le catalogue, filtrez par catégorie ou région ; le panier et les commandes arrivent avec F-06.',
   ingenieur_agronome:
     'Complétez votre profil professionnel et déposez vos justificatifs : un administrateur valide votre dossier (ING-02).',
   livreur:
