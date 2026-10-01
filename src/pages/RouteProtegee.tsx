@@ -12,10 +12,21 @@ import { EcranChangementMotDePasseObligatoire } from '@/pages/compte/FormulaireM
 
 export interface RouteProtegeeProps {
   rolesAutorises?: RoleUtilisateur[];
+  /**
+   * F-03 (D-13) : un compte `en_attente_validation` doit pouvoir atteindre
+   * son profil professionnel (compléter profil + justificatifs) — le backend
+   * l'autorise via la permission AutoriseEnAttente ; la route concernée
+   * passe ce prop à true au lieu de l'écran d'attente.
+   */
+  autoriserEnAttente?: boolean;
   children?: React.ReactNode;
 }
 
-export const RouteProtegee: React.FC<RouteProtegeeProps> = ({ rolesAutorises, children }) => {
+export const RouteProtegee: React.FC<RouteProtegeeProps> = ({
+  rolesAutorises,
+  autoriserEnAttente = false,
+  children,
+}) => {
   const location = useLocation();
   const { estInitialise, estConnecte, utilisateur } = useSessionStore();
 
@@ -31,11 +42,13 @@ export const RouteProtegee: React.FC<RouteProtegeeProps> = ({ rolesAutorises, ch
   }
 
   // 3. États de compte bloquants : écrans explicatifs plutôt qu'un simple 403.
+  //    L'attente est levée pour les routes explicitement autorisées (ING-02).
+  if (utilisateur.statutCompte === 'en_attente_validation' && !autoriserEnAttente) {
+    return <EcranCompteEnAttente />;
+  }
   switch (utilisateur.statutCompte) {
     case 'suspendu':
       return <EcranCompteSuspendu />;
-    case 'en_attente_validation':
-      return <EcranCompteEnAttente />;
     case 'anonymise':
       return <EcranCompteAnonymise />;
     default:

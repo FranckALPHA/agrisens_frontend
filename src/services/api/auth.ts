@@ -163,8 +163,10 @@ export async function supprimerAdresse(id: string): Promise<void> {
 /**
  * En cas d'échec, le middleware lève déjà une ErreurApi ; ce chemin ne
  * couvre que les rejets obtenus via `.error` typé (corps non conforme).
+ * Exporté : tous les services de la couche API partagent cette lecture du
+ * contrat d'erreur `{"erreur": {code, message, …}}` (conventions §4).
  */
-function erreurDepuisReponse(error: unknown, _donnees: unknown): ErreurApi {
+export function erreurDepuisReponse(error: unknown, _donnees: unknown): ErreurApi {
   if (error instanceof ErreurApi) return error;
   const brute = error as { erreur?: { code?: string; message?: string } } | undefined;
   if (brute && brute.erreur) {

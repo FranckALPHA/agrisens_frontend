@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSessionStore } from '@/stores/session';
 import { obtenirMenuRole, type RoleUtilisateur } from '@/app/menus';
+import { CompteursAdmin } from '@/pages/admin/CompteursAdmin';
 
 const TITRES_PAR_ROLE: Record<RoleUtilisateur, string> = {
   agriculteur: 'Espace Agriculteur',
@@ -13,12 +14,15 @@ const TITRES_PAR_ROLE: Record<RoleUtilisateur, string> = {
 };
 
 const ATTENTE_PAR_ROLE: Record<RoleUtilisateur, string> = {
-  agriculteur: 'Vos parcelles, produits et ventes arriveront avec les features F-04 à F-06.',
+  agriculteur:
+    'Gérez vos parcelles depuis « Mes parcelles » ; produits et ventes arriveront avec F-05 et F-06.',
   acheteur: 'Le catalogue, le panier et les commandes arriveront avec les features F-05 et F-06.',
-  ingenieur_agronome: 'Vos missions et le suivi agronomique arriveront avec la feature F-11.',
-  livreur: 'Vos courses et itinéraires arriveront avec la feature F-08.',
-  admin: 'La gestion des comptes et des validation arrivera avec la feature F-10.',
-  super_admin: 'Les paramètres plateforme arriveront avec la feature F-10.',
+  ingenieur_agronome:
+    'Complétez votre profil professionnel et déposez vos justificatifs : un administrateur valide votre dossier (ING-02).',
+  livreur:
+    'Basculez votre disponibilité depuis la page Disponibilité (LIV-01) ; les courses arriveront avec F-08.',
+  admin: 'Validez les ingénieurs et gérez les comptes depuis la page Utilisateurs (ADM-02).',
+  super_admin: 'Validez les ingénieurs et gérez les comptes depuis la page Utilisateurs (ADM-02).',
 };
 
 /**
@@ -44,6 +48,9 @@ export const PageTableauDeBord: React.FC<{ role?: RoleUtilisateur }> = ({ role }
             'Les fonctionnalités arriveront avec les prochaines features.'}
         </p>
       </section>
+
+      {/* ADM-01 (base) : compteurs d'ingénieurs en attente et de réinitialisations (F-03). */}
+      {(roleEffectif === 'admin' || roleEffectif === 'super_admin') && <CompteursAdmin />}
 
       <nav aria-label="Accès rapide" className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-xl">
         {menu.map((item) => (

@@ -123,6 +123,14 @@ export const authMiddleware: Middleware = {
       } catch {
         // Corps non-JSON (ou vide)
       }
+      // F-03 (PW-F03-04, E2E-02) : un compte suspendu en cours de session est
+      // déconnecté à sa prochaine action — l'administration a révoqué ses
+      // sessions, le backend répond 403 compte_suspendu ; on purge la session
+      // locale et RouteProtegee redirige vers /connexion.
+      const code = (corps as { erreur?: { code?: string } } | undefined)?.erreur?.code;
+      if (code === 'compte_suspendu') {
+        useSessionStore.getState().deconnecter();
+      }
       throw convertirReponseErreur(response.status, corps);
     }
 

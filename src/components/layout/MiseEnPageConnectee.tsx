@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { BandeauConnexion } from '@/components/BandeauConnexion';
+import { ClocheNotifications } from '@/components/ClocheNotifications';
 import { BandeauMiseAJour } from '@/pwa/BandeauMiseAJour';
 import { useSessionStore } from '@/stores/session';
 import { seDeconnecter } from '@/services/sessionService';
@@ -54,6 +55,8 @@ export const MiseEnPageConnectee: React.FC = () => {
               {roleActuel.replace('_', ' ')}
             </p>
           </div>
+          {/* Cloche de notifications (F-03) */}
+          <ClocheNotifications />
         </div>
 
         {/* Liens de navigation */}
@@ -97,6 +100,8 @@ export const MiseEnPageConnectee: React.FC = () => {
             <Logo taille="sm" />
           </Link>
           <div className="flex items-center gap-2">
+            {/* Cloche de notifications (F-03) */}
+            <ClocheNotifications />
             <span className="text-xs font-semibold px-2 py-1 bg-primaire-douce text-primaire rounded-full capitalize">
               {roleActuel.replace('_', ' ')}
             </span>
