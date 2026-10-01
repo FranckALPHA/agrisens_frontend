@@ -142,6 +142,7 @@ export const PageFormulaireProduit: React.FC = () => {
       prix_unitaire_fcfa: Number(prix) || 0,
       quantite_disponible: quantite || '0',
       producteur_nom: 'Vous',
+      agriculteur_id: '',
       region: exploitations?.find((e) => e.id === exploitationId)?.region ?? '…',
       localite: '',
       photos: photos.map((p, i) => ({ fichier_id: p.fichier_id, ordre: i })),
