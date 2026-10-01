@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { MapPin, ShoppingCart, User } from 'lucide-react';
 import { Bouton } from '@/components/Bouton';
+import { Champ } from '@/components/Champ';
+import { DialogueConfirmation } from '@/components/DialogueConfirmation';
 import { EtatChargement } from '@/components/EtatChargement';
+import { useSessionStore } from '@/stores/session';
+import { usePanierStore } from '@/stores/panier';
 import {
   estProprietaire,
   formaterPrix,
@@ -17,11 +21,19 @@ import { PhotoProduit } from './PhotoProduit';
 /**
  * ACH-03 — détail produit : galerie, informations, producteur.
  * Produit retiré/épuisé/inconnu → état « indisponible ».
- * Le panier sera branché en F-06 : bouton désactivé avec explication.
+ * Ajout au panier (quantité au choix ; connexion demandée si visiteur).
  */
 export const PageDetailProduit: React.FC = () => {
   const { identifiant } = useParams();
+  const navigation = useNavigate();
   const [photoChoisie, setPhotoChoisie] = useState(0);
+  const [quantite, setQuantite] = useState('1');
+  const [ajoute, setAjoute] = useState(false);
+  const estConnecte = useSessionStore((s) => s.estConnecte);
+  const lignesPanier = usePanierStore((s) => s.lignes);
+  const conflit = usePanierStore((s) => s.conflitAgricuiteur);
+  const confirmerRemplacement = usePanierStore((s) => s.confirmerRemplacement);
+  const abandonnerRemplacement = usePanierStore((s) => s.abandonnerRemplacement);
 
   const requete = useQuery({
     queryKey: ['produit', identifiant],
@@ -155,13 +167,70 @@ export const PageDetailProduit: React.FC = () => {
       </section>
 
       <div className="flex flex-col gap-2">
-        <Bouton disabled iconeGauche={<ShoppingCart size={18} />}>
-          Ajouter au panier
-        </Bouton>
-        <p className="text-xs text-texte-secondaire">
-          Le panier et la commande arrivent avec la feature F-06.
-        </p>
+        <div className="flex flex-wrap items-end gap-2">
+          <div className="w-28">
+            <Champ
+              label="Quantité"
+              type="number"
+              min="0"
+              step="0.001"
+              value={quantite}
+              onChange={(e) => setQuantite(e.target.value)}
+            />
+          </div>
+          <Bouton
+            iconeGauche={<ShoppingCart size={18} />}
+            onClick={() => {
+              if (!estConnecte) {
+                navigation('/connexion', {
+                  state: { depuis: { pathname: `/catalogue/${produit.id}` } },
+                });
+                return;
+              }
+              const photosTriees = [...(produit.photos ?? [])].sort((a, b) => a.ordre - b.ordre);
+              usePanierStore.getState().ajouter(
+                {
+                  produitId: produit.id,
+                  nom: produit.nom,
+                  prixUnitaireFcfa: produit.prix_unitaire_fcfa,
+                  unite: produit.unite,
+                  agriculteurId: (produit as ProduitCatalogueApi).agriculteur_id ?? '',
+                  agriculteurNom: nomProducteur,
+                  photoId: photosTriees[0]?.fichier_id ?? null,
+                },
+                Math.max(0, Number(quantite) || 0)
+              );
+              setAjoute(true);
+            }}
+          >
+            Ajouter au panier
+          </Bouton>
+        </div>
+        {ajoute && !conflit && (
+          <p role="status" className="text-sm text-succes-texte">
+            Ajouté au panier.{' '}
+            <Link to="/panier" className="underline">
+              Voir le panier
+            </Link>
+          </p>
+        )}
       </div>
+      <DialogueConfirmation
+        ouvert={conflit !== null}
+        titre="Panier d’un autre agriculteur"
+        message={
+          conflit
+            ? `Votre panier contient déjà des produits de ${lignesPanier[0]?.agriculteurNom ?? 'un autre agriculteur'}. Une commande concerne un seul agriculteur : vider le panier pour ajouter « ${conflit.nom} » ?`
+            : ''
+        }
+        texteConfirmer="Vider et ajouter"
+        texteAnnuler="Garder mon panier"
+        surConfirmer={() => {
+          confirmerRemplacement();
+          setAjoute(true);
+        }}
+        surAnnuler={abandonnerRemplacement}
+      />
     </div>
   );
 };

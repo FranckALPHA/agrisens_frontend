@@ -288,6 +288,176 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/commandes/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Passer une commande (un seul agriculteur) */
+    post: operations['commandes_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Consulter une commande */
+    get: operations['commandes_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/accepter/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Accepter une commande (réserve le stock) */
+    post: operations['commandes_accepter_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/annuler/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Annuler une commande avant paiement */
+    post: operations['commandes_annuler_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/historique/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Historique des statuts d'une commande */
+    get: operations['commandes_historique_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/preparer/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Marquer une commande payée en préparation */
+    post: operations['commandes_preparer_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/rejeter/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Rejeter une commande (motif obligatoire) */
+    post: operations['commandes_rejeter_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/devis/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Chiffrer une commande sans la créer */
+    post: operations['commandes_devis_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/mes-achats/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lister mes achats */
+    get: operations['commandes_mes_achats_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/mes-ventes/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lister mes ventes */
+    get: operations['commandes_mes_ventes_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/dev/horloge': {
     parameters: {
       query?: never;
@@ -995,6 +1165,45 @@ export interface components {
       taille: number;
       total: number;
     };
+    CommandeDetail: {
+      readonly id: string;
+      reference: string;
+      statut?: components['schemas']['StatutCommandeEnum'];
+      readonly lignes: components['schemas']['LigneCommande'][];
+      readonly adresse_livraison: string;
+      readonly adresse_exacte_visible: boolean;
+      /** @description Zone affichée à l'agriculteur avant paiement (D-21) */
+      zone_livraison?: string;
+      distance_km: number;
+      sous_total_fcfa: number;
+      frais_livraison_fcfa: number;
+      total_fcfa: number;
+      parametres_appliques?: unknown;
+      /** Format: date-time */
+      expire_le?: string | null;
+      motif_rejet?: string | null;
+      readonly agriculteur_nom: string;
+      readonly acheteur_nom: string;
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      maj_le?: string;
+    };
+    CommandeListe: {
+      readonly id: string;
+      reference: string;
+      statut?: components['schemas']['StatutCommandeEnum'];
+      total_fcfa: number;
+      sous_total_fcfa: number;
+      frais_livraison_fcfa: number;
+      readonly agriculteur_nom: string;
+      readonly acheteur_nom: string;
+      readonly nombre_lignes: number;
+      /** Format: date-time */
+      expire_le?: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
     /** @description GET /admin/utilisateurs/compteurs — bandeaux ADM-01 (F-03 frontend point 5). */
     CompteursAdmin: {
       ingenieurs_en_attente: number;
@@ -1026,9 +1235,33 @@ export interface components {
       role: components['schemas']['RoleAdministrationEnum'];
       region?: string;
     };
+    /** @description POST /commandes — mêmes champs que le devis, avec écriture. */
+    CreationCommandeRequest: {
+      lignes: components['schemas']['LigneSaisieRequest'][];
+      adresse_id?: string;
+      adresse_texte?: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position?: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
+    };
     /** @description POST /auth/demande-reinitialisation (Q-23) — téléphone du compte. */
     DemandeReinitialisationRequest: {
       telephone: string;
+    };
+    /** @description POST /commandes/devis — lignes + adresse (enregistrée ou saisie). */
+    DevisRequest: {
+      lignes: components['schemas']['LigneSaisieRequest'][];
+      adresse_id?: string;
+      adresse_texte?: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position?: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
     };
     /** @description PUT /livreurs/moi/disponibilite — disponible + position optionnelle. */
     DisponibiliteLivreurRequest: {
@@ -1227,6 +1460,35 @@ export interface components {
      * @enum {string}
      */
     JustificatifStatutEnum: 'soumise' | 'acceptee' | 'rejetee';
+    LigneCommande: {
+      readonly produit: string;
+      readonly nom_produit: string;
+      readonly unite: string;
+      /** Format: decimal */
+      readonly quantite: string;
+      readonly prix_unitaire_fcfa: number;
+      readonly total_ligne_fcfa: number;
+    };
+    LigneHistorique: {
+      ancien_statut: string | null;
+      nouveau_statut: string;
+      motif: string | null;
+      acteur_nom: string | null;
+      /** Format: date-time */
+      cree_le: string;
+    };
+    /** @description Ligne du panier envoyée au devis / à la création. */
+    LigneSaisieRequest: {
+      produit_id: string;
+      /** Format: decimal */
+      quantite: string;
+    };
+    ListeCommandes: {
+      elements: components['schemas']['CommandeListe'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
     ListeDemandesReinitialisation: {
       elements: components['schemas']['UtilisateurAdminListe'][];
       page: number;
@@ -1281,6 +1543,10 @@ export interface components {
       readonly mot_de_passe_temporaire: string;
       readonly doit_changer_mot_de_passe: boolean;
       readonly message: string;
+    };
+    /** @description Rejet d'une commande : motif obligatoire. */
+    MotifRequest: {
+      motif: string;
     };
     /** @description Notification ; l'état lu est exposé par le champ dérivé `non_lue`. */
     Notification: {
@@ -1404,7 +1670,12 @@ export interface components {
       /** Format: date-time */
       readonly maj_le: string;
     };
-    /** @description Vue publique : nom du producteur et région, jamais de téléphone ni de position. */
+    /**
+     * @description Vue publique : nom du producteur et région, jamais de téléphone ni de position.
+     *
+     *     Expose aussi `agriculteur_id` (UUID opaque) : le panier doit vérifier
+     *     qu'une commande concerne un seul agriculteur (D-02), le serveur retranche.
+     */
     ProduitCatalogue: {
       readonly id: string;
       nom: string;
@@ -1415,6 +1686,7 @@ export interface components {
       /** Format: decimal */
       readonly quantite_disponible: string;
       readonly producteur_nom: string;
+      readonly agriculteur_id: string;
       readonly region: string;
       readonly localite: string;
       readonly photos: components['schemas']['PhotoProduit'][];
@@ -1517,6 +1789,36 @@ export interface components {
       base: string;
       migrations_en_attente: number;
     };
+    /**
+     * @description * `en_attente` - En attente
+     *     * `acceptee` - Acceptée
+     *     * `paiement_en_attente` - Paiement en attente
+     *     * `payee` - Payée
+     *     * `preparation` - En préparation
+     *     * `remise_au_livreur` - Remise au livreur
+     *     * `livree` - Livrée
+     *     * `rejetee` - Rejetée
+     *     * `annulee` - Annulée
+     *     * `client_absent` - Client absent
+     *     * `echec_livraison` - Échec de livraison
+     *     * `remboursement_en_attente` - Remboursement en attente
+     *     * `remboursee` - Remboursée
+     * @enum {string}
+     */
+    StatutCommandeEnum:
+      | 'en_attente'
+      | 'acceptee'
+      | 'paiement_en_attente'
+      | 'payee'
+      | 'preparation'
+      | 'remise_au_livreur'
+      | 'livree'
+      | 'rejetee'
+      | 'annulee'
+      | 'client_absent'
+      | 'echec_livraison'
+      | 'remboursement_en_attente'
+      | 'remboursee';
     /**
      * @description * `actif` - Actif
      *     * `en_attente_validation` - En attente de validation
@@ -2113,6 +2415,235 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  commandes_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreationCommandeRequest'];
+        'multipart/form-data': components['schemas']['CreationCommandeRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CommandeDetail'];
+        };
+      };
+    };
+  };
+  commandes_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CommandeDetail'];
+        };
+      };
+      /** @description Commande introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  commandes_accepter_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CommandeDetail'];
+        };
+      };
+    };
+  };
+  commandes_annuler_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CommandeDetail'];
+        };
+      };
+    };
+  };
+  commandes_historique_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LigneHistorique'][];
+        };
+      };
+    };
+  };
+  commandes_preparer_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CommandeDetail'];
+        };
+      };
+    };
+  };
+  commandes_rejeter_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MotifRequest'];
+        'multipart/form-data': components['schemas']['MotifRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CommandeDetail'];
+        };
+      };
+    };
+  };
+  commandes_devis_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DevisRequest'];
+        'multipart/form-data': components['schemas']['DevisRequest'];
+      };
+    };
+    responses: {
+      /** @description Devis calculé */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  commandes_mes_achats_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Filtre de statut */
+        statut?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeCommandes'];
+        };
+      };
+    };
+  };
+  commandes_mes_ventes_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Filtre de statut */
+        statut?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeCommandes'];
+        };
       };
     };
   };

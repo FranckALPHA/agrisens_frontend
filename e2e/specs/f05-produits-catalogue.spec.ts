@@ -132,6 +132,17 @@ test.describe('F-05 — Produits, catalogue et stock', () => {
     await expect(page.getByRole('heading', { name: 'Nouveau produit' })).toBeVisible();
     await verifierAccessibilite(page);
 
+    // Exploitation explicite (Paul peut en avoir plusieurs via F-04).
+    const jetonExploitations = await connexionApiAvecJeton(page, PERSONNAGES.paul.telephone);
+    const reponseExploitations = await page.request.get(`${URL_API}/exploitations/`, {
+      headers: bearer(jetonExploitations),
+    });
+    const champNord = ((await reponseExploitations.json()) as Array<{
+      id: string;
+      nom: string;
+    }>).find((e) => e.nom === 'Champ Nord')!;
+    await page.getByLabel(/Exploitation/).selectOption(champNord.id);
+
     await page.getByLabel(/Nom du produit/).fill(nom);
     await page.getByLabel(/Prix \(FCFA\)/).fill('500');
     await page.getByLabel(/Quantité/).fill('100');
@@ -193,7 +204,7 @@ test.describe('F-05 — Produits, catalogue et stock', () => {
     const html = await page.content();
     expect(html).not.toContain('+237');
     expect(html).not.toMatch(/\b\d{1,2}\.\d{4,}\b/);
-    await expect(page.getByRole('button', { name: 'Ajouter au panier' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Ajouter au panier' })).toBeEnabled();
   });
 
   test('PW-F05-03 Recherche, filtres région/prix et tri par prix croissant', async ({
@@ -305,6 +316,15 @@ test.describe('F-05 — Produits, catalogue et stock', () => {
   test('PW-F05-07 Prix négatif refusé dans le formulaire', async ({ page }) => {
     await connexionUI(page, PERSONNAGES.paul.telephone);
     await page.goto('/agriculteur/produits/nouveau');
+    const jetonExploitations = await connexionApiAvecJeton(page, PERSONNAGES.paul.telephone);
+    const reponseExploitations = await page.request.get(`${URL_API}/exploitations/`, {
+      headers: bearer(jetonExploitations),
+    });
+    const champNord = ((await reponseExploitations.json()) as Array<{
+      id: string;
+      nom: string;
+    }>).find((e) => e.nom === 'Champ Nord')!;
+    await page.getByLabel(/Exploitation/).selectOption(champNord.id);
     await page.getByLabel(/Nom du produit/).fill(`Prix Neg E2E-${suffixeUnique()}`);
     await page.getByLabel(/Prix \(FCFA\)/).fill('-50');
     await page.getByLabel(/Quantité/).fill('10');

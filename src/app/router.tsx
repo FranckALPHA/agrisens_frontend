@@ -23,6 +23,10 @@ import { PageExploitations } from '@/pages/agriculteur/PageExploitations';
 import { PageFormulaireExploitation } from '@/pages/agriculteur/PageFormulaireExploitation';
 import { PageMesProduits } from '@/pages/agriculteur/PageMesProduits';
 import { PageFormulaireProduit } from '@/pages/agriculteur/PageFormulaireProduit';
+import { PagePanier } from '@/pages/panier/PagePanier';
+import { PageMesCommandes, PageVentes } from '@/pages/commandes/PageCommandes';
+import { PageDetailCommande } from '@/pages/commandes/PageDetailCommande';
+import { PageConfirmationCommande } from '@/pages/commandes/PageConfirmationCommande';
 import { PageCatalogue } from '@/pages/catalogue/PageCatalogue';
 import { PageDetailProduit } from '@/pages/catalogue/PageDetailProduit';
 import type { RoleUtilisateur } from '@/app/menus';
@@ -224,19 +228,49 @@ export const router = createBrowserRouter([
       {
         path: 'panier',
         element: (
-          <PageProvisoire
-            titre="Mon Panier"
-            message="Votre panier sera disponible avec la feature F-05."
-          />
+          <RouteProtegee rolesAutorises={['acheteur', 'super_admin']}>
+            <PagePanier />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'commandes/confirmation',
+        element: (
+          <RouteProtegee rolesAutorises={['acheteur', 'super_admin']}>
+            <PageConfirmationCommande />
+          </RouteProtegee>
         ),
       },
       {
         path: 'commandes',
         element: (
-          <PageProvisoire
-            titre="Mes Commandes"
-            message="Le suivi de vos commandes sera disponible avec la feature F-06."
-          />
+          <RouteProtegee rolesAutorises={['acheteur', 'super_admin']}>
+            <PageMesCommandes />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'commandes/:identifiant',
+        element: (
+          <RouteProtegee>
+            <PageDetailCommande vue="achats" />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'agriculteur/commandes',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageVentes />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'agriculteur/commandes/:identifiant',
+        element: (
+          <RouteProtegee>
+            <PageDetailCommande vue="ventes" />
+          </RouteProtegee>
         ),
       },
     ],
