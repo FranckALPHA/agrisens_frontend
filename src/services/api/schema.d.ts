@@ -657,6 +657,147 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/produits/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter le catalogue public
+     * @description POST /produits (publication, agriculteur) et GET /produits (catalogue public).
+     */
+    get: operations['produits_catalogue'];
+    put?: never;
+    /**
+     * Publier un produit
+     * @description POST /produits (publication, agriculteur) et GET /produits (catalogue public).
+     */
+    post: operations['produits_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/produits/{identifiant}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter un produit (vue complète pour le propriétaire)
+     * @description Le propriétaire reçoit tous les champs (stock réservé, statut) ; les autres visiteurs reçoivent la vue publique, 404 si indisponible.
+     */
+    get: operations['produits_detail'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /**
+     * Modifier un produit
+     * @description GET /produits/{id} et PATCH /produits/{id}.
+     *
+     *     GET : le propriétaire reçoit la vue complète (y compris `epuise` et
+     *     `retire` pour gérer son stock) ; tout autre visiteur reçoit la vue
+     *     publique, 404 si le produit n'est pas au catalogue. PATCH : propriétaire.
+     */
+    patch: operations['produits_partial_update'];
+    trace?: never;
+  };
+  '/api/v1/produits/{identifiant}/photos/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Réordonner les photos du produit */
+    put: operations['produits_photos_update'];
+    /** Ajouter une photo au produit */
+    post: operations['produits_photos_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/produits/{identifiant}/photos/{fichier_id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Dissocier une photo du produit */
+    delete: operations['produits_photos_destroy'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/produits/{identifiant}/retirer/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Retirer un produit de la vente (historique conservé) */
+    post: operations['produits_retirer_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/produits/{identifiant}/stock/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Ajuster le stock (refusé sous la quantité réservée) */
+    patch: operations['produits_stock_partial_update'];
+    trace?: never;
+  };
+  '/api/v1/produits/mes-produits/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister mes produits (tous statuts)
+     * @description GET /produits/mes-produits — produits de l'agriculteur, tous statuts.
+     */
+    get: operations['produits_mes_produits_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/referentiels/{type_ref}/': {
     parameters: {
       query?: never;
@@ -847,6 +988,12 @@ export interface components {
       };
       ville: string;
       region: string;
+    };
+    CatalogueProduits: {
+      elements: components['schemas']['ProduitCatalogue'][];
+      page: number;
+      taille: number;
+      total: number;
     };
     /** @description GET /admin/utilisateurs/compteurs — bandeaux ADM-01 (F-03 frontend point 5). */
     CompteursAdmin: {
@@ -1118,6 +1265,12 @@ export interface components {
       /** @description Zone d'intervention déclarée */
       readonly zone: string | null;
     };
+    MesProduits: {
+      elements: components['schemas']['Produit'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
     /** @description PUT /utilisateurs/moi/mot-de-passe. */
     MotDePasseRequest: {
       mot_de_passe_actuel: string;
@@ -1191,6 +1344,102 @@ export interface components {
       region?: string | null;
       telephone?: string;
     };
+    /** @description Vue propriétaire : tout le produit, stock réservé compris. */
+    PatchedProduitModificationRequest: {
+      nom?: string;
+      categorie?: string;
+      description?: string;
+      unite?: string;
+      prix_unitaire_fcfa?: number;
+      /** Format: decimal */
+      quantite_stock?: string;
+    };
+    /** @description PATCH /produits/{id}/stock — stock physique total (≥ réservé). */
+    PatchedStockRequest: {
+      /** Format: decimal */
+      quantite_stock?: string;
+    };
+    /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
+    PhotoAjout: {
+      fichier_id: string;
+      ordre?: number;
+    };
+    /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
+    PhotoAjoutRequest: {
+      fichier_id: string;
+      ordre?: number;
+    };
+    PhotoProduit: {
+      fichier_id: string;
+      readonly ordre: number;
+    };
+    /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
+    PhotosOrdre: {
+      fichier_ids: string[];
+    };
+    /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
+    PhotosOrdreRequest: {
+      fichier_ids: string[];
+    };
+    /** @description Vue propriétaire : tout le produit, stock réservé compris. */
+    Produit: {
+      readonly id: string;
+      nom: string;
+      categorie: string;
+      description?: string;
+      unite: string;
+      prix_unitaire_fcfa: number;
+      /** Format: decimal */
+      quantite_stock?: string;
+      /** Format: decimal */
+      readonly quantite_reservee: string;
+      /** Format: decimal */
+      readonly quantite_disponible: string;
+      readonly statut: components['schemas']['ProduitStatutEnum'];
+      exploitation: string;
+      readonly exploitation_nom: string;
+      readonly photos: components['schemas']['PhotoProduit'][];
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      readonly maj_le: string;
+    };
+    /** @description Vue publique : nom du producteur et région, jamais de téléphone ni de position. */
+    ProduitCatalogue: {
+      readonly id: string;
+      nom: string;
+      categorie: string;
+      description?: string;
+      unite: string;
+      prix_unitaire_fcfa: number;
+      /** Format: decimal */
+      readonly quantite_disponible: string;
+      readonly producteur_nom: string;
+      readonly region: string;
+      readonly localite: string;
+      readonly photos: components['schemas']['PhotoProduit'][];
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /** @description Vue propriétaire : tout le produit, stock réservé compris. */
+    ProduitCreationRequest: {
+      nom: string;
+      categorie: string;
+      description?: string;
+      unite: string;
+      prix_unitaire_fcfa: number;
+      /** Format: decimal */
+      quantite_stock?: string;
+      exploitation_id: string;
+      photo_ids?: string[];
+    };
+    /**
+     * @description * `disponible` - Disponible
+     *     * `epuise` - Épuisé
+     *     * `retire` - Retiré
+     * @enum {string}
+     */
+    ProduitStatutEnum: 'disponible' | 'epuise' | 'retire';
     /** @description Représentation d'une entrée de référentiel. */
     Referentiel: {
       /** @description Identifiant code stable utilisé par les autres entités */
@@ -2450,6 +2699,264 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  produits_catalogue: {
+    parameters: {
+      query?: {
+        /** @description Code de catégorie */
+        categorie?: string;
+        /** @description Page de résultats (défaut 1) */
+        page?: number;
+        /** @description Prix plafond en FCFA */
+        prix_max?: number;
+        /** @description Prix plancher en FCFA */
+        prix_min?: number;
+        /** @description Recherche dans nom et description */
+        q?: string;
+        /** @description Code de région de l'exploitation */
+        region?: string;
+        /** @description Taille de page, 1–100 (défaut 20) */
+        taille?: number;
+        /** @description recent (défaut), prix_asc ou prix_desc */
+        tri?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CatalogueProduits'];
+        };
+      };
+    };
+  };
+  produits_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ProduitCreationRequest'];
+        'multipart/form-data': components['schemas']['ProduitCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Produit'];
+        };
+      };
+    };
+  };
+  produits_detail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ProduitCatalogue'];
+        };
+      };
+      /** @description Produit indisponible */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  produits_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedProduitModificationRequest'];
+        'multipart/form-data': components['schemas']['PatchedProduitModificationRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Produit'];
+        };
+      };
+    };
+  };
+  produits_photos_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PhotosOrdreRequest'];
+        'multipart/form-data': components['schemas']['PhotosOrdreRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PhotosOrdre'];
+        };
+      };
+    };
+  };
+  produits_photos_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PhotoAjoutRequest'];
+        'multipart/form-data': components['schemas']['PhotoAjoutRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['PhotoAjout'];
+        };
+      };
+    };
+  };
+  produits_photos_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fichier_id: string;
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Photo dissociée */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  produits_retirer_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Produit'];
+        };
+      };
+    };
+  };
+  produits_stock_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedStockRequest'];
+        'multipart/form-data': components['schemas']['PatchedStockRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Produit'];
+        };
+      };
+    };
+  };
+  produits_mes_produits_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Page de résultats (défaut 1) */
+        page?: number;
+        /** @description Taille de page, 1–100 (défaut 20) */
+        taille?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MesProduits'];
+        };
       };
     };
   };

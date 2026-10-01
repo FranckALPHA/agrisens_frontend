@@ -21,6 +21,10 @@ import { PageConditions, PageConfidentialite } from '@/pages/legal/PagesLegales'
 import { EtatVide } from '@/components/EtatVide';
 import { PageExploitations } from '@/pages/agriculteur/PageExploitations';
 import { PageFormulaireExploitation } from '@/pages/agriculteur/PageFormulaireExploitation';
+import { PageMesProduits } from '@/pages/agriculteur/PageMesProduits';
+import { PageFormulaireProduit } from '@/pages/agriculteur/PageFormulaireProduit';
+import { PageCatalogue } from '@/pages/catalogue/PageCatalogue';
+import { PageDetailProduit } from '@/pages/catalogue/PageDetailProduit';
 import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
@@ -48,15 +52,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <PageAccueil /> },
       { path: 'etat', element: <PageEtat /> },
-      {
-        path: 'catalogue',
-        element: (
-          <PageProvisoire
-            titre="Catalogue des produits"
-            message="Le catalogue complet des récoltes locales sera accessible avec la feature F-05."
-          />
-        ),
-      },
+      { path: 'catalogue', element: <PageCatalogue /> },
+      { path: 'catalogue/:identifiant', element: <PageDetailProduit /> },
       { path: 'connexion', element: <PageConnexion /> },
       { path: 'inscription', element: <PageInscription /> },
       { path: 'mot-de-passe-oublie', element: <PageMotDePasseOublie /> },
@@ -197,6 +194,30 @@ export const router = createBrowserRouter([
         element: (
           <RouteProtegee>
             <PageFormulaireExploitation />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'agriculteur/produits',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageMesProduits />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'agriculteur/produits/nouveau',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageFormulaireProduit />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'agriculteur/produits/:identifiant',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageFormulaireProduit />
           </RouteProtegee>
         ),
       },
