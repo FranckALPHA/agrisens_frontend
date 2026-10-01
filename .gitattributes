@@ -1,0 +1,4 @@
+# Fin de lignes LF dans le dépôt et les copies de travail (Windows compris) :
+# `npm run format:check` (Prettier, endOfLine lf) doit rester vert après
+# un checkout. `text=auto` laisse Git détecter les binaires (images, etc.).
+* text=auto eol=lf
