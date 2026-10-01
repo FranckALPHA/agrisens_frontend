@@ -92,6 +92,7 @@ export const TeleversementFichier: React.FC<TeleversementFichierProps> = ({
           ref={entreeRef}
           type="file"
           accept={accept}
+          aria-label={libelle}
           className="sr-only"
           data-testid="champ-fichier"
           onChange={(evement) => {
