@@ -21,6 +21,7 @@ import {
   CODE_ERREUR_RESEAU,
   type Adresse,
 } from '@/services/api/auth';
+import { lirePointGeoJSON } from '@/services/api/communs';
 import { mapperUtilisateur, useSessionStore } from '@/stores/session';
 import {
   normaliserTelephone,
@@ -233,7 +234,9 @@ const GestionAdresses: React.FC = () => {
       )}
 
       {requeteAdresses.data?.map((adresse) => {
-        const [longitude = 0, latitude = 0] = adresse.position.coordinates;
+        const point = lirePointGeoJSON(adresse.position);
+        const longitude = point?.longitude ?? 0;
+        const latitude = point?.latitude ?? 0;
         return (
           <div
             key={adresse.id}
@@ -331,8 +334,7 @@ const FormulaireAdresse: React.FC<{
 }> = ({ adresse, onAnnule, onEnregistre }) => {
   const [position, setPosition] = useState<PositionGeographique | null>(() => {
     if (!adresse) return null;
-    const [longitude = 0, latitude = 0] = adresse.position.coordinates;
-    return { latitude, longitude };
+    return lirePointGeoJSON(adresse.position);
   });
   const {
     register,

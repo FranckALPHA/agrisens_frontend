@@ -4,6 +4,190 @@
  */
 
 export interface paths {
+  '/api/v1/admin/ingenieurs/{id}/refuser/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Refuser le profil d'un ingénieur
+     * @description Le motif est obligatoire (vide → 422 `motif_obligatoire`) et notifié (D-13).
+     */
+    post: operations['admin_ingenieurs_refuser_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/ingenieurs/{id}/valider/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Valider le profil d'un ingénieur
+     * @description Après examen des justificatifs (D-13). Rend le compte actif et notifie l'ingénieur. Journalisé dans JOURNAL_AUDIT.
+     */
+    post: operations['admin_ingenieurs_valider_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister les utilisateurs (admin)
+     * @description GET /admin/utilisateurs — liste ; POST — création d'admin (sadm seul, 403 sinon).
+     */
+    get: operations['admin_utilisateurs_lister'];
+    put?: never;
+    /**
+     * Créer un compte d'administration
+     * @description Réservé au super-admin (admin et super_admin ne s'inscrivent pas, 02 §2.1). Le mot de passe temporaire n'est renvoyé qu'une fois.
+     */
+    post: operations['admin_utilisateurs_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter un utilisateur (admin)
+     * @description GET /admin/utilisateurs/{id} — détail + dossier ingénieur (D-13).
+     */
+    get: operations['admin_utilisateurs_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/{id}/reactiver/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Réactiver un compte suspendu
+     * @description POST /admin/utilisateurs/{id}/reactiver.
+     */
+    post: operations['admin_utilisateurs_reactiver_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/{id}/reinitialiser-mot-de-passe/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Émettre un mot de passe temporaire
+     * @description Le mot de passe n'est renvoyé qu'une seule fois, jamais stocké ni journalisé en clair ; le compte devra le changer à la connexion. Toutes les sessions en cours sont révoquées.
+     */
+    post: operations['admin_utilisateurs_reinitialiser_mot_de_passe_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/{id}/suspendre/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Suspendre un compte
+     * @description Le compte devient inaccessible et TOUTES ses sessions sont révoquées immédiatement. Motif obligatoire, notifié et journalisé.
+     */
+    post: operations['admin_utilisateurs_suspendre_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/compteurs/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Compteurs d'administration
+     * @description Ingénieurs en attente de validation, demandes de réinitialisation en attente (Q-23) et comptes suspendus.
+     */
+    get: operations['admin_utilisateurs_compteurs_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/utilisateurs/demandes-reinitialisation/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister les demandes de réinitialisation en attente
+     * @description GET /admin/utilisateurs/demandes-reinitialisation — file Q-23.
+     */
+    get: operations['admin_utilisateurs_demandes_reinitialisation_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/auth/connexion/': {
     parameters: {
       query?: never;
@@ -142,6 +326,311 @@ export interface paths {
      * @description Déclenchement immédiat d'une tâche de fond pour les tests E2E.
      */
     post: operations['dev_taches_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/exploitations/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lister les exploitations de l'agriculteur */
+    get: operations['exploitations_list'];
+    put?: never;
+    /** Créer une exploitation */
+    post: operations['exploitations_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/exploitations/{identifiant}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Consulter une exploitation */
+    get: operations['exploitations_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Modifier une exploitation */
+    patch: operations['exploitations_partial_update'];
+    trace?: never;
+  };
+  '/api/v1/exploitations/{identifiant}/archiver/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Archiver une exploitation */
+    post: operations['exploitations_archiver_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/fichiers/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Téléverser un fichier
+     * @description Upload multipart (champ binaire `fichier` + `contexte`). Le type est vérifié sur le contenu, les tailles maximales viennent des paramètres de la plateforme ; les métadonnées EXIF des images sont retirées. Retourne l'identifiant du fichier.
+     */
+    post: operations['fichiers_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/fichiers/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Obtenir un fichier
+     * @description Renvoie une redirection 302 vers une URL signée HMAC de courte durée. Règles d'accès par contexte : photos de produits publiques, justificatifs visibles par le propriétaire et les admins ; un fichier non visible pour l'appelant renvoie 404.
+     */
+    get: operations['fichiers_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/fichiers/{id}/contenu/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Télécharger le contenu d'un fichier
+     * @description Point d'arrivée de la redirection de `GET /fichiers/{id}`. Autorisé uniquement par la signature HMAC ; signature invalide → 404, lien expiré → 410.
+     */
+    get: operations['fichiers_contenu_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ingenieurs/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister les ingénieurs validés et disponibles
+     * @description Filtres `specialite` (code du référentiel) et `region`. Le filtre par exploitation (zone) sera ajouté en F-11.
+     */
+    get: operations['ingenieurs_lister'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ingenieurs/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter le profil public d'un ingénieur
+     * @description GET /ingenieurs/{id} — profil public, sans téléphone (03 SPEC-01).
+     */
+    get: operations['ingenieurs_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ingenieurs/moi/justificatifs/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister ses justificatifs
+     * @description GET/POST /ingenieurs/moi/justificatifs — dossier de candidature (D-13).
+     */
+    get: operations['ingenieurs_moi_justificatifs_list'];
+    put?: never;
+    /**
+     * Déposer un justificatif
+     * @description Rattache un fichier déjà téléversé en contexte `justificatif`.
+     */
+    post: operations['ingenieurs_moi_justificatifs_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/ingenieurs/moi/profil/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter son profil professionnel
+     * @description GET/PUT /ingenieurs/moi/profil — accessible même en attente de validation.
+     */
+    get: operations['ingenieurs_moi_profil_retrieve'];
+    /**
+     * Mettre à jour son profil professionnel
+     * @description Spécialités (référentiel), zone (centre + rayon), tarif borné par les paramètres de consultation, disponibilité, biographie, modalités, photo. La mise en disponibilité exige un profil complet et validé.
+     */
+    put: operations['ingenieurs_moi_profil_update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livreurs/moi/disponibilite/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter sa disponibilité de livreur
+     * @description GET/PUT /livreurs/moi/disponibilite — bouton disponible/indisponible (LIV-01).
+     */
+    get: operations['livreurs_moi_disponibilite_retrieve'];
+    /**
+     * Se rendre disponible ou indisponible
+     * @description Se rendre disponible exige une position (GeoJSON Point dans l'emprise du Cameroun) au moins une fois.
+     */
+    put: operations['livreurs_moi_disponibilite_update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister ses notifications
+     * @description GET /notifications — la liste du destinataire courant.
+     */
+    get: operations['notifications_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/{id}/lue/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Marquer une notification comme lue
+     * @description POST /notifications/{id}/lue — destinataire uniquement (autrui → 404).
+     */
+    post: operations['notifications_lue_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/compteur/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Compteur de notifications non lues
+     * @description GET /notifications/compteur — nombre de non lues (cloche, polling 30 s).
+     */
+    get: operations['notifications_compteur_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/notifications/tout-lire/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Marquer toutes les notifications comme lues
+     * @description POST /notifications/tout-lire — marque toutes les non lues comme lues.
+     */
+    post: operations['notifications_tout_lire_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -334,7 +823,8 @@ export interface components {
       /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
       position: {
         type: string;
-        coordinates: number[];
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
       };
       ville: string;
       region: string;
@@ -352,19 +842,206 @@ export interface components {
       /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
       position: {
         type: string;
-        coordinates: number[];
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
       };
       ville: string;
       region: string;
+    };
+    /** @description GET /admin/utilisateurs/compteurs — bandeaux ADM-01 (F-03 frontend point 5). */
+    CompteursAdmin: {
+      ingenieurs_en_attente: number;
+      reinitialisations_en_attente: number;
+      comptes_suspendus: number;
     };
     /** @description POST /auth/connexion — téléphone E.164 ou email + mot de passe. */
     ConnexionRequest: {
       identifiant: string;
       mot_de_passe: string;
     };
+    /**
+     * @description * `produit` - Photo de produit
+     *     * `signalement` - Pièce d'un signalement
+     *     * `accompagnement` - Fichier d'un accompagnement
+     *     * `justificatif` - Justificatif professionnel
+     *     * `chat` - Fichier de conversation
+     *     * `incident` - Photo d'incident de livraison
+     * @enum {string}
+     */
+    ContexteEnum:
+      'produit' | 'signalement' | 'accompagnement' | 'justificatif' | 'chat' | 'incident';
+    /** @description POST /admin/utilisateurs (super-admin) — création d'un compte admin. */
+    CreationAdminRequest: {
+      nom: string;
+      telephone: string;
+      email?: string;
+      /** @default admin */
+      role: components['schemas']['RoleAdministrationEnum'];
+      region?: string;
+    };
     /** @description POST /auth/demande-reinitialisation (Q-23) — téléphone du compte. */
     DemandeReinitialisationRequest: {
       telephone: string;
+    };
+    /** @description PUT /livreurs/moi/disponibilite — disponible + position optionnelle. */
+    DisponibiliteLivreurRequest: {
+      disponible: boolean;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position?: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      } | null;
+      zone?: string | null;
+    };
+    Exploitation: {
+      readonly id: string;
+      nom: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      parcelle: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      readonly centre: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
+      /** Format: decimal */
+      superficie_ha: string;
+      /** Format: decimal */
+      readonly superficie_calculee_ha: string;
+      type_sol: string;
+      region: string;
+      localite?: string;
+      readonly statut: components['schemas']['ExploitationStatutEnum'];
+      readonly nombre_produits: number;
+      readonly dernier_planning: unknown;
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      readonly maj_le: string;
+    };
+    ExploitationCreationRequest: {
+      nom: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      parcelle: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
+      /** Format: decimal */
+      superficie_ha?: string | null;
+      type_sol: string;
+      region: string;
+      localite?: string;
+    };
+    /**
+     * @description * `active` - Active
+     *     * `archivee` - Archivée
+     * @enum {string}
+     */
+    ExploitationStatutEnum: 'active' | 'archivee';
+    /** @description Représentation publique d'un fichier (sans chemin de stockage). */
+    Fichier: {
+      readonly id: string;
+      /**
+       * @description Usage annoncé à l'upload ; détermine les règles d'accès
+       *
+       *     * `produit` - Photo de produit
+       *     * `signalement` - Pièce d'un signalement
+       *     * `accompagnement` - Fichier d'un accompagnement
+       *     * `justificatif` - Justificatif professionnel
+       *     * `chat` - Fichier de conversation
+       *     * `incident` - Photo d'incident de livraison
+       */
+      readonly contexte: components['schemas']['ContexteEnum'];
+      /** @description Nom donné par le client, affiché pour rappel uniquement */
+      readonly nom_original: string;
+      /** @description Type détecté sur le contenu (filetype), pas sur l'extension */
+      readonly type_mime: string;
+      /** @description Taille en octets après traitement (EXIF retiré) */
+      readonly taille_octets: number;
+      /** @description True seulement pour les photos de produits */
+      readonly public: boolean;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
+    IngenieurProfil: {
+      /** @description Liste de codes du référentiel `specialite` (validés par le service) */
+      specialites?: unknown;
+      /** @description Région d'intervention (filtre GET /ingenieurs) */
+      region?: string | null;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      zone_centre?: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      } | null;
+      /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
+      zone_rayon_km?: number | null;
+      /** @description Prix de la consultation en FCFA (entier), hors déplacement */
+      tarif_consultation_fcfa?: number | null;
+      disponible?: boolean;
+      biographie?: string | null;
+      /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
+      modalites?: string | null;
+      readonly photo_id: string | null;
+      readonly statut_validation: components['schemas']['StatutValidationEnum'];
+      readonly motif_refus: string | null;
+      /** Format: date-time */
+      readonly valide_le: string | null;
+      readonly justificatifs: {
+        [key: string]: unknown;
+      }[];
+    };
+    /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
+    IngenieurProfilRequest: {
+      /** @description Liste de codes du référentiel `specialite` (validés par le service) */
+      specialites?: unknown;
+      /** @description Région d'intervention (filtre GET /ingenieurs) */
+      region?: string | null;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      zone_centre?: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      } | null;
+      /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
+      zone_rayon_km?: number | null;
+      /** @description Prix de la consultation en FCFA (entier), hors déplacement */
+      tarif_consultation_fcfa?: number | null;
+      disponible?: boolean;
+      biographie?: string | null;
+      /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
+      modalites?: string | null;
+    };
+    /** @description GET /ingenieurs et /ingenieurs/{id} — profil public, sans téléphone (03). */
+    IngenieurPublic: {
+      readonly id: string;
+      readonly nom: string;
+      /** @description Liste de codes du référentiel `specialite` (validés par le service) */
+      specialites?: unknown;
+      /** @description Région d'intervention (filtre GET /ingenieurs) */
+      region?: string | null;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      readonly zone_centre: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
+      /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
+      zone_rayon_km?: number | null;
+      /** @description Prix de la consultation en FCFA (entier), hors déplacement */
+      tarif_consultation_fcfa?: number | null;
+      disponible?: boolean;
+      biographie?: string | null;
+      /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
+      modalites?: string | null;
+      readonly photo_id: string | null;
     };
     /** @description POST /auth/inscription — rôles agriculteur, acheteur, ingénieur, livreur. */
     InscriptionRequest: {
@@ -372,21 +1049,113 @@ export interface components {
       telephone: string;
       email?: string;
       mot_de_passe: string;
-      role: components['schemas']['InscriptionRoleEnum'];
+      role: components['schemas']['RoleInscriptionEnum'];
       region?: string;
     };
+    /** @description Pièce justificative avec son fichier (sans chemin de stockage). */
+    Justificatif: {
+      readonly id: string;
+      /**
+       * @description Nature du document
+       *
+       *     * `diplome` - Diplôme
+       *     * `piece_identite` - Pièce d'identité
+       *     * `autre` - Autre
+       */
+      readonly type: components['schemas']['TypeJustificatifEnum'];
+      readonly statut: components['schemas']['JustificatifStatutEnum'];
+      readonly fichier: components['schemas']['Fichier'];
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /** @description POST /ingenieurs/moi/justificatifs — fichier déjà téléversé (`fichier_id`). */
+    JustificatifDepotRequest: {
+      fichier_id: string;
+      type: components['schemas']['TypeJustificatifEnum'];
+    };
     /**
-     * @description * `acheteur` - acheteur
-     *     * `agriculteur` - agriculteur
-     *     * `ingenieur_agronome` - ingenieur_agronome
-     *     * `livreur` - livreur
+     * @description * `soumise` - Soumise
+     *     * `acceptee` - Acceptée
+     *     * `rejetee` - Rejetée
      * @enum {string}
      */
-    InscriptionRoleEnum: 'acheteur' | 'agriculteur' | 'ingenieur_agronome' | 'livreur';
+    JustificatifStatutEnum: 'soumise' | 'acceptee' | 'rejetee';
+    ListeDemandesReinitialisation: {
+      elements: components['schemas']['UtilisateurAdminListe'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
+    ListeIngenieurs: {
+      elements: components['schemas']['IngenieurPublic'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
+    ListeNotifications: {
+      elements: components['schemas']['Notification'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
+    ListeUtilisateursAdmin: {
+      elements: components['schemas']['UtilisateurAdminListe'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
+    /** @description GET /livreurs/moi/disponibilite — état courant du profil livreur. */
+    LivreurProfil: {
+      readonly disponible: boolean;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      readonly position: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      } | null;
+      /** Format: date-time */
+      readonly position_maj_le: string | null;
+      /** @description Zone d'intervention déclarée */
+      readonly zone: string | null;
+    };
     /** @description PUT /utilisateurs/moi/mot-de-passe. */
     MotDePasseRequest: {
       mot_de_passe_actuel: string;
       nouveau_mot_de_passe: string;
+    };
+    /** @description Réponse du mot de passe temporaire (Q-23) — affiché une seule fois. */
+    MotDePasseTemporaire: {
+      readonly mot_de_passe_temporaire: string;
+      readonly doit_changer_mot_de_passe: boolean;
+      readonly message: string;
+    };
+    /** @description Notification ; l'état lu est exposé par le champ dérivé `non_lue`. */
+    Notification: {
+      readonly id: string;
+      /**
+       * @description Catégorie affichée dans FE-05
+       *
+       *     * `commande` - Commande
+       *     * `paiement` - Paiement
+       *     * `livraison` - Livraison
+       *     * `accompagnement` - Accompagnement
+       *     * `abonnement` - Abonnement
+       *     * `administration` - Administration
+       *     * `signalement` - Signalement
+       */
+      readonly type: components['schemas']['TypeNotificationEnum'];
+      readonly titre: string;
+      readonly contenu: string;
+      /** @description Chemin applicatif à ouvrir (ex. /admin/utilisateurs) ; null si sans cible */
+      readonly lien: string | null;
+      readonly non_lue: boolean;
+      /**
+       * Format: date-time
+       * @description Date de lecture ; null = non lue
+       */
+      readonly lue_le: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
     };
     /** @description PATCH : tous les champs facultatifs. */
     PatchedAdresseModificationRequest: {
@@ -395,10 +1164,25 @@ export interface components {
       /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
       position?: {
         type: string;
-        coordinates: number[];
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
       };
       ville?: string;
       region?: string;
+    };
+    PatchedExploitationModificationRequest: {
+      nom?: string;
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      parcelle?: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
+      /** Format: decimal */
+      superficie_ha?: string | null;
+      type_sol?: string;
+      region?: string;
+      localite?: string;
     };
     /** @description PATCH /utilisateurs/moi — nom, email, région, téléphone ; jamais le rôle. */
     PatchedMiseAJourMoiRequest: {
@@ -415,6 +1199,14 @@ export interface components {
       libelle: string;
       /** @description Ordre de tri pour l'affichage */
       ordre?: number;
+    };
+    /**
+     * @description POST /admin/ingenieurs/{id}/refuser — presence de `motif` documentée ;
+     *     le contrôle métier (motif non vide → 422 `motif_obligatoire`) reste dans
+     *     le service, seul point de vérité (conventions §3).
+     */
+    RefusIngenieurRequest: {
+      motif: string;
     };
     /** @description Réponse neutre uniforme (demande de réinitialisation, Q-23). */
     ReponseMessage: {
@@ -437,6 +1229,31 @@ export interface components {
       statut: string;
       resultat: string;
     };
+    /**
+     * @description * `admin` - admin
+     *     * `super_admin` - super_admin
+     * @enum {string}
+     */
+    RoleAdministrationEnum: 'admin' | 'super_admin';
+    /**
+     * @description * `acheteur` - acheteur
+     *     * `agriculteur` - agriculteur
+     *     * `ingenieur_agronome` - ingenieur_agronome
+     *     * `livreur` - livreur
+     * @enum {string}
+     */
+    RoleInscriptionEnum: 'acheteur' | 'agriculteur' | 'ingenieur_agronome' | 'livreur';
+    /**
+     * @description * `agriculteur` - Agriculteur
+     *     * `acheteur` - Acheteur
+     *     * `ingenieur_agronome` - Ingénieur agronome
+     *     * `livreur` - Livreur
+     *     * `admin` - Administrateur
+     *     * `super_admin` - Super administrateur
+     * @enum {string}
+     */
+    RoleUtilisateurEnum:
+      'agriculteur' | 'acheteur' | 'ingenieur_agronome' | 'livreur' | 'admin' | 'super_admin';
     SanteLivenessResponse: {
       statut: string;
       version: string;
@@ -459,6 +1276,48 @@ export interface components {
      * @enum {string}
      */
     StatutCompteEnum: 'actif' | 'en_attente_validation' | 'suspendu' | 'anonymise';
+    /**
+     * @description * `en_attente` - En attente
+     *     * `valide` - Validé
+     *     * `refuse` - Refusé
+     * @enum {string}
+     */
+    StatutValidationEnum: 'en_attente' | 'valide' | 'refuse';
+    /** @description POST /admin/utilisateurs/{id}/suspendre — motif obligatoire (affiché au user). */
+    SuspendreRequest: {
+      motif: string;
+    };
+    /** @description POST /fichiers — multipart : `fichier` (binaire) + `contexte`. */
+    TeleversementRequest: {
+      /** Format: binary */
+      fichier: string;
+      contexte: components['schemas']['ContexteEnum'];
+    };
+    /**
+     * @description * `diplome` - Diplôme
+     *     * `piece_identite` - Pièce d'identité
+     *     * `autre` - Autre
+     * @enum {string}
+     */
+    TypeJustificatifEnum: 'diplome' | 'piece_identite' | 'autre';
+    /**
+     * @description * `commande` - Commande
+     *     * `paiement` - Paiement
+     *     * `livraison` - Livraison
+     *     * `accompagnement` - Accompagnement
+     *     * `abonnement` - Abonnement
+     *     * `administration` - Administration
+     *     * `signalement` - Signalement
+     * @enum {string}
+     */
+    TypeNotificationEnum:
+      | 'commande'
+      | 'paiement'
+      | 'livraison'
+      | 'accompagnement'
+      | 'abonnement'
+      | 'administration'
+      | 'signalement';
     /** @description Représentation de « moi » pour tout utilisateur connecté. */
     Utilisateur: {
       readonly id: string;
@@ -471,7 +1330,7 @@ export interface components {
        * @description Adresse email facultative
        */
       readonly email: string | null;
-      readonly role: components['schemas']['UtilisateurRoleEnum'];
+      readonly role: components['schemas']['RoleUtilisateurEnum'];
       readonly statut_compte: components['schemas']['StatutCompteEnum'];
       readonly region: string | null;
       readonly doit_changer_mot_de_passe: boolean;
@@ -482,17 +1341,50 @@ export interface components {
       /** Format: date-time */
       readonly cree_le: string;
     };
-    /**
-     * @description * `agriculteur` - Agriculteur
-     *     * `acheteur` - Acheteur
-     *     * `ingenieur_agronome` - Ingénieur agronome
-     *     * `livreur` - Livreur
-     *     * `admin` - Administrateur
-     *     * `super_admin` - Super administrateur
-     * @enum {string}
-     */
-    UtilisateurRoleEnum:
-      'agriculteur' | 'acheteur' | 'ingenieur_agronome' | 'livreur' | 'admin' | 'super_admin';
+    /** @description GET /admin/utilisateurs/{id} — toutes les infos nécessaires à l'admin. */
+    UtilisateurAdminDetail: {
+      readonly id: string;
+      /** @description Nom complet ou raison sociale */
+      readonly nom: string;
+      /** @description Numéro de téléphone au format E.164 (+237XXXXXXXXX) */
+      readonly telephone: string;
+      /**
+       * Format: email
+       * @description Adresse email facultative
+       */
+      readonly email: string | null;
+      readonly role: components['schemas']['RoleUtilisateurEnum'];
+      readonly statut_compte: components['schemas']['StatutCompteEnum'];
+      readonly region: string | null;
+      readonly doit_changer_mot_de_passe: boolean;
+      /** Format: date-time */
+      readonly reinitialisation_demandee_le: string | null;
+      /** Format: date-time */
+      readonly derniere_connexion_le: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+      readonly profil_ingenieur: {
+        [key: string]: unknown;
+      } | null;
+    };
+    /** @description Ligne de GET /admin/utilisateurs — identité, rôle, statut, drapeaux. */
+    UtilisateurAdminListe: {
+      readonly id: string;
+      /** @description Nom complet ou raison sociale */
+      readonly nom: string;
+      /** @description Masqué en liste (conventions §6) ; complet dans le détail. */
+      readonly telephone: string;
+      readonly role: components['schemas']['RoleUtilisateurEnum'];
+      readonly statut_compte: components['schemas']['StatutCompteEnum'];
+      readonly region: string | null;
+      readonly doit_changer_mot_de_passe: boolean;
+      /** Format: date-time */
+      readonly reinitialisation_demandee_le: string | null;
+      /** Format: date-time */
+      readonly derniere_connexion_le: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
   };
   responses: never;
   parameters: never;
@@ -502,6 +1394,314 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  admin_ingenieurs_refuser_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RefusIngenieurRequest'];
+        'multipart/form-data': components['schemas']['RefusIngenieurRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['IngenieurPublic'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description transition_invalide */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description motif_obligatoire */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_ingenieurs_valider_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['IngenieurPublic'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description transition_invalide */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_utilisateurs_lister: {
+    parameters: {
+      query?: {
+        /** @description Nom ou téléphone */
+        recherche?: string;
+        /** @description Filtre par rôle */
+        role?: string;
+        /** @description Filtre par statut de compte */
+        statut?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeUtilisateursAdmin'];
+        };
+      };
+    };
+  };
+  admin_utilisateurs_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CreationAdminRequest'];
+        'multipart/form-data': components['schemas']['CreationAdminRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MotDePasseTemporaire'];
+        };
+      };
+      /** @description permission_refusee */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_utilisateurs_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['UtilisateurAdminDetail'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_utilisateurs_reactiver_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['UtilisateurAdminDetail'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description transition_invalide */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_utilisateurs_reinitialiser_mot_de_passe_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MotDePasseTemporaire'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_utilisateurs_suspendre_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SuspendreRequest'];
+        'multipart/form-data': components['schemas']['SuspendreRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['UtilisateurAdminDetail'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description transition_invalide */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_utilisateurs_compteurs_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['CompteursAdmin'];
+        };
+      };
+    };
+  };
+  admin_utilisateurs_demandes_reinitialisation_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeDemandesReinitialisation'];
+        };
+      };
+    };
+  };
   auth_connexion_create: {
     parameters: {
       query?: never;
@@ -512,6 +1712,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['ConnexionRequest'];
+        'multipart/form-data': components['schemas']['ConnexionRequest'];
       };
     };
     responses: {
@@ -574,6 +1775,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['DemandeReinitialisationRequest'];
+        'multipart/form-data': components['schemas']['DemandeReinitialisationRequest'];
       };
     };
     responses: {
@@ -597,6 +1799,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['InscriptionRequest'];
+        'multipart/form-data': components['schemas']['InscriptionRequest'];
       };
     };
     responses: {
@@ -736,6 +1939,502 @@ export interface operations {
       };
     };
   };
+  exploitations_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Exploitation'][];
+        };
+      };
+    };
+  };
+  exploitations_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExploitationCreationRequest'];
+        'multipart/form-data': components['schemas']['ExploitationCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Exploitation'];
+        };
+      };
+    };
+  };
+  exploitations_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Exploitation'];
+        };
+      };
+      /** @description Ressource introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  exploitations_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['PatchedExploitationModificationRequest'];
+        'multipart/form-data': components['schemas']['PatchedExploitationModificationRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Exploitation'];
+        };
+      };
+    };
+  };
+  exploitations_archiver_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Exploitation'];
+        };
+      };
+    };
+  };
+  fichiers_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'multipart/form-data': components['schemas']['TeleversementRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Fichier'];
+        };
+      };
+    };
+  };
+  fichiers_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Redirection vers l'URL signée */
+      302: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  fichiers_contenu_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Timestamp d'expiration (secondes) */
+        expire?: number;
+        /** @description Signature HMAC-SHA256 */
+        signature?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Contenu binaire du fichier */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': string;
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description url_expiree */
+      410: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ingenieurs_lister: {
+    parameters: {
+      query?: {
+        /** @description Code de région */
+        region?: string;
+        /** @description Code de spécialité */
+        specialite?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeIngenieurs'];
+        };
+      };
+    };
+  };
+  ingenieurs_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['IngenieurPublic'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ingenieurs_moi_justificatifs_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Justificatif'][];
+        };
+      };
+    };
+  };
+  ingenieurs_moi_justificatifs_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['JustificatifDepotRequest'];
+        'multipart/form-data': components['schemas']['JustificatifDepotRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Justificatif'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ingenieurs_moi_profil_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['IngenieurProfil'];
+        };
+      };
+    };
+  };
+  ingenieurs_moi_profil_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['IngenieurProfilRequest'];
+        'multipart/form-data': components['schemas']['IngenieurProfilRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['IngenieurProfil'];
+        };
+      };
+      /** @description validation_invalide */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  livreurs_moi_disponibilite_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivreurProfil'];
+        };
+      };
+    };
+  };
+  livreurs_moi_disponibilite_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DisponibiliteLivreurRequest'];
+        'multipart/form-data': components['schemas']['DisponibiliteLivreurRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivreurProfil'];
+        };
+      };
+    };
+  };
+  notifications_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Filtrer sur les non lues */
+        non_lues?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeNotifications'];
+        };
+      };
+    };
+  };
+  notifications_lue_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Notification'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  notifications_compteur_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  notifications_tout_lire_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
   parametres_publics_retrieve: {
     parameters: {
       query?: never;
@@ -857,6 +2556,7 @@ export interface operations {
     requestBody?: {
       content: {
         'application/json': components['schemas']['PatchedMiseAJourMoiRequest'];
+        'multipart/form-data': components['schemas']['PatchedMiseAJourMoiRequest'];
       };
     };
     responses: {
@@ -913,6 +2613,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['AdresseCreationRequest'];
+        'multipart/form-data': components['schemas']['AdresseCreationRequest'];
       };
     };
     responses: {
@@ -965,6 +2666,7 @@ export interface operations {
     requestBody?: {
       content: {
         'application/json': components['schemas']['PatchedAdresseModificationRequest'];
+        'multipart/form-data': components['schemas']['PatchedAdresseModificationRequest'];
       };
     };
     responses: {
@@ -995,6 +2697,7 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['MotDePasseRequest'];
+        'multipart/form-data': components['schemas']['MotDePasseRequest'];
       };
     };
     responses: {

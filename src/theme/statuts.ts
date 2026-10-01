@@ -78,6 +78,41 @@ export const STATUTS_PRODUIT: Record<string, DefinitionStatut> = {
   retire: { libelle: 'Retiré de la vente', variante: 'neutre' },
 };
 
+/** Catégories de notifications internes (SPEC-10, FE-05). */
+export const STATUTS_NOTIFICATION: Record<string, DefinitionStatut> = {
+  commande: { libelle: 'Commande', variante: 'info' },
+  paiement: { libelle: 'Paiement', variante: 'succes' },
+  livraison: { libelle: 'Livraison', variante: 'info' },
+  accompagnement: { libelle: 'Accompagnement', variante: 'info' },
+  abonnement: { libelle: 'Abonnement', variante: 'neutre' },
+  administration: { libelle: 'Administration', variante: 'avertissement' },
+  signalement: { libelle: 'Signalement', variante: 'erreur' },
+};
+
+/** Validation du profil ingénieur par l'admin (D-13, ING-02). */
+export const STATUTS_VALIDATION_INGENIEUR: Record<string, DefinitionStatut> = {
+  en_attente: { libelle: 'En attente de validation', variante: 'avertissement' },
+  valide: { libelle: 'Validé', variante: 'succes' },
+  refuse: { libelle: 'Refusé', variante: 'erreur' },
+};
+
+/** Pièces justificatives (02 §2.8, machine à états soumise → acceptée/rejetée). */
+export const STATUTS_JUSTIFICATIF: Record<string, DefinitionStatut> = {
+  soumise: { libelle: 'Soumise', variante: 'avertissement' },
+  acceptee: { libelle: 'Acceptée', variante: 'succes' },
+  rejetee: { libelle: 'Rejetée', variante: 'erreur' },
+};
+
+/** Rôles utilisateurs (ADM-02). */
+export const STATUTS_ROLE: Record<string, DefinitionStatut> = {
+  agriculteur: { libelle: 'Agriculteur', variante: 'succes' },
+  acheteur: { libelle: 'Acheteur', variante: 'info' },
+  ingenieur_agronome: { libelle: 'Ingénieur agronome', variante: 'avertissement' },
+  livreur: { libelle: 'Livreur', variante: 'neutre' },
+  admin: { libelle: 'Administrateur', variante: 'erreur' },
+  super_admin: { libelle: 'Super administrateur', variante: 'erreur' },
+};
+
 /**
  * Récupère la définition d'un statut donné dans l'un des registres ou une valeur par défaut.
  */
@@ -97,6 +132,9 @@ export function obtenirDefinitionStatut(
     STATUTS_REMBOURSEMENT,
     STATUTS_UTILISATEUR,
     STATUTS_PRODUIT,
+    STATUTS_NOTIFICATION,
+    STATUTS_VALIDATION_INGENIEUR,
+    STATUTS_JUSTIFICATIF,
   ];
 
   for (const reg of tousLesRegistres) {

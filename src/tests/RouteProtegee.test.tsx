@@ -167,6 +167,34 @@ describe('RouteProtegee', () => {
     expect(screen.getByTestId('ecran-attente')).toBeInTheDocument();
   });
 
+  it('laisse un compte en attente atteindre une route autorisée (ING-02, D-13)', () => {
+    useSessionStore.getState().definirSession('faux_jeton', {
+      id: '3',
+      telephone: '+237690000004',
+      nom: 'Nadia',
+      role: 'ingenieur_agronome',
+      statutCompte: 'en_attente_validation',
+    });
+
+    render(
+      <MemoryRouter initialEntries={['/ingenieur/profil-pro']}>
+        <Routes>
+          <Route
+            path="/ingenieur/profil-pro"
+            element={
+              <RouteProtegee rolesAutorises={['ingenieur_agronome']} autoriserEnAttente>
+                <div>Profil professionnel</div>
+              </RouteProtegee>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Profil professionnel')).toBeInTheDocument();
+    expect(screen.queryByTestId('ecran-attente')).not.toBeInTheDocument();
+  });
+
   it('impose le changement de mot de passe quand le drapeau est levé (Q-23)', () => {
     useSessionStore.getState().definirSession('faux_jeton', {
       id: '4',

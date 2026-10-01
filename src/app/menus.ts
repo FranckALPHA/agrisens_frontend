@@ -114,7 +114,7 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
     {
       id: 'profil',
       libelle: 'Profil pro',
-      chemin: '/profil',
+      chemin: '/ingenieur/profil-pro',
       icone: 'User',
       pourNavigationBasse: true,
     },
@@ -139,6 +139,13 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       libelle: 'Itinéraire',
       chemin: '/livreur/itineraire',
       icone: 'Navigation',
+      pourNavigationBasse: true,
+    },
+    {
+      id: 'disponibilite',
+      libelle: 'Disponibilité',
+      chemin: '/livreur/disponibilite',
+      icone: 'ToggleRight',
       pourNavigationBasse: true,
     },
     {

@@ -13,8 +13,14 @@ import { PageConnexion } from '@/pages/auth/PageConnexion';
 import { PageInscription } from '@/pages/auth/PageInscription';
 import { PageMotDePasseOublie } from '@/pages/auth/PageMotDePasseOublie';
 import { PageProfil } from '@/pages/profil/PageProfil';
+import { PageNotifications } from '@/pages/notifications/PageNotifications';
+import { PageProfilPro } from '@/pages/ingenieur/PageProfilPro';
+import { PageDisponibilite } from '@/pages/livreur/PageDisponibilite';
+import { PageUtilisateursAdmin } from '@/pages/admin/PageUtilisateursAdmin';
 import { PageConditions, PageConfidentialite } from '@/pages/legal/PagesLegales';
 import { EtatVide } from '@/components/EtatVide';
+import { PageExploitations } from '@/pages/agriculteur/PageExploitations';
+import { PageFormulaireExploitation } from '@/pages/agriculteur/PageFormulaireExploitation';
 import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
@@ -90,37 +96,110 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <RouteProtegee>
+      // La barre de navigation (logo, cloche) reste accessible aux comptes en attente :
+      // chaque page interne rejoue la garde (ING-02 est autorisée, D-13).
+      <RouteProtegee autoriserEnAttente>
         <MiseEnPageConnectee />
       </RouteProtegee>
     ),
     children: [
       {
-        path: 'acheteur/*',
+        path: 'acheteur',
         element: <EspaceRole role="acheteur" rolesAutorises={['acheteur', 'super_admin']} />,
       },
       {
-        path: 'agriculteur/*',
+        path: 'agriculteur',
         element: <EspaceRole role="agriculteur" rolesAutorises={['agriculteur', 'super_admin']} />,
       },
       {
-        path: 'ingenieur/*',
+        // Espace ingénieur (F-03) : tableau de bord + ING-02 accessible en attente (D-13).
+        path: 'ingenieur',
+        children: [
+          {
+            index: true,
+            element: (
+              <EspaceRole
+                role="ingenieur_agronome"
+                rolesAutorises={['ingenieur_agronome', 'super_admin']}
+              />
+            ),
+          },
+          {
+            path: 'profil-pro',
+            element: (
+              <RouteProtegee
+                rolesAutorises={['ingenieur_agronome', 'super_admin']}
+                autoriserEnAttente
+              >
+                <PageProfilPro />
+              </RouteProtegee>
+            ),
+          },
+        ],
+      },
+      {
+        // Espace livreur (F-03) : tableau de bord + LIV-01 disponibilité.
+        path: 'livreur',
+        children: [
+          {
+            index: true,
+            element: <EspaceRole role="livreur" rolesAutorises={['livreur', 'super_admin']} />,
+          },
+          {
+            path: 'disponibilite',
+            element: (
+              <RouteProtegee rolesAutorises={['livreur', 'super_admin']}>
+                <PageDisponibilite />
+              </RouteProtegee>
+            ),
+          },
+        ],
+      },
+      {
+        // Espace administration (F-03) : tableau de bord + ADM-02 utilisateurs.
+        path: 'admin',
+        children: [
+          {
+            index: true,
+            element: <EspaceRole role="admin" rolesAutorises={['admin', 'super_admin']} />,
+          },
+          {
+            path: 'utilisateurs',
+            element: (
+              <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
+                <PageUtilisateursAdmin />
+              </RouteProtegee>
+            ),
+          },
+        ],
+      },
+      { path: 'profil', element: <PageProfil /> },
+      { path: 'notifications', element: <PageNotifications /> },
+      {
+        path: 'agriculteur/exploitations',
         element: (
-          <EspaceRole
-            role="ingenieur_agronome"
-            rolesAutorises={['ingenieur_agronome', 'super_admin']}
-          />
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageExploitations />
+          </RouteProtegee>
         ),
       },
       {
-        path: 'livreur/*',
-        element: <EspaceRole role="livreur" rolesAutorises={['livreur', 'super_admin']} />,
+        path: 'agriculteur/exploitations/nouvelle',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageFormulaireExploitation />
+          </RouteProtegee>
+        ),
       },
       {
-        path: 'admin/*',
-        element: <EspaceRole role="admin" rolesAutorises={['admin', 'super_admin']} />,
+        // La route ne filtre pas par rôle : l'API transforme l'accès d'Amina en 404.
+        path: 'agriculteur/exploitations/:identifiant',
+        element: (
+          <RouteProtegee>
+            <PageFormulaireExploitation />
+          </RouteProtegee>
+        ),
       },
-      { path: 'profil', element: <PageProfil /> },
       {
         path: 'panier',
         element: (
