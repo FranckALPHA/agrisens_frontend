@@ -18,7 +18,15 @@ import {
   rejeterCommande,
 } from '@/services/api/commandes';
 import { formaterPrix, formaterQuantite } from '@/services/api/produits';
+import {
+  initierPaiement,
+  messageErreurPaiement,
+  nouvelleCleIdempotence,
+  OPERATEURS_PAIEMENT,
+  type OperateurPaiement,
+} from '@/services/api/paiements';
 import { ErreurApi } from '@/services/api/client';
+import { Select } from '@/components/Select';
 import { TimelineCommande } from './TimelineCommande';
 
 const ANNULATION_ACHETEUR = ['en_attente', 'acceptee'];
@@ -34,6 +42,9 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
   const role = useSessionStore((s) => s.utilisateur?.role);
   const [motif, setMotif] = useState('');
   const [demande, setDemande] = useState<'annuler' | 'rejeter' | null>(null);
+  const [operateur, setOperateur] = useState<OperateurPaiement>('mtn_momo');
+  const [telephonePaiement, setTelephonePaiement] = useState('');
+  const [erreurPaiement, setErreurPaiement] = useState<unknown>(null);
   const [travail, setTravail] = useState(false);
   const [erreur, setErreur] = useState<unknown>(null);
 
@@ -177,6 +188,88 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
           <p className="text-sm text-texte-muet">Chargement du suivi…</p>
         )}
       </section>
+
+      {estAcheteur && commande.statut === 'acceptee' && (
+        <section
+          aria-label="Paiement de la commande"
+          className="rounded-lg border border-primaire bg-surface p-4 flex flex-col gap-3"
+          data-testid="section-paiement"
+        >
+          <h2 className="font-bold text-texte">Payer cette commande</h2>
+          <p className="text-sm text-texte-secondaire" data-testid="paiement-montant">
+            Total à payer : <strong>{formaterPrix(commande.total_fcfa)}</strong>
+          </p>
+          {erreurPaiement ? (
+            <p role="alert" className="text-sm text-erreur">
+              {erreurPaiement instanceof ErreurApi
+                ? messageErreurPaiement(erreurPaiement)
+                : 'Paiement impossible.'}
+            </p>
+          ) : null}
+          <div className="grid sm:grid-cols-2 gap-3">
+            <Select
+              label="Opérateur Mobile Money"
+              value={operateur}
+              onChange={(e) => setOperateur(e.target.value as OperateurPaiement)}
+              options={OPERATEURS_PAIEMENT.map((o) => ({ valeur: o.valeur, libelle: o.libelle }))}
+              data-testid="selecteur-operateur"
+            />
+            <Champ
+              label="Numéro à débiter"
+              type="tel"
+              placeholder="+2376XXXXXXXX"
+              value={telephonePaiement}
+              onChange={(e) => setTelephonePaiement(e.target.value)}
+              aide="Le compte Mobile Money qui paie."
+            />
+          </div>
+          <div>
+            <Bouton
+              taille="lg"
+              chargement={travail}
+              onClick={() =>
+                void (async () => {
+                  setErreurPaiement(null);
+                  setTravail(true);
+                  try {
+                    const paiement = await initierPaiement(
+                      commande.id,
+                      {
+                        operateur,
+                        ...(telephonePaiement.trim()
+                          ? { telephone: telephonePaiement.trim() }
+                          : {}),
+                      },
+                      nouvelleCleIdempotence()
+                    );
+                    window.location.href = paiement.url_paiement;
+                  } catch (cause) {
+                    setErreurPaiement(cause);
+                  } finally {
+                    setTravail(false);
+                  }
+                })()
+              }
+            >
+              Payer {formaterPrix(commande.total_fcfa)}
+            </Bouton>
+          </div>
+          <p className="text-xs text-texte-secondaire">
+            Redirection vers l’opérateur (ou le simulateur en local). La commande ne sera marquée
+            payée qu’après confirmation.
+          </p>
+        </section>
+      )}
+
+      {estAcheteur && commande.statut === 'paiement_en_attente' && (
+        <p
+          className="text-sm text-texte-secondaire rounded-md border border-bordure bg-surface p-3"
+          role="status"
+        >
+          Paiement en cours de vérification : la commande sera marquée payée dès la confirmation de
+          l’opérateur.
+        </p>
+      )}
 
       <div className="flex flex-wrap gap-2">
         {estAcheteur && ANNULATION_ACHETEUR.includes(commande.statut ?? '') && (
