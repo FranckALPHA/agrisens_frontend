@@ -21,7 +21,7 @@ const ATTENTE_PAR_ROLE: Record<RoleUtilisateur, string> = {
   ingenieur_agronome:
     'Complétez votre profil professionnel et déposez vos justificatifs : un administrateur valide votre dossier (ING-02).',
   livreur:
-    'Basculez votre disponibilité depuis la page Disponibilité (LIV-01) ; les courses arriveront avec F-08.',
+    'Basculez votre disponibilité, acceptez des courses depuis « Mes courses » et suivez-les en temps réel.',
   admin: 'Validez les ingénieurs et gérez les comptes depuis la page Utilisateurs (ADM-02).',
   super_admin: 'Validez les ingénieurs et gérez les comptes depuis la page Utilisateurs (ADM-02).',
 };

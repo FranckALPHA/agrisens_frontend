@@ -135,13 +135,6 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     {
-      id: 'itineraires',
-      libelle: 'Itinéraire',
-      chemin: '/livreur/itineraire',
-      icone: 'Navigation',
-      pourNavigationBasse: true,
-    },
-    {
       id: 'disponibilite',
       libelle: 'Disponibilité',
       chemin: '/livreur/disponibilite',

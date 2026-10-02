@@ -6,6 +6,11 @@ import { Champ } from '@/components/Champ';
 import { EtatChargement } from '@/components/EtatChargement';
 import { EtatErreur } from '@/components/EtatErreur';
 import { SelecteurPosition, type PositionGeographique } from '@/components/SelecteurPosition';
+import { BadgeStatut } from '@/components/BadgeStatut';
+import { STATUTS_LIVRAISON } from '@/theme/statuts';
+import { Link } from 'react-router-dom';
+import { formaterDuree, listerMesLivraisons } from '@/services/api/livraisons';
+import { formaterPrix } from '@/services/api/produits';
 import { useToast } from '@/components/Toast';
 import {
   obtenirMaDisponibilite,
@@ -144,6 +149,56 @@ export const PageDisponibilite: React.FC = () => {
           Choisissez votre position avant de vous rendre disponible.
         </p>
       )}
+
+      <CoursesEnCours />
     </div>
+  );
+};
+
+/** LIV-01 (complet) : livraisons acceptées et course en cours. */
+const CoursesEnCours: React.FC = () => {
+  const requete = useQuery({
+    queryKey: ['mes-livraisons'],
+    queryFn: listerMesLivraisons,
+  });
+  if (requete.isLoading) return <EtatChargement message="Chargement de vos courses…" />;
+  if (requete.isError || !requete.data) return null;
+  if (requete.data.length === 0) {
+    return (
+      <p className="text-sm text-texte-secondaire">
+        Aucune course en cours.{' '}
+        <Link to="/livreur/courses" className="text-primaire underline">
+          Voir les livraisons proposées
+        </Link>
+        .
+      </p>
+    );
+  }
+  return (
+    <section aria-label="Mes courses en cours" className="flex flex-col gap-2">
+      <h2 className="font-bold text-texte">Mes courses</h2>
+      {requete.data.map((livraison) => (
+        <article
+          key={livraison.id}
+          aria-label={`Course ${livraison.commande_reference}`}
+          className="rounded-lg border border-bordure bg-surface p-4 flex flex-wrap items-center gap-2 justify-between"
+        >
+          <div>
+            <p className="font-medium text-texte">{livraison.commande_reference}</p>
+            <p className="text-xs text-texte-secondaire">
+              {livraison.zone_livraison} · {livraison.distance_km} km ·{' '}
+              {formaterDuree(livraison.duree_estimee_min)} ·{' '}
+              {formaterPrix(livraison.frais_livraison_fcfa ?? 0)}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <BadgeStatut statut={livraison.statut ?? ''} registre={STATUTS_LIVRAISON} taille="sm" />
+            <Bouton taille="sm" variante="secondaire" to={`/livreur/courses/${livraison.id}`}>
+              Suivre
+            </Bouton>
+          </div>
+        </article>
+      ))}
+    </section>
   );
 };

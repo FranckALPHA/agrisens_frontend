@@ -28,6 +28,7 @@ import {
 import { ErreurApi } from '@/services/api/client';
 import { Select } from '@/components/Select';
 import { TimelineCommande } from './TimelineCommande';
+import { SuiviLivraison } from './SuiviLivraison';
 
 const ANNULATION_ACHETEUR = ['en_attente', 'acceptee'];
 
@@ -188,6 +189,8 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
           <p className="text-sm text-texte-muet">Chargement du suivi…</p>
         )}
       </section>
+
+      {estAcheteur && <SuiviLivraison commandeId={commande.id} />}
 
       {estAcheteur && commande.statut === 'acceptee' && (
         <section

@@ -16,6 +16,8 @@ import { PageProfil } from '@/pages/profil/PageProfil';
 import { PageNotifications } from '@/pages/notifications/PageNotifications';
 import { PageProfilPro } from '@/pages/ingenieur/PageProfilPro';
 import { PageDisponibilite } from '@/pages/livreur/PageDisponibilite';
+import { PageCoursesLivreur } from '@/pages/livreur/PageCoursesLivreur';
+import { PageCourseDetail } from '@/pages/livreur/PageCourseDetail';
 import { PageUtilisateursAdmin } from '@/pages/admin/PageUtilisateursAdmin';
 import { PageConditions, PageConfidentialite } from '@/pages/legal/PagesLegales';
 import { EtatVide } from '@/components/EtatVide';
@@ -140,7 +142,7 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        // Espace livreur (F-03) : tableau de bord + LIV-01 disponibilité.
+        // Espace livreur : tableau de bord, disponibilité (LIV-01) et courses (LIV-02/03).
         path: 'livreur',
         children: [
           {
@@ -152,6 +154,22 @@ export const router = createBrowserRouter([
             element: (
               <RouteProtegee rolesAutorises={['livreur', 'super_admin']}>
                 <PageDisponibilite />
+              </RouteProtegee>
+            ),
+          },
+          {
+            path: 'courses',
+            element: (
+              <RouteProtegee rolesAutorises={['livreur', 'super_admin']}>
+                <PageCoursesLivreur />
+              </RouteProtegee>
+            ),
+          },
+          {
+            path: 'courses/:identifiant',
+            element: (
+              <RouteProtegee rolesAutorises={['livreur', 'super_admin']}>
+                <PageCourseDetail />
               </RouteProtegee>
             ),
           },
