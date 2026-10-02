@@ -305,6 +305,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/commandes/{commande_id}/livraison/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter la livraison d'une commande
+     * @description GET /commandes/{id}/livraison — livraison liée (parties + admin).
+     */
+    get: operations['commandes_livraison_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/commandes/{identifiant}/': {
     parameters: {
       query?: never;
@@ -350,6 +370,23 @@ export interface paths {
     put?: never;
     /** Annuler une commande avant paiement */
     post: operations['commandes_annuler_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/code-remise/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Lire son code de remise (acheteur uniquement) */
+    get: operations['commandes_code_remise_retrieve'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -716,6 +753,213 @@ export interface paths {
      * @description Spécialités (référentiel), zone (centre + rayon), tarif borné par les paramètres de consultation, disponibilité, biographie, modalités, photo. La mise en disponibilité exige un profil complet et validé.
      */
     put: operations['ingenieurs_moi_profil_update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Consulter une livraison (données selon rôle et étape) */
+    get: operations['livraisons_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/accepter/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Accepter une livraison (un seul gagnant, sinon 409) */
+    post: operations['livraisons_accepter_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/confirmer-remise/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Confirmer la remise par le code (bloqué après 5 échecs) */
+    post: operations['livraisons_confirmer_remise_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/demarrer/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Démarrer la course (produit récupéré, stock consommé) */
+    post: operations['livraisons_demarrer_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/desister/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Se désister (retour à proposée) */
+    post: operations['livraisons_desister_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/historique/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Historique des statuts d'une livraison */
+    get: operations['livraisons_historique_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/incidents/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Déclarer un incident (photo possible) */
+    post: operations['livraisons_incidents_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/itineraire/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Itinéraire GeoJSON de la livraison */
+    get: operations['livraisons_itineraire_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/position/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Mettre à jour sa position pendant la course
+     * @description POST /livraisons/{id}/position — le livreur publie sa position en course.
+     */
+    post: operations['livraisons_position_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/{identifiant}/reprogrammer/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Reprogrammer après incident (avec paiement si client absent) */
+    post: operations['livraisons_reprogrammer_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/disponibles/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Livraisons proposées, triées par distance (sans adresse exacte) */
+    get: operations['livraisons_disponibles_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/livraisons/mes-livraisons/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Mes livraisons acceptées et en cours */
+    get: operations['livraisons_mes_livraisons_list'];
+    put?: never;
     post?: never;
     delete?: never;
     options?: never;
@@ -1222,6 +1466,10 @@ export interface components {
       taille: number;
       total: number;
     };
+    /** @description Saisie du code par le livreur : exactement 6 chiffres. */
+    CodeRemiseRequest: {
+      code: string;
+    };
     CommandeDetail: {
       readonly id: string;
       reference: string;
@@ -1408,6 +1656,20 @@ export interface components {
       /** Format: date-time */
       readonly cree_le: string;
     };
+    Incident: {
+      readonly id: string;
+      type: components['schemas']['TypeIncidentEnum'];
+      description?: string;
+      fichier?: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    IncidentCreationRequest: {
+      type: components['schemas']['TypeIncidentEnum'];
+      /** @default  */
+      description: string;
+      fichier_id?: string | null;
+    };
     /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
     IngenieurProfil: {
       /** @description Liste de codes du référentiel `specialite` (validés par le service) */
@@ -1484,7 +1746,7 @@ export interface components {
     };
     /** @description POST /commandes/{id}/paiements — opérateur + numéro Mobile Money. */
     InitierPaiementRequest: {
-      operateur: components['schemas']['OperateurEnum'];
+      operateur: components['schemas']['OperateurPaiementEnum'];
       telephone?: string;
     };
     /** @description POST /auth/inscription — rôles agriculteur, acheteur, ingénieur, livreur. */
@@ -1495,6 +1757,15 @@ export interface components {
       mot_de_passe: string;
       role: components['schemas']['RoleInscriptionEnum'];
       region?: string;
+    };
+    /** @description Itinéraire : points GeoJSON + distance + durée (champs maison). */
+    Itineraire: {
+      point_depart: unknown;
+      point_arrivee: unknown;
+      /** Format: decimal */
+      distance_km: string;
+      duree_estimee_min: number | null;
+      source: string;
     };
     /** @description Pièce justificative avec son fichier (sans chemin de stockage). */
     Justificatif: {
@@ -1577,6 +1848,49 @@ export interface components {
       taille: number;
       total: number;
     };
+    /** @description Vue détaillée : itinéraire + données sensibles déjà filtrées en amont. */
+    LivraisonDetail: {
+      readonly id: string;
+      readonly commande_reference: string;
+      statut?: components['schemas']['StatutLivraisonEnum'];
+      numero_tentative?: number;
+      readonly frais_livraison_fcfa: number;
+      readonly zone_livraison: string;
+      /** Format: decimal */
+      readonly distance_km: string;
+      readonly duree_estimee_min: number | null;
+      /** Format: date-time */
+      acceptee_le?: string | null;
+      readonly itineraire: components['schemas']['Itineraire'];
+      readonly livreur_nom: string | null;
+      readonly adresse_exacte: string;
+      readonly adresse_exacte_visible: boolean;
+      readonly telephone_acheteur: string | null;
+      readonly telephone_livreur: string | null;
+      readonly position_livreur: unknown;
+      tentatives_code_echouees?: number;
+      /** Format: date-time */
+      demarree_le?: string | null;
+      /** Format: date-time */
+      livree_le?: string | null;
+    };
+    /**
+     * @description Vue livreur avant acceptation : zone et distance, jamais d'adresse
+     *     exacte ni de téléphone (D-21).
+     */
+    LivraisonDisponible: {
+      readonly id: string;
+      readonly commande_reference: string;
+      statut?: components['schemas']['StatutLivraisonEnum'];
+      numero_tentative?: number;
+      readonly frais_livraison_fcfa: number;
+      readonly zone_livraison: string;
+      /** Format: decimal */
+      readonly distance_km: string;
+      readonly duree_estimee_min: number | null;
+      /** Format: date-time */
+      acceptee_le?: string | null;
+    };
     /** @description GET /livreurs/moi/disponibilite — état courant du profil livreur. */
     LivreurProfil: {
       readonly disponible: boolean;
@@ -1654,7 +1968,7 @@ export interface components {
      *     * `orange_money` - Orange Money
      * @enum {string}
      */
-    OperateurEnum: 'mtn_momo' | 'orange_money';
+    OperateurPaiementEnum: 'mtn_momo' | 'orange_money';
     Paiement: {
       readonly id: string;
       readonly objet: components['schemas']['ObjetEnum'];
@@ -1663,7 +1977,7 @@ export interface components {
       readonly commande_statut: string;
       readonly montant_fcfa: number;
       readonly operateur:
-        (components['schemas']['OperateurEnum'] | components['schemas']['NullEnum']) | null;
+        (components['schemas']['OperateurPaiementEnum'] | components['schemas']['NullEnum']) | null;
       readonly reference_interne: string;
       readonly reference_notchpay: string | null;
       readonly statut: components['schemas']['PaiementStatutEnum'];
@@ -1752,6 +2066,15 @@ export interface components {
     /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
     PhotosOrdreRequest: {
       fichier_ids: string[];
+    };
+    /** @description POST /livraisons/{id}/position — GeoJSON Point pendant la course. */
+    PositionLivreurRequest: {
+      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+      position: {
+        type: string;
+        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+        coordinates: unknown[];
+      };
     };
     /** @description Vue propriétaire : tout le produit, stock réservé compris. */
     Produit: {
@@ -1857,6 +2180,21 @@ export interface components {
       resultat: string;
     };
     /**
+     * @description * `mtn_momo` - MTN
+     *     * `orange_money` - Orange
+     * @enum {string}
+     */
+    ReprogrammerOperateurEnum: 'mtn_momo' | 'orange_money';
+    /** @description Reprogrammation : nouvelle adresse optionnelle + paiement si frais dus. */
+    ReprogrammerRequest: {
+      adresse_id?: string | null;
+      operateur?:
+        | (components['schemas']['ReprogrammerOperateurEnum'] | components['schemas']['NullEnum'])
+        | null;
+      /** @default  */
+      telephone: string;
+    };
+    /**
      * @description * `admin` - admin
      *     * `super_admin` - super_admin
      * @enum {string}
@@ -1934,6 +2272,24 @@ export interface components {
      */
     StatutCompteEnum: 'actif' | 'en_attente_validation' | 'suspendu' | 'anonymise';
     /**
+     * @description * `proposee` - Proposée
+     *     * `acceptee` - Acceptée
+     *     * `en_cours` - En cours
+     *     * `livree` - Livrée
+     *     * `client_absent` - Client absent
+     *     * `echec_livraison` - Échec de livraison
+     *     * `annulee` - Annulée
+     * @enum {string}
+     */
+    StatutLivraisonEnum:
+      | 'proposee'
+      | 'acceptee'
+      | 'en_cours'
+      | 'livree'
+      | 'client_absent'
+      | 'echec_livraison'
+      | 'annulee';
+    /**
      * @description * `en_attente` - En attente
      *     * `valide` - Validé
      *     * `refuse` - Refusé
@@ -1950,6 +2306,14 @@ export interface components {
       fichier: string;
       contexte: components['schemas']['ContexteEnum'];
     };
+    /**
+     * @description * `client_absent` - Client absent
+     *     * `echec_livraison` - Échec de livraison
+     *     * `produit_endommage` - Produit endommagé
+     *     * `autre` - Autre
+     * @enum {string}
+     */
+    TypeIncidentEnum: 'client_absent' | 'echec_livraison' | 'produit_endommage' | 'autre';
     /**
      * @description * `diplome` - Diplôme
      *     * `piece_identite` - Pièce d'identité
@@ -2548,6 +2912,34 @@ export interface operations {
       };
     };
   };
+  commandes_livraison_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        commande_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDetail'];
+        };
+      };
+      /** @description Aucune livraison */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   commandes_retrieve: {
     parameters: {
       query?: never;
@@ -2615,6 +3007,26 @@ export interface operations {
         content: {
           'application/json': components['schemas']['CommandeDetail'];
         };
+      };
+    };
+  };
+  commandes_code_remise_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Code à 6 chiffres */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -3217,6 +3629,277 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  livraisons_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDetail'];
+        };
+      };
+      /** @description Livraison introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  livraisons_accepter_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDisponible'];
+        };
+      };
+    };
+  };
+  livraisons_confirmer_remise_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CodeRemiseRequest'];
+        'multipart/form-data': components['schemas']['CodeRemiseRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDisponible'];
+        };
+      };
+    };
+  };
+  livraisons_demarrer_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDisponible'];
+        };
+      };
+    };
+  };
+  livraisons_desister_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDisponible'];
+        };
+      };
+    };
+  };
+  livraisons_historique_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Historique */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  livraisons_incidents_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['IncidentCreationRequest'];
+        'multipart/form-data': components['schemas']['IncidentCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Incident'];
+        };
+      };
+    };
+  };
+  livraisons_itineraire_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Itinéraire GeoJSON */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  livraisons_position_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PositionLivreurRequest'];
+        'multipart/form-data': components['schemas']['PositionLivreurRequest'];
+      };
+    };
+    responses: {
+      /** @description Position enregistrée */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  livraisons_reprogrammer_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['ReprogrammerRequest'];
+        'multipart/form-data': components['schemas']['ReprogrammerRequest'];
+      };
+    };
+    responses: {
+      /** @description Reprogrammée ou paiement initié */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  livraisons_disponibles_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDisponible'][];
+        };
+      };
+    };
+  };
+  livraisons_mes_livraisons_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['LivraisonDisponible'][];
+        };
       };
     };
   };
