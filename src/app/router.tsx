@@ -27,6 +27,7 @@ import { PagePanier } from '@/pages/panier/PagePanier';
 import { PageMesCommandes, PageVentes } from '@/pages/commandes/PageCommandes';
 import { PageDetailCommande } from '@/pages/commandes/PageDetailCommande';
 import { PageConfirmationCommande } from '@/pages/commandes/PageConfirmationCommande';
+import { PageRetourPaiement } from '@/pages/paiements/PageRetourPaiement';
 import { PageCatalogue } from '@/pages/catalogue/PageCatalogue';
 import { PageDetailProduit } from '@/pages/catalogue/PageDetailProduit';
 import type { RoleUtilisateur } from '@/app/menus';
@@ -238,6 +239,14 @@ export const router = createBrowserRouter([
         element: (
           <RouteProtegee rolesAutorises={['acheteur', 'super_admin']}>
             <PageConfirmationCommande />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'paiements/retour',
+        element: (
+          <RouteProtegee rolesAutorises={['acheteur', 'super_admin']}>
+            <PageRetourPaiement />
           </RouteProtegee>
         ),
       },

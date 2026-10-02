@@ -373,6 +373,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/commandes/{identifiant}/paiements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Initier le paiement d'une commande acceptée
+     * @description En-tête `Idempotency-Key` : la même clé renvoie le même paiement sans nouvel effet (double clic sans doublon).
+     */
+    post: operations['commandes_paiements_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/commandes/{identifiant}/preparer/': {
     parameters: {
       query?: never;
@@ -807,6 +827,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/paiements/{identifiant}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Consulter un paiement */
+    get: operations['paiements_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/parametres/publics/': {
     parameters: {
       query?: never;
@@ -1120,6 +1157,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/webhooks/notchpay/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Webhook NotchPay (confirmation des paiements)
+     * @description Signature invalide → 401. Événement déjà reçu → 200 sans effet. Seul ce point d'entrée fait passer un paiement à `reussi`.
+     */
+    post: operations['webhooks_notchpay_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1178,6 +1235,8 @@ export interface components {
       sous_total_fcfa: number;
       frais_livraison_fcfa: number;
       total_fcfa: number;
+      readonly commission_taux_pb: number | null;
+      readonly commission_fcfa: number | null;
       parametres_appliques?: unknown;
       /** Format: date-time */
       expire_le?: string | null;
@@ -1423,6 +1482,11 @@ export interface components {
       modalites?: string | null;
       readonly photo_id: string | null;
     };
+    /** @description POST /commandes/{id}/paiements — opérateur + numéro Mobile Money. */
+    InitierPaiementRequest: {
+      operateur: components['schemas']['OperateurEnum'];
+      telephone?: string;
+    };
     /** @description POST /auth/inscription — rôles agriculteur, acheteur, ingénieur, livreur. */
     InscriptionRequest: {
       nom: string;
@@ -1576,6 +1640,48 @@ export interface components {
       /** Format: date-time */
       readonly cree_le: string;
     };
+    /** @enum {unknown} */
+    NullEnum: null;
+    /**
+     * @description * `commande` - Commande
+     *     * `abonnement` - Abonnement
+     *     * `accompagnement` - Accompagnement
+     * @enum {string}
+     */
+    ObjetEnum: 'commande' | 'abonnement' | 'accompagnement';
+    /**
+     * @description * `mtn_momo` - MTN Mobile Money
+     *     * `orange_money` - Orange Money
+     * @enum {string}
+     */
+    OperateurEnum: 'mtn_momo' | 'orange_money';
+    Paiement: {
+      readonly id: string;
+      readonly objet: components['schemas']['ObjetEnum'];
+      readonly commande: string | null;
+      readonly commande_reference: string;
+      readonly commande_statut: string;
+      readonly montant_fcfa: number;
+      readonly operateur:
+        (components['schemas']['OperateurEnum'] | components['schemas']['NullEnum']) | null;
+      readonly reference_interne: string;
+      readonly reference_notchpay: string | null;
+      readonly statut: components['schemas']['PaiementStatutEnum'];
+      readonly url_paiement: string | null;
+      /** Format: date-time */
+      readonly confirme_le: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /**
+     * @description * `initie` - Initié
+     *     * `en_attente` - En attente
+     *     * `reussi` - Réussi
+     *     * `echoue` - Échoué
+     *     * `expire` - Expiré
+     * @enum {string}
+     */
+    PaiementStatutEnum: 'initie' | 'en_attente' | 'reussi' | 'echoue' | 'expire';
     /** @description PATCH : tous les champs facultatifs. */
     PatchedAdresseModificationRequest: {
       libelle?: string;
@@ -2533,6 +2639,40 @@ export interface operations {
       };
     };
   };
+  commandes_paiements_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['InitierPaiementRequest'];
+        'multipart/form-data': components['schemas']['InitierPaiementRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Paiement'];
+        };
+      };
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Paiement'];
+        };
+      };
+    };
+  };
   commandes_preparer_create: {
     parameters: {
       query?: never;
@@ -3215,6 +3355,34 @@ export interface operations {
       };
     };
   };
+  paiements_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Paiement'];
+        };
+      };
+      /** @description Paiement introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   parametres_publics_retrieve: {
     parameters: {
       query?: never;
@@ -3749,6 +3917,42 @@ export interface operations {
       };
       /** @description mot_de_passe_incorrect / validation_invalide */
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  webhooks_notchpay_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': Record<string, never>;
+      };
+    };
+    responses: {
+      /** @description Événement traité, rejoué, ignoré ou en erreur */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Webhook illisible ou incomplet */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Signature invalide */
+      401: {
         headers: {
           [name: string]: unknown;
         };

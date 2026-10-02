@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { SECRET_WEBHOOK_TEST } from './e2e/utils/notchpay';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,6 +55,10 @@ export default defineConfig({
           'mysql+pymysql://agrisens:KYsFaZTVkaLB2tZLy2BQYBe9@127.0.0.1:3306/agrisens_e2e?charset=utf8mb4',
         NOTCHPAY_MODE: 'factice',
         IA_FOURNISSEUR: 'factice',
+        // F-07 : secret de signature des webhooks (factice de test) et
+        // origine de la PWA pour les liens de retour du simulateur.
+        NOTCHPAY_SECRET_WEBHOOK: SECRET_WEBHOOK_TEST,
+        FRONTEND_URL: 'http://127.0.0.1:4173',
         // F-03 : URL publique de l'API (redirect 302 des fichiers signés).
         API_URL_PUBLIQUE: 'http://127.0.0.1:8001',
         // Débits relevés : la suite enchaîne beaucoup de connexions/
