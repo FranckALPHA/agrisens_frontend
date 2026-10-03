@@ -121,6 +121,13 @@ export const STATUTS_ROLE: Record<string, DefinitionStatut> = {
   super_admin: { libelle: 'Super administrateur', variante: 'erreur' },
 };
 
+/** Statuts d'une génération IA (F-12, SPEC-08). */
+export const STATUTS_GENERATION: Record<string, DefinitionStatut> = {
+  en_cours: { libelle: 'En cours', variante: 'avertissement' },
+  reussie: { libelle: 'Réussie', variante: 'succes' },
+  echouee: { libelle: 'Échouée', variante: 'erreur' },
+};
+
 /**
  * Récupère la définition d'un statut donné dans l'un des registres ou une valeur par défaut.
  */
@@ -144,6 +151,7 @@ export function obtenirDefinitionStatut(
     STATUTS_NOTIFICATION,
     STATUTS_VALIDATION_INGENIEUR,
     STATUTS_JUSTIFICATIF,
+    STATUTS_GENERATION,
   ];
 
   for (const reg of tousLesRegistres) {

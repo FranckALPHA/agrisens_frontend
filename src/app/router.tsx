@@ -41,6 +41,8 @@ import { PageAccompagnement } from '@/pages/agriculteur/PageAccompagnement';
 import { PageAccompagnementDetail } from '@/pages/agriculteur/PageAccompagnementDetail';
 import { PageAccompagnementsListe } from '@/pages/ingenieur/PageAccompagnementsListe';
 import { PageAccompagnementDetailIngenieur } from '@/pages/ingenieur/PageAccompagnementDetail';
+import { PageGenerationIA } from '@/pages/ingenieur/PageGenerationIA';
+import { PagePlanning } from '@/pages/agriculteur/PagePlanning';
 import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
@@ -163,6 +165,15 @@ export const router = createBrowserRouter([
             element: (
               <RouteProtegee rolesAutorises={['ingenieur_agronome', 'super_admin']}>
                 <PageAccompagnementDetailIngenieur />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // ING-05 (F-12) — correction d'une génération IA (ingénieur affecté).
+            path: 'generations/:identifiant',
+            element: (
+              <RouteProtegee rolesAutorises={['ingenieur_agronome', 'super_admin']}>
+                <PageGenerationIA />
               </RouteProtegee>
             ),
           },
@@ -399,6 +410,15 @@ export const router = createBrowserRouter([
         element: (
           <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
             <PageAccompagnementDetail vue="agriculteur" />
+          </RouteProtegee>
+        ),
+      },
+      {
+        // AGR-07 (F-12) — planning & recommandations IA côté agriculteur.
+        path: 'agriculteur/planning',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PagePlanning />
           </RouteProtegee>
         ),
       },
