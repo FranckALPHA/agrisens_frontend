@@ -80,6 +80,7 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       icone: 'ShoppingBag',
       pourNavigationBasse: true,
     },
+    { id: 'gains', libelle: 'Mes gains', chemin: '/mes-gains', icone: 'Wallet' },
     { id: 'planning', libelle: 'Planning IA', chemin: '/agriculteur/planning', icone: 'Calendar' },
     {
       id: 'accompagnement',
@@ -111,6 +112,7 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       icone: 'BookOpen',
       pourNavigationBasse: true,
     },
+    { id: 'gains', libelle: 'Mes gains', chemin: '/mes-gains', icone: 'Wallet' },
     {
       id: 'profil',
       libelle: 'Profil pro',
@@ -141,6 +143,7 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       icone: 'ToggleRight',
       pourNavigationBasse: true,
     },
+    { id: 'gains', libelle: 'Mes gains', chemin: '/mes-gains', icone: 'Wallet' },
     {
       id: 'profil',
       libelle: 'Profil',
@@ -172,13 +175,26 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     {
+      // ADM-04 : l'admin consulte les paramètres en lecture seule (F-10).
+      id: 'parametres',
+      libelle: 'Paramètres',
+      chemin: '/admin/parametres',
+      icone: 'Sliders',
+    },
+    {
+      id: 'soldes',
+      libelle: 'Soldes et reversements',
+      chemin: '/admin/soldes',
+      icone: 'Wallet',
+      pourNavigationBasse: true,
+    },
+    {
       id: 'statistiques',
       libelle: 'Statistiques',
       chemin: '/admin/statistiques',
       icone: 'BarChart3',
       pourNavigationBasse: true,
     },
-    { id: 'audit', libelle: 'Audit', chemin: '/admin/audit', icone: 'FileText' },
   ],
   super_admin: [
     {
@@ -210,11 +226,19 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     {
+      id: 'soldes',
+      libelle: 'Soldes et reversements',
+      chemin: '/admin/soldes',
+      icone: 'Wallet',
+      pourNavigationBasse: true,
+    },
+    {
       id: 'statistiques',
       libelle: 'Statistiques',
       chemin: '/admin/statistiques',
       icone: 'BarChart3',
     },
+    // ADM-05 : l'audit (liste et export) est réservé au super-admin (docs/03).
     { id: 'audit', libelle: 'Audit', chemin: '/admin/audit', icone: 'FileText' },
   ],
 };

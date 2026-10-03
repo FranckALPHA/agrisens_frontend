@@ -20,6 +20,10 @@ import { PageCoursesLivreur } from '@/pages/livreur/PageCoursesLivreur';
 import { PageCourseDetail } from '@/pages/livreur/PageCourseDetail';
 import { PageUtilisateursAdmin } from '@/pages/admin/PageUtilisateursAdmin';
 import { PageLitigesAdmin } from '@/pages/admin/PageLitigesAdmin';
+import { PageParametresAdmin } from '@/pages/admin/PageParametresAdmin';
+import { PageAuditAdmin } from '@/pages/admin/PageAuditAdmin';
+import { PageSoldesAdmin } from '@/pages/admin/PageSoldesAdmin';
+import { PageMesGains } from '@/pages/gains/PageMesGains';
 import { PageConditions, PageConfidentialite } from '@/pages/legal/PagesLegales';
 import { EtatVide } from '@/components/EtatVide';
 import { PageExploitations } from '@/pages/agriculteur/PageExploitations';
@@ -201,7 +205,44 @@ export const router = createBrowserRouter([
               </RouteProtegee>
             ),
           },
+          {
+            // ADM-04 (F-10) : paramètres/offres/référentiels — admin en lecture
+            // seule, écritures réservées au super-admin (vérifiées côté API).
+            path: 'parametres',
+            element: (
+              <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
+                <PageParametresAdmin />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // ADM-05 (F-10) : journal d'audit, réservé super-admin (docs/03).
+            path: 'audit',
+            element: (
+              <RouteProtegee rolesAutorises={['super_admin']}>
+                <PageAuditAdmin />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // Soldes et reversements (F-10, Q-11).
+            path: 'soldes',
+            element: (
+              <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
+                <PageSoldesAdmin />
+              </RouteProtegee>
+            ),
+          },
         ],
+      },
+      {
+        // « Mes gains » (F-10) : bénéficiaires de reversements (agr/liv/ing).
+        path: 'mes-gains',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'livreur', 'ingenieur_agronome']}>
+            <PageMesGains />
+          </RouteProtegee>
+        ),
       },
       { path: 'profil', element: <PageProfil /> },
       { path: 'notifications', element: <PageNotifications /> },

@@ -81,7 +81,7 @@ export const CompteursAdmin: React.FC = () => {
           className="p-4 rounded-lg border border-bordure bg-surface hover:border-primaire transition-colors flex items-center gap-3"
           data-testid={carte.testid}
         >
-          <span className="w-10 h-10 rounded-full bg-primaire-claire text-primaire flex items-center justify-center shrink-0">
+          <span className="w-10 h-10 rounded-full bg-primaire text-white flex items-center justify-center shrink-0">
             {carte.icone}
           </span>
           <span>
