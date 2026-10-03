@@ -4,6 +4,46 @@
  */
 
 export interface paths {
+  '/api/v1/admin/audit/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter le journal d'audit
+     * @description Filtres : acteur, entité, action, période (debut/fin ISO).
+     */
+    get: operations['admin_audit_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/audit/export/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Exporter l'audit en CSV
+     * @description Mêmes filtres que la liste ; export sans pagination.
+     */
+    get: operations['admin_audit_export_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/ingenieurs/{id}/refuser/': {
     parameters: {
       query?: never;
@@ -38,6 +78,174 @@ export interface paths {
      * @description Après examen des justificatifs (D-13). Rend le compte actif et notifie l'ingénieur. Journalisé dans JOURNAL_AUDIT.
      */
     post: operations['admin_ingenieurs_valider_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/offres/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister les offres d'abonnement versionnées
+     * @description GET /admin/offres (adm lecture) ; POST (sadm) — nouvelle version d'offre.
+     */
+    get: operations['admin_offres_list'];
+    put?: never;
+    /**
+     * Enregistrer une nouvelle version d'offre
+     * @description Réservé au super-admin. Les versions précédentes restent en base ; la nouvelle version s'applique aux nouveaux abonnements (P-05).
+     */
+    post: operations['admin_offres_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/parametres/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister les paramètres (admin)
+     * @description Chaque paramètre du registre avec sa valeur en vigueur, ses bornes et ses valeurs planifiées. Lecture seule pour l'admin.
+     */
+    get: operations['admin_parametres_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/parametres/{cle}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Définir une nouvelle valeur de paramètre
+     * @description Bornes vérifiées, motif obligatoire, date d'effet immédiate ou future. Chaque changement crée une nouvelle ligne (02 §2.8) et une entrée d'audit.
+     */
+    post: operations['admin_parametres_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/parametres/{cle}/historique/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Historique d'un paramètre
+     * @description GET /admin/parametres/{cle}/historique — toutes les lignes (sadm).
+     */
+    get: operations['admin_parametres_historique_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/parametres/{cle}/restaurer/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Restaurer la valeur précédente d'un paramètre
+     * @description Restaurer = créer une nouvelle ligne avec l'ancienne valeur (02 §2.8).
+     */
+    post: operations['admin_parametres_restaurer_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/referentiels/{type_ref}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister un référentiel (gestion)
+     * @description Toutes les entrées d'un type, actifs et inactifs.
+     */
+    get: operations['admin_referentiels_list'];
+    put?: never;
+    /**
+     * Ajouter une entrée de référentiel
+     * @description /admin/referentiels/{type} — liste de gestion (sadm) + ajout.
+     */
+    post: operations['admin_referentiels_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/referentiels/entrees/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /**
+     * Renommer le libellé d'une entrée
+     * @description Le code stable ne change jamais ; l'ancien libellé est audité.
+     */
+    put: operations['admin_referentiels_entrees_update'];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/referentiels/entrees/{id}/desactiver/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Désactiver une entrée de référentiel
+     * @description L'entrée reste en base (un code utilisé ne se supprime jamais) ; elle disparaît des formulaires.
+     */
+    post: operations['admin_referentiels_entrees_desactiver_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -135,6 +343,30 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/reversements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Historique des reversements
+     * @description GET/POST /admin/reversements — historique et enregistrement (adm).
+     */
+    get: operations['admin_reversements_retrieve'];
+    put?: never;
+    /**
+     * Enregistrer un reversement manuel
+     * @description Montant ≤ solde disponible, référence opérateur obligatoire, audit systématique. Le paiement sort du circuit NotchPay (Q-11).
+     */
+    post: operations['admin_reversements_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/signalements/': {
     parameters: {
       query?: never;
@@ -163,6 +395,26 @@ export interface paths {
     put?: never;
     /** Traiter un signalement (statut + décision, audit) */
     post: operations['admin_signalements_traiter_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/soldes/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Soldes positifs à reverser
+     * @description File de travail pour les reversements manuels (Q-11).
+     */
+    get: operations['admin_soldes_list'];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1535,6 +1787,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/soldes/moi/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter son solde de gains
+     * @description Décomposition du solde (Q-11) : gains acquis, remboursements imputés, déjà reversé, solde disponible. Jamais stocké, recalculé.
+     */
+    get: operations['soldes_moi_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/utilisateurs/moi/': {
     parameters: {
       query?: never;
@@ -1689,6 +1961,18 @@ export interface components {
     /** @description POST /admin/remboursements/{id}/approuver — montant total ou partiel. */
     ApprouverRemboursementRequest: {
       montant_accorde_fcfa: number;
+    };
+    /** @description Ligne du journal d'audit, détaillée pour l'admin (ancienne/nouvelle). */
+    AuditEntree: {
+      id: string;
+      action: string;
+      entite_type: string;
+      entite_id: string | null;
+      readonly acteur_nom: string | null;
+      ancienne_valeur: unknown;
+      nouvelle_valeur: unknown;
+      /** Format: date-time */
+      cree_le: string;
     };
     CatalogueProduits: {
       elements: components['schemas']['ProduitCatalogue'][];
@@ -2085,6 +2369,12 @@ export interface components {
       /** Format: decimal */
       quantite: string;
     };
+    ListeAudit: {
+      elements: components['schemas']['AuditEntree'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
     ListeCommandes: {
       elements: components['schemas']['CommandeListe'][];
       page: number;
@@ -2105,6 +2395,12 @@ export interface components {
     };
     ListeNotifications: {
       elements: components['schemas']['Notification'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
+    ListeReversements: {
+      elements: components['schemas']['Reversement'][];
       page: number;
       taille: number;
       total: number;
@@ -2240,6 +2536,31 @@ export interface components {
      * @enum {string}
      */
     ObjetEnum: 'commande' | 'abonnement' | 'accompagnement';
+    /** @description GET /admin/offres — version en vigueur + versions historiques par code. */
+    OffreAdmin: {
+      code: string;
+      nom: string;
+      prix_mensuel_fcfa: number | null;
+      quota_planning_mois: number | null;
+      quota_recommandation_mois: number | null;
+      fonctionnalites?: {
+        [key: string]: unknown;
+      };
+      versions: components['schemas']['VersionOffre'][];
+    };
+    /** @description POST /admin/offres — nouvelle version d'une offre existante ou nouvelle. */
+    OffreCreationRequest: {
+      code: string;
+      nom: string;
+      prix_mensuel_fcfa: number;
+      quota_planning_mois: number;
+      quota_recommandation_mois: number;
+      fonctionnalites?: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      date_effet?: string;
+    };
     /**
      * @description * `mtn_momo` - MTN Mobile Money
      *     * `orange_money` - Orange Money
@@ -2273,6 +2594,34 @@ export interface components {
      * @enum {string}
      */
     PaiementStatutEnum: 'initie' | 'en_attente' | 'reussi' | 'echoue' | 'expire';
+    /** @description Ligne ADM-04 : un paramètre avec sa valeur en vigueur et ses bornes. */
+    ParametreAdmin: {
+      cle: string;
+      groupe: string;
+      valeur: number;
+      minimum: number;
+      maximum: number;
+      public: boolean;
+      planifiees: components['schemas']['ValeurPlanifiee'][];
+    };
+    /** @description POST /admin/parametres/{cle} — valeur, date d'effet, motif obligatoire. */
+    ParametreCreationRequest: {
+      valeur: number;
+      /** Format: date-time */
+      date_effet?: string;
+      motif: string;
+    };
+    /** @description Historique d'un paramètre (02 §2.8 : une ligne par changement). */
+    ParametreHistorique: {
+      id: string;
+      valeur: number;
+      /** Format: date-time */
+      date_effet: string;
+      motif: string | null;
+      auteur_nom: string | null;
+      /** Format: date-time */
+      cree_le: string;
+    };
     /** @description PATCH : tous les champs facultatifs. */
     PatchedAdresseModificationRequest: {
       libelle?: string;
@@ -2428,6 +2777,37 @@ export interface components {
       ordre?: number;
     };
     /**
+     * @description Ligne de gestion : code stable + libellé + drapeau actif.
+     *
+     *     Le champ `type` est porteur à la lecture ; à l'écriture il vient de l'URL
+     *     (/admin/referentiels/{type}), donc non obligatoire dans le corps.
+     */
+    ReferentielAdmin: {
+      readonly id: string;
+      type?: string;
+      code: string;
+      libelle: string;
+      /** @default 0 */
+      ordre: number;
+      readonly actif: boolean;
+    };
+    /**
+     * @description Ligne de gestion : code stable + libellé + drapeau actif.
+     *
+     *     Le champ `type` est porteur à la lecture ; à l'écriture il vient de l'URL
+     *     (/admin/referentiels/{type}), donc non obligatoire dans le corps.
+     */
+    ReferentielAdminRequest: {
+      type?: string;
+      code: string;
+      libelle: string;
+      /** @default 0 */
+      ordre: number;
+    };
+    ReferentielRenommageRequest: {
+      libelle: string;
+    };
+    /**
      * @description POST /admin/ingenieurs/{id}/refuser — presence de `motif` documentée ;
      *     le contrôle métier (motif non vide → 422 `motif_obligatoire`) reste dans
      *     le service, seul point de vérité (conventions §3).
@@ -2510,6 +2890,27 @@ export interface components {
       /** @default  */
       telephone: string;
     };
+    /** @description Ligne d'historique de reversement (route admin seule : référence visible). */
+    Reversement: {
+      readonly id: string;
+      readonly beneficiaire_id: string;
+      beneficiaire_nom: string;
+      readonly montant_fcfa: number;
+      readonly operateur: components['schemas']['OperateurPaiementEnum'];
+      readonly reference_operateur: string;
+      effectue_par_nom?: string | null;
+      /** Format: date-time */
+      readonly effectue_le: string;
+      readonly note: string | null;
+    };
+    /** @description POST /admin/reversements — bénéficiaire, montant, opérateur, référence. */
+    ReversementCreationRequest: {
+      beneficiaire_id: string;
+      montant_fcfa: number;
+      operateur: components['schemas']['OperateurPaiementEnum'];
+      reference_operateur: string;
+      note?: string | null;
+    };
     /**
      * @description * `admin` - admin
      *     * `super_admin` - super_admin
@@ -2574,6 +2975,23 @@ export interface components {
       motif: string;
       description: string;
       fichier_ids?: string[];
+    };
+    /** @description GET /soldes/moi — décomposition du solde (02 §2.4, jamais stocké). */
+    SoldeDetail: {
+      gains_acquis: number;
+      remboursements_imputes: number;
+      deja_reverse: number;
+      solde: number;
+    };
+    /** @description GET /admin/soldes — un bénéficiaire au solde positif. */
+    SoldeLigne: {
+      beneficiaire_id: string;
+      nom: string;
+      role: string;
+      gains_acquis: number;
+      remboursements_imputes: number;
+      deja_reverse: number;
+      solde: number;
     };
     /**
      * @description * `en_attente` - En attente
@@ -2781,6 +3199,22 @@ export interface components {
       /** Format: date-time */
       readonly cree_le: string;
     };
+    /** @description Planification d'une valeur à date d'effet future. */
+    ValeurPlanifiee: {
+      valeur: number;
+      /** Format: date-time */
+      date_effet: string;
+      motif: string | null;
+    };
+    VersionOffre: {
+      id: string;
+      prix_mensuel_fcfa: number;
+      quota_planning_mois: number;
+      quota_recommandation_mois: number;
+      /** Format: date-time */
+      date_effet: string;
+      active: boolean;
+    };
   };
   responses: never;
   parameters: never;
@@ -2790,6 +3224,64 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  admin_audit_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Identifiant de l'acteur */
+        acteur?: string;
+        /** @description Action journalisée */
+        action?: string;
+        /** @description Date de début (ISO 8601) */
+        debut?: string;
+        /** @description Type d'entité auditée */
+        entite_type?: string;
+        /** @description Date de fin (ISO 8601) */
+        fin?: string;
+        /** @description Page de résultats (défaut 1) */
+        page?: number;
+        /** @description Taille de page, 1–100 (défaut 20) */
+        taille?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeAudit'];
+        };
+      };
+    };
+  };
+  admin_audit_export_retrieve: {
+    parameters: {
+      query?: {
+        acteur?: string;
+        action?: string;
+        debut?: string;
+        entite_type?: string;
+        fin?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Fichier CSV */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   admin_ingenieurs_refuser_create: {
     parameters: {
       query?: never;
@@ -2864,6 +3356,339 @@ export interface operations {
         content?: never;
       };
       /** @description transition_invalide */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_offres_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OffreAdmin'][];
+        };
+      };
+    };
+  };
+  admin_offres_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['OffreCreationRequest'];
+        'multipart/form-data': components['schemas']['OffreCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['OffreAdmin'];
+        };
+      };
+      /** @description permission_refusee */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description prix_invalide | quota_invalide */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_parametres_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ParametreAdmin'][];
+        };
+      };
+    };
+  };
+  admin_parametres_create: {
+    parameters: {
+      query?: {
+        /** @description Clé du paramètre (groupe.nom) */
+        cle?: string;
+      };
+      header?: never;
+      path: {
+        cle: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ParametreCreationRequest'];
+        'multipart/form-data': components['schemas']['ParametreCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ParametreHistorique'];
+        };
+      };
+      /** @description permission_refusee */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description parametre_inconnu */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description valeur_hors_bornes */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_parametres_historique_list: {
+    parameters: {
+      query?: {
+        /** @description Clé du paramètre */
+        cle?: string;
+      };
+      header?: never;
+      path: {
+        cle: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ParametreHistorique'][];
+        };
+      };
+      /** @description parametre_inconnu */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_parametres_restaurer_create: {
+    parameters: {
+      query?: {
+        /** @description Clé du paramètre */
+        cle?: string;
+      };
+      header?: never;
+      path: {
+        cle: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ParametreHistorique'];
+        };
+      };
+      /** @description parametre_inconnu */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description restauration_impossible */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_referentiels_list: {
+    parameters: {
+      query?: {
+        type_ref?: string;
+      };
+      header?: never;
+      path: {
+        type_ref: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReferentielAdmin'][];
+        };
+      };
+      /** @description type_referentiel_inconnu */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_referentiels_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        type_ref: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReferentielAdminRequest'];
+        'multipart/form-data': components['schemas']['ReferentielAdminRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReferentielAdmin'];
+        };
+      };
+      /** @description code_existant */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description type_referentiel_inconnu | champ_requis */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_referentiels_entrees_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReferentielRenommageRequest'];
+        'multipart/form-data': components['schemas']['ReferentielRenommageRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReferentielAdmin'];
+        };
+      };
+      /** @description referentiel_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  admin_referentiels_entrees_desactiver_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ReferentielAdmin'];
+        };
+      };
+      /** @description referentiel_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description deja_desactive */
       409: {
         headers: {
           [name: string]: unknown;
@@ -2993,6 +3818,70 @@ export interface operations {
       };
     };
   };
+  admin_reversements_retrieve: {
+    parameters: {
+      query?: {
+        /** @description Filtre par identifiant bénéficiaire */
+        beneficiaire?: string;
+        /** @description Page de résultats (défaut 1) */
+        page?: number;
+        /** @description Taille de page, 1–100 (défaut 20) */
+        taille?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeReversements'];
+        };
+      };
+    };
+  };
+  admin_reversements_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ReversementCreationRequest'];
+        'multipart/form-data': components['schemas']['ReversementCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Reversement'];
+        };
+      };
+      /** @description ressource_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description montant_invalide | reference_requise | montant_superieur_solde | beneficiaire_invalide */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   admin_signalements_list: {
     parameters: {
       query?: {
@@ -3037,6 +3926,25 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['Signalement'];
+        };
+      };
+    };
+  };
+  admin_soldes_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SoldeLigne'][];
         };
       };
     };
@@ -5096,6 +6004,25 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['Signalement'][];
+        };
+      };
+    };
+  };
+  soldes_moi_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['SoldeDetail'];
         };
       };
     };
