@@ -71,12 +71,14 @@ export async function deposerJustificatif(
 export async function listerIngenieurs(params?: {
   specialite?: string;
   region?: string;
+  exploitation_id?: string;
 }): Promise<ListeIngenieursApi> {
   const { data, error } = await apiClient.GET('/api/v1/ingenieurs/', {
     params: {
       query: {
         ...(params?.specialite ? { specialite: params.specialite } : {}),
         ...(params?.region ? { region: params.region } : {}),
+        ...(params?.exploitation_id ? { exploitation_id: params.exploitation_id } : {}),
       },
     },
   });
