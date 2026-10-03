@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Clock, UserX, KeyRound } from 'lucide-react';
+import { Clock, UserX, KeyRound, Scale, Flag } from 'lucide-react';
 import { EtatChargement } from '@/components/EtatChargement';
 import { EtatErreur } from '@/components/EtatErreur';
 import { obtenirCompteursAdmin } from '@/services/api/administration';
@@ -50,12 +50,28 @@ export const CompteursAdmin: React.FC = () => {
       chemin: '/admin/utilisateurs?statut=suspendu',
       testid: 'compteur-comptes-suspendus',
     },
+    {
+      id: 'litiges_en_attente',
+      libelle: 'Litiges en attente',
+      valeur: donnees.litiges_en_attente,
+      icone: <Scale size={20} aria-hidden="true" />,
+      chemin: '/admin/litiges?tab=remboursements',
+      testid: 'compteur-litiges-attente',
+    },
+    {
+      id: 'signalements_ouverts',
+      libelle: 'Signalements ouverts',
+      valeur: donnees.signalements_ouverts,
+      icone: <Flag size={20} aria-hidden="true" />,
+      chemin: '/admin/litiges?tab=signalements',
+      testid: 'compteur-signalements-ouverts',
+    },
   ];
 
   return (
     <section
       aria-label="Compteurs d’administration"
-      className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
       data-testid="compteurs-admin"
     >
       {cartes.map((carte) => (

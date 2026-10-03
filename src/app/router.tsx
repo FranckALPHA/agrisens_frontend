@@ -19,6 +19,7 @@ import { PageDisponibilite } from '@/pages/livreur/PageDisponibilite';
 import { PageCoursesLivreur } from '@/pages/livreur/PageCoursesLivreur';
 import { PageCourseDetail } from '@/pages/livreur/PageCourseDetail';
 import { PageUtilisateursAdmin } from '@/pages/admin/PageUtilisateursAdmin';
+import { PageLitigesAdmin } from '@/pages/admin/PageLitigesAdmin';
 import { PageConditions, PageConfidentialite } from '@/pages/legal/PagesLegales';
 import { EtatVide } from '@/components/EtatVide';
 import { PageExploitations } from '@/pages/agriculteur/PageExploitations';
@@ -188,6 +189,15 @@ export const router = createBrowserRouter([
             element: (
               <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
                 <PageUtilisateursAdmin />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // ADM-03 (F-09) : file des remboursements et file des signalements.
+            path: 'litiges',
+            element: (
+              <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
+                <PageLitigesAdmin />
               </RouteProtegee>
             ),
           },

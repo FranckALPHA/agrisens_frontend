@@ -65,6 +65,14 @@ export const STATUTS_REMBOURSEMENT: Record<string, DefinitionStatut> = {
   echoue: { libelle: 'Échoué', variante: 'erreur' },
 };
 
+/** Signalements (SPEC-10, machine à états ADM-03). */
+export const STATUTS_SIGNALEMENT: Record<string, DefinitionStatut> = {
+  ouvert: { libelle: 'Ouvert', variante: 'avertissement' },
+  en_examen: { libelle: 'En examen', variante: 'info' },
+  clos_fonde: { libelle: 'Closé — fondé', variante: 'erreur' },
+  clos_non_fonde: { libelle: 'Closé — non fondé', variante: 'succes' },
+};
+
 export const STATUTS_UTILISATEUR: Record<string, DefinitionStatut> = {
   actif: { libelle: 'Actif', variante: 'succes' },
   en_attente_validation: { libelle: 'En attente de validation', variante: 'avertissement' },
@@ -130,6 +138,7 @@ export function obtenirDefinitionStatut(
     STATUTS_ACCOMPAGNEMENT,
     STATUTS_PAIEMENT,
     STATUTS_REMBOURSEMENT,
+    STATUTS_SIGNALEMENT,
     STATUTS_UTILISATEUR,
     STATUTS_PRODUIT,
     STATUTS_NOTIFICATION,

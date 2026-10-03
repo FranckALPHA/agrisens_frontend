@@ -44,6 +44,131 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/admin/remboursements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * File des remboursements
+     * @description GET /admin/remboursements — file de traitement (filtrable par statut).
+     */
+    get: operations['admin_remboursements_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/remboursements/{identifiant}/approuver/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Approuver (montant total ou partiel) */
+    post: operations['admin_remboursements_approuver_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/remboursements/{identifiant}/examiner/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Passer la demande en examen */
+    post: operations['admin_remboursements_examiner_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/remboursements/{identifiant}/executer/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Enregistrer la référence du renvoi (approuvé → effectue)
+     * @description Q-26 : l'admin a effectué le renvoi hors plateforme, il enregistre la référence.
+     */
+    post: operations['admin_remboursements_executer_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/remboursements/{identifiant}/refuser/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Refuser avec motif obligatoire */
+    post: operations['admin_remboursements_refuser_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/signalements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** File des signalements (filtrable par statut) */
+    get: operations['admin_signalements_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/admin/signalements/{identifiant}/traiter/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Traiter un signalement (statut + décision, audit) */
+    post: operations['admin_signalements_traiter_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/admin/utilisateurs/': {
     parameters: {
       query?: never;
@@ -387,6 +512,30 @@ export interface paths {
     get: operations['commandes_code_remise_retrieve'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/commandes/{identifiant}/evaluation/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Consulter mon évaluation de cette commande
+     * @description POST /commandes/{id}/evaluation — seulement si livrée, une fois (02 §2.3).
+     */
+    get: operations['commandes_evaluation_retrieve'];
+    put?: never;
+    /**
+     * Évaluer une commande livrée (1..5)
+     * @description POST /commandes/{id}/evaluation — seulement si livrée, une fois (02 §2.3).
+     */
+    post: operations['commandes_evaluation_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -1269,6 +1418,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/remboursements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Demander un remboursement dans le délai paramétré
+     * @description POST /remboursements — demande de remboursement (acheteur, SPEC-05).
+     */
+    post: operations['remboursements_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/remboursements/mes-demandes/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Mes demandes de remboursement
+     * @description GET /remboursements/mes-demandes — suivi par l'acheteur.
+     */
+    get: operations['remboursements_mes_demandes_list'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/sante': {
     parameters: {
       query?: never;
@@ -1301,6 +1490,43 @@ export interface paths {
      * @description Vérifie la connexion MySQL et l'absence de migrations en attente.
      */
     get: operations['sante_pret_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/signalements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Signaler un problème (utilisateur, produit, commande, livraison…)
+     * @description POST /signalements — tout utilisateur authentifié et actif (SPEC-10).
+     */
+    post: operations['signalements_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/signalements/mes-signalements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Mes signalements et leur avancement */
+    get: operations['signalements_mes_signalements_list'];
     put?: never;
     post?: never;
     delete?: never;
@@ -1460,12 +1686,27 @@ export interface components {
       ville: string;
       region: string;
     };
+    /** @description POST /admin/remboursements/{id}/approuver — montant total ou partiel. */
+    ApprouverRemboursementRequest: {
+      montant_accorde_fcfa: number;
+    };
     CatalogueProduits: {
       elements: components['schemas']['ProduitCatalogue'][];
       page: number;
       taille: number;
       total: number;
     };
+    /**
+     * @description * `utilisateur` - Utilisateur
+     *     * `message` - Message
+     *     * `produit` - Produit
+     *     * `commande` - Commande
+     *     * `livraison` - Livraison
+     *     * `accompagnement` - Accompagnement
+     * @enum {string}
+     */
+    CibleSignalementEnum:
+      'utilisateur' | 'message' | 'produit' | 'commande' | 'livraison' | 'accompagnement';
     /** @description Saisie du code par le livreur : exactement 6 chiffres. */
     CodeRemiseRequest: {
       code: string;
@@ -1516,6 +1757,8 @@ export interface components {
       ingenieurs_en_attente: number;
       reinitialisations_en_attente: number;
       comptes_suspendus: number;
+      litiges_en_attente: number;
+      signalements_ouverts: number;
     };
     /** @description POST /auth/connexion — téléphone E.164 ou email + mot de passe. */
     ConnexionRequest: {
@@ -1580,6 +1823,30 @@ export interface components {
         coordinates: unknown[];
       } | null;
       zone?: string | null;
+    };
+    Evaluation: {
+      readonly id: string;
+      readonly commande: string;
+      readonly acheteur: string;
+      readonly note_agriculteur: number;
+      readonly note_livreur: number | null;
+      readonly commentaire: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /** @description POST /commandes/{id}/evaluation — 1..5, une seule fois (02 §2.3). */
+    EvaluationCreationRequest: {
+      note_agriculteur: number;
+      note_livreur?: number | null;
+      commentaire?: string | null;
+    };
+    /**
+     * @description POST /admin/remboursements/{id}/executer — référence du renvoi (Q-26).
+     *
+     *     La règle « référence non vide » vit dans le service (`reference_obligatoire`).
+     */
+    ExecuterRemboursementRequest: {
+      reference_operateur: string;
     };
     Exploitation: {
       readonly id: string;
@@ -1922,6 +2189,16 @@ export interface components {
       readonly doit_changer_mot_de_passe: boolean;
       readonly message: string;
     };
+    /**
+     * @description * `produit_endommage` - Produit endommagé
+     *     * `produit_incorrect` - Produit incorrect
+     *     * `non_recu` - Non reçu
+     *     * `annulation` - Annulation
+     *     * `autre` - Autre
+     * @enum {string}
+     */
+    MotifRemboursementEnum:
+      'produit_endommage' | 'produit_incorrect' | 'non_recu' | 'annulation' | 'autre';
     /** @description Rejet d'une commande : motif obligatoire. */
     MotifRequest: {
       motif: string;
@@ -2158,6 +2435,45 @@ export interface components {
     RefusIngenieurRequest: {
       motif: string;
     };
+    /**
+     * @description POST /admin/remboursements/{id}/refuser — motif obligatoire (07 §15.3).
+     *
+     *     La règle « motif non vide » vit dans le service (`motif_obligatoire`).
+     */
+    RefuserRemboursementRequest: {
+      motif: string;
+    };
+    Remboursement: {
+      readonly id: string;
+      readonly commande: string;
+      readonly commande_reference: string;
+      readonly paiement: string;
+      readonly demandeur: string;
+      readonly demandeur_nom: string;
+      readonly signalement: string | null;
+      readonly motif: components['schemas']['MotifRemboursementEnum'];
+      readonly montant_demande_fcfa: number;
+      readonly montant_accorde_fcfa: number | null;
+      readonly statut: components['schemas']['StatutRemboursementEnum'];
+      readonly statut_commande_origine: string;
+      readonly motif_decision: string | null;
+      /** Format: date-time */
+      readonly decide_le: string | null;
+      readonly reference_operateur: string | null;
+      readonly justificatifs: string[];
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      readonly maj_le: string;
+    };
+    /** @description POST /remboursements — demande de l'acheteur (SPEC-05). */
+    RemboursementCreationRequest: {
+      commande_id: string;
+      motif: components['schemas']['MotifRemboursementEnum'];
+      montant_demande_fcfa: number;
+      justificatifs?: string[];
+      signalement_id?: string | null;
+    };
     /** @description Réponse neutre uniforme (demande de réinitialisation, Q-23). */
     ReponseMessage: {
       readonly message: string;
@@ -2233,6 +2549,32 @@ export interface components {
       base: string;
       migrations_en_attente: number;
     };
+    Signalement: {
+      readonly id: string;
+      readonly auteur: string;
+      readonly auteur_nom: string;
+      readonly cible_type: components['schemas']['CibleSignalementEnum'];
+      readonly cible_id: string;
+      readonly motif: string;
+      readonly description: string;
+      readonly statut: components['schemas']['StatutSignalementEnum'];
+      readonly decision: string | null;
+      readonly traite_par: string | null;
+      readonly traite_par_nom: string;
+      readonly fichiers: string[];
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      readonly maj_le: string;
+    };
+    /** @description POST /signalements — cible + motif + fichiers (SPEC-10). */
+    SignalementCreationRequest: {
+      cible_type: components['schemas']['CibleSignalementEnum'];
+      cible_id: string;
+      motif: string;
+      description: string;
+      fichier_ids?: string[];
+    };
     /**
      * @description * `en_attente` - En attente
      *     * `acceptee` - Acceptée
@@ -2290,6 +2632,26 @@ export interface components {
       | 'echec_livraison'
       | 'annulee';
     /**
+     * @description * `demande` - Demandé
+     *     * `en_examen` - En examen
+     *     * `approuve` - Approuvé
+     *     * `refuse` - Refusé
+     *     * `en_cours` - En cours
+     *     * `effectue` - Effectué
+     *     * `echoue` - Échoué
+     * @enum {string}
+     */
+    StatutRemboursementEnum:
+      'demande' | 'en_examen' | 'approuve' | 'refuse' | 'en_cours' | 'effectue' | 'echoue';
+    /**
+     * @description * `ouvert` - Ouvert
+     *     * `en_examen` - En examen
+     *     * `clos_fonde` - Closé — fondé
+     *     * `clos_non_fonde` - Closé — non fondé
+     * @enum {string}
+     */
+    StatutSignalementEnum: 'ouvert' | 'en_examen' | 'clos_fonde' | 'clos_non_fonde';
+    /**
      * @description * `en_attente` - En attente
      *     * `valide` - Validé
      *     * `refuse` - Refusé
@@ -2306,6 +2668,19 @@ export interface components {
       fichier: string;
       contexte: components['schemas']['ContexteEnum'];
     };
+    /** @description POST /admin/signalements/{id}/traiter — statut de décision + motif. */
+    TraiterSignalementRequest: {
+      statut: components['schemas']['TraiterSignalementStatutEnum'];
+      /** @default  */
+      decision: string;
+    };
+    /**
+     * @description * `en_examen` - En examen
+     *     * `clos_fonde` - Closé — fondé
+     *     * `clos_non_fonde` - Closé — non fondé
+     * @enum {string}
+     */
+    TraiterSignalementStatutEnum: 'en_examen' | 'clos_fonde' | 'clos_non_fonde';
     /**
      * @description * `client_absent` - Client absent
      *     * `echec_livraison` - Échec de livraison
@@ -2494,6 +2869,175 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  admin_remboursements_list: {
+    parameters: {
+      query?: {
+        /** @description Filtre de statut */
+        statut?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'][];
+        };
+      };
+    };
+  };
+  admin_remboursements_approuver_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ApprouverRemboursementRequest'];
+        'multipart/form-data': components['schemas']['ApprouverRemboursementRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'];
+        };
+      };
+    };
+  };
+  admin_remboursements_examiner_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'];
+        };
+      };
+    };
+  };
+  admin_remboursements_executer_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExecuterRemboursementRequest'];
+        'multipart/form-data': components['schemas']['ExecuterRemboursementRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'];
+        };
+      };
+    };
+  };
+  admin_remboursements_refuser_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RefuserRemboursementRequest'];
+        'multipart/form-data': components['schemas']['RefuserRemboursementRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'];
+        };
+      };
+    };
+  };
+  admin_signalements_list: {
+    parameters: {
+      query?: {
+        /** @description Filtre de statut */
+        statut?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Signalement'][];
+        };
+      };
+    };
+  };
+  admin_signalements_traiter_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TraiterSignalementRequest'];
+        'multipart/form-data': components['schemas']['TraiterSignalementRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Signalement'];
+        };
       };
     };
   };
@@ -3027,6 +3571,60 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  commandes_evaluation_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Evaluation'];
+        };
+      };
+      /** @description Aucune évaluation */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  commandes_evaluation_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        identifiant: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EvaluationCreationRequest'];
+        'multipart/form-data': components['schemas']['EvaluationCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Evaluation'];
+        };
       };
     };
   };
@@ -4370,6 +4968,49 @@ export interface operations {
       };
     };
   };
+  remboursements_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RemboursementCreationRequest'];
+        'multipart/form-data': components['schemas']['RemboursementCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'];
+        };
+      };
+    };
+  };
+  remboursements_mes_demandes_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Remboursement'][];
+        };
+      };
+    };
+  };
   sante_retrieve: {
     parameters: {
       query?: never;
@@ -4412,6 +5053,49 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['SanteReadinessErrorResponse'];
+        };
+      };
+    };
+  };
+  signalements_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SignalementCreationRequest'];
+        'multipart/form-data': components['schemas']['SignalementCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Signalement'];
+        };
+      };
+    };
+  };
+  signalements_mes_signalements_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Signalement'][];
         };
       };
     };

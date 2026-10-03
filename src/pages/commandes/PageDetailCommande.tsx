@@ -26,11 +26,18 @@ import {
   type OperateurPaiement,
 } from '@/services/api/paiements';
 import { ErreurApi } from '@/services/api/client';
+import { obtenirLivraisonParCommande } from '@/services/api/livraisons';
 import { Select } from '@/components/Select';
 import { TimelineCommande } from './TimelineCommande';
 import { SuiviLivraison } from './SuiviLivraison';
+import { SuiviRemboursement } from './SuiviRemboursement';
+import { DemandeRemboursement } from './DemandeRemboursement';
+import { SignalementProbleme } from './SignalementProbleme';
+import { FormulaireEvaluation } from './FormulaireEvaluation';
 
 const ANNULATION_ACHETEUR = ['en_attente', 'acceptee'];
+// États où une demande de remboursement est recevable (02 §3.5, service backend).
+const REMBOURSABLE = ['livree', 'client_absent', 'echec_livraison'];
 
 /**
  * ACH-07 + AGR-06 (détail) — lignes, frais, total, timeline, actions selon
@@ -59,6 +66,13 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
     queryKey: ['commande-historique', identifiant],
     queryFn: () => obtenirHistoriqueCommande(identifiant ?? ''),
     enabled: Boolean(identifiant) && requete.isSuccess,
+    retry: false,
+  });
+  // Livraison de la commande (F-09 : sert à savoir si un livreur est impliqué pour l'évaluation).
+  const requeteLivraison = useQuery({
+    queryKey: ['livraison-commande', identifiant],
+    queryFn: () => obtenirLivraisonParCommande(identifiant ?? ''),
+    enabled: Boolean(identifiant) && requete.isSuccess && role === 'acheteur',
     retry: false,
   });
 
@@ -103,6 +117,9 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
       setTravail(false);
     }
   };
+
+  const aUnLivreur = Boolean(requeteLivraison.data?.livreur_nom);
+  const remboursementEnAttente = commande.statut === 'remboursement_en_attente';
 
   return (
     <div className="py-6 max-w-2xl flex flex-col gap-5" data-testid="page-detail-commande">
@@ -191,6 +208,28 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
       </section>
 
       {estAcheteur && <SuiviLivraison commandeId={commande.id} />}
+
+      {estAcheteur && (
+        <section
+          aria-label="Litige et remboursement"
+          className="flex flex-col gap-4"
+          data-testid="section-litige"
+        >
+          <SuiviRemboursement commandeId={commande.id} />
+          {(REMBOURSABLE.includes(commande.statut ?? '') || remboursementEnAttente) && (
+            <DemandeRemboursement
+              commandeId={commande.id}
+              montantPayeFcfa={commande.total_fcfa}
+              onDemande={() => void requete.refetch()}
+            />
+          )}
+          <SignalementProbleme cibleId={commande.id} />
+        </section>
+      )}
+
+      {estAcheteur && commande.statut === 'livree' && (
+        <FormulaireEvaluation commandeId={commande.id} aUnLivreur={aUnLivreur} />
+      )}
 
       {estAcheteur && commande.statut === 'acceptee' && (
         <section
