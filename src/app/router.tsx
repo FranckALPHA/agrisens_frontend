@@ -37,6 +37,10 @@ import { PageConfirmationCommande } from '@/pages/commandes/PageConfirmationComm
 import { PageRetourPaiement } from '@/pages/paiements/PageRetourPaiement';
 import { PageCatalogue } from '@/pages/catalogue/PageCatalogue';
 import { PageDetailProduit } from '@/pages/catalogue/PageDetailProduit';
+import { PageAccompagnement } from '@/pages/agriculteur/PageAccompagnement';
+import { PageAccompagnementDetail } from '@/pages/agriculteur/PageAccompagnementDetail';
+import { PageAccompagnementsListe } from '@/pages/ingenieur/PageAccompagnementsListe';
+import { PageAccompagnementDetailIngenieur } from '@/pages/ingenieur/PageAccompagnementDetail';
 import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
@@ -141,6 +145,36 @@ export const router = createBrowserRouter([
                 autoriserEnAttente
               >
                 <PageProfilPro />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // ING-03 (F-11) — demandes reçues + missions en cours.
+            path: 'accompagnements',
+            element: (
+              <RouteProtegee rolesAutorises={['ingenieur_agronome', 'super_admin']}>
+                <PageAccompagnementsListe />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // ING-04 (F-11) — détail d'un accompagnement (accepter/planifier/terminer).
+            path: 'accompagnements/:identifiant',
+            element: (
+              <RouteProtegee rolesAutorises={['ingenieur_agronome', 'super_admin']}>
+                <PageAccompagnementDetailIngenieur />
+              </RouteProtegee>
+            ),
+          },
+          {
+            // ING-01 placeholder — agenda synthétique (F-11, complété par la suite).
+            path: 'rendez-vous',
+            element: (
+              <RouteProtegee rolesAutorises={['ingenieur_agronome', 'super_admin']}>
+                <PageProvisoire
+                  titre="Agenda des rendez-vous"
+                  message="Vue agrégée des rendez-vous à venir ; en attente de la feature planning."
+                />
               </RouteProtegee>
             ),
           },
@@ -348,6 +382,23 @@ export const router = createBrowserRouter([
         element: (
           <RouteProtegee>
             <PageDetailCommande vue="ventes" />
+          </RouteProtegee>
+        ),
+      },
+      {
+        // AGR-08 (F-11) — accompagnement agronomique côté agriculteur.
+        path: 'agriculteur/accompagnement',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageAccompagnement />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'agriculteur/accompagnement/:identifiant',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageAccompagnementDetail vue="agriculteur" />
           </RouteProtegee>
         ),
       },
