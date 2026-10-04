@@ -3,12 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { Bell } from 'lucide-react';
 import { listerNotifications, obtenirCompteurNotifications } from '@/services/api/notifications';
+import { useTempsReel } from '@/services/tempsReelContext';
 import { MESSAGES } from '@/theme/messages';
 
 /**
  * Cloche de notifications (prompt F-03 frontend point 2, SPEC-10) :
- * compteur de non lues rafraîchi toutes les 30 s (interrogation périodique ;
- * le push WebSocket arrive en F-13), aperçu des dernières non lues, lien
+ * compteur de non lues rafraîchi par le **push WebSocket** (F-13) dès
+ * `notification.nouvelle` ; l'**interrogation périodique** (30 s) ne reste
+ * active que comme **repli** quand le canal temps réel n'est pas connecté
+ * (hors ligne, reconnexion en cours). Aperçu des dernières non lues, lien
  * vers la page FE-05. Masquée tant que la session n'est pas connectée
  * (le parent ne l'affiche que dans la mise en page connectée).
  */
@@ -28,13 +31,16 @@ function relativeDepuis(iso: string): string {
 
 export const ClocheNotifications: React.FC = () => {
   const navigate = useNavigate();
+  const { statut } = useTempsReel();
+  // Repli de rafraîchissement : inutile tant que le push WS est vivant.
+  const intervalleRepli = statut === 'connecte' ? false : INTERVALLE_MS;
   const [ouverte, setOuverte] = useState(false);
   const conteneurRef = useRef<HTMLDivElement>(null);
 
   const requeteCompteur = useQuery({
     queryKey: ['notifications', 'compteur'],
     queryFn: obtenirCompteurNotifications,
-    refetchInterval: INTERVALLE_MS,
+    refetchInterval: intervalleRepli,
   });
   const nonLues = requeteCompteur.data ?? 0;
 
@@ -43,7 +49,7 @@ export const ClocheNotifications: React.FC = () => {
     queryKey: ['notifications', 'apercu'],
     queryFn: () => listerNotifications(true),
     enabled: ouverte,
-    refetchInterval: ouverte ? INTERVALLE_MS : false,
+    refetchInterval: ouverte ? intervalleRepli : false,
   });
 
   // Fermer le panneau au clic extérieur.

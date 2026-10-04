@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { BadgeStatut } from '@/components/BadgeStatut';
 import { Bouton } from '@/components/Bouton';
@@ -26,10 +26,18 @@ import {
 /**
  * AGR-08 (F-11) — accompagnement agronomique côté agriculteur : demande,
  * sélection d'un ingénieur filtré par zone, devis en ligne, puis suivi.
+ *
+ * AGR-07 (F-12) ouvre cette page avec `?exploitation=…&motif=…` (« demander
+ * une vérification humaine », docs/09 AGR-08 et docs/12 PW-F12-06) : le
+ * formulaire est alors ouvert et pré-rempli.
  */
 export const PageAccompagnement: React.FC = () => {
   const navigation = useNavigate();
-  const [ouvrirFormulaire, setOuvrirFormulaire] = useState(false);
+  const [parametres] = useSearchParams();
+  const exploitationDemandee = parametres.get('exploitation') ?? '';
+  const motifDemande = parametres.get('motif') ?? '';
+  const ouvertureDepuisVerification = exploitationDemandee !== '' || motifDemande !== '';
+  const [ouvrirFormulaire, setOuvrirFormulaire] = useState(ouvertureDepuisVerification);
 
   const liste = useQuery({
     queryKey: ['accompagnements-agriculteur'],
@@ -55,6 +63,8 @@ export const PageAccompagnement: React.FC = () => {
 
       {ouvrirFormulaire ? (
         <FormulaireDemande
+          exploitationInitiale={exploitationDemandee}
+          motifInitial={motifDemande}
           onCree={(id) => {
             setOuvrirFormulaire(false);
             navigation(`/agriculteur/accompagnement/${id}`);
@@ -126,11 +136,15 @@ const CarteAccompagnement: React.FC<{ accompagnement: AccompagnementApi }> = ({
   </li>
 );
 
-const FormulaireDemande: React.FC<{ onCree: (id: string) => void }> = ({ onCree }) => {
-  const [exploitationId, setExploitationId] = useState('');
+const FormulaireDemande: React.FC<{
+  onCree: (id: string) => void;
+  exploitationInitiale?: string;
+  motifInitial?: string;
+}> = ({ onCree, exploitationInitiale = '', motifInitial = '' }) => {
+  const [exploitationId, setExploitationId] = useState(exploitationInitiale);
   const [ingenieurId, setIngenieurId] = useState('');
   const [modalite, setModalite] = useState<ModaliteApi>('presentiel');
-  const [motif, setMotif] = useState('');
+  const [motif, setMotif] = useState(motifInitial);
   const [description, setDescription] = useState('');
   const [erreur, setErreur] = useState<unknown>(null);
 

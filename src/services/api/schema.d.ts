@@ -4,7427 +4,8105 @@
  */
 
 export interface paths {
-  '/api/v1/accompagnements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister les accompagnements visibles par l'appelant
-     * @description POST /accompagnements — crée une demande ; GET — liste selon le rôle.
-     */
-    get: operations['accompagnements_lister'];
-    put?: never;
-    /**
-     * Créer une demande d'accompagnement
-     * @description POST /accompagnements — crée une demande ; GET — liste selon le rôle.
-     */
-    post: operations['accompagnements_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Détail d'un accompagnement (parties + admin) */
-    get: operations['accompagnements_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/accepter/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Accepter la demande */
-    post: operations['accompagnements_accepter_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/annuler/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Annuler sa demande */
-    post: operations['accompagnements_annuler_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/changer-ingenieur/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Changer l'ingénieur affecté (Q-29, historisé)
-     * @description Avant paiement : agriculteur ou admin. Après paiement : admin uniquement, montant conservé (hypothèse Q-44).
-     */
-    post: operations['accompagnements_changer_ingenieur_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/confirmer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Confirmer le RDV et initier le paiement
-     * @description En-tête `Idempotency-Key` supporté ; retourne l'URL NotchPay. Le passage à `planifiee` se fait au webhook (Q-05).
-     */
-    post: operations['accompagnements_confirmer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/marquer-manque/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Marquer le RDV manqué (Q-30)
-     * @description Ingénieur absent → remboursement automatique. Agriculteur absent → reprogrammation gratuite.
-     */
-    post: operations['accompagnements_marquer_manque_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/planifier/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Planifier le rendez-vous (conflit de créneau → 409)
-     * @description Verrou SELECT FOR UPDATE sur les RDV chevauchants du même ingénieur ; fige le montant avant confirmation.
-     */
-    post: operations['accompagnements_planifier_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/refuser/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Refuser la demande (motif obligatoire) */
-    post: operations['accompagnements_refuser_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/{identifiant}/terminer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Clôturer l'accompagnement (observation obligatoire) */
-    post: operations['accompagnements_terminer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/demandes/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Demandes reçues par cet ingénieur */
-    get: operations['accompagnements_demandes_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/accompagnements/devis/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Devis consultation + déplacement, sans rien créer
-     * @description Consultation = tarif profil ingénieur ; déplacement = 2 × km aller arrondi au km supérieur × tarif km, borné min/plafond (P-06). Refuse le présentiel si la distance dépasse `deplacement.distance_max_km` (hypothèse Q-44).
-     */
-    post: operations['accompagnements_devis_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/audit/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter le journal d'audit
-     * @description Filtres : acteur, entité, action, période (debut/fin ISO).
-     */
-    get: operations['admin_audit_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/audit/export/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Exporter l'audit en CSV
-     * @description Mêmes filtres que la liste ; export sans pagination.
-     */
-    get: operations['admin_audit_export_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/ingenieurs/{id}/refuser/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Refuser le profil d'un ingénieur
-     * @description Le motif est obligatoire (vide → 422 `motif_obligatoire`) et notifié (D-13).
-     */
-    post: operations['admin_ingenieurs_refuser_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/ingenieurs/{id}/valider/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Valider le profil d'un ingénieur
-     * @description Après examen des justificatifs (D-13). Rend le compte actif et notifie l'ingénieur. Journalisé dans JOURNAL_AUDIT.
-     */
-    post: operations['admin_ingenieurs_valider_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/offres/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister les offres d'abonnement versionnées
-     * @description GET /admin/offres (adm lecture) ; POST (sadm) — nouvelle version d'offre.
-     */
-    get: operations['admin_offres_list'];
-    put?: never;
-    /**
-     * Enregistrer une nouvelle version d'offre
-     * @description Réservé au super-admin. Les versions précédentes restent en base ; la nouvelle version s'applique aux nouveaux abonnements (P-05).
-     */
-    post: operations['admin_offres_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/parametres/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister les paramètres (admin)
-     * @description Chaque paramètre du registre avec sa valeur en vigueur, ses bornes et ses valeurs planifiées. Lecture seule pour l'admin.
-     */
-    get: operations['admin_parametres_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/parametres/{cle}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Définir une nouvelle valeur de paramètre
-     * @description Bornes vérifiées, motif obligatoire, date d'effet immédiate ou future. Chaque changement crée une nouvelle ligne (02 §2.8) et une entrée d'audit.
-     */
-    post: operations['admin_parametres_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/parametres/{cle}/historique/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Historique d'un paramètre
-     * @description GET /admin/parametres/{cle}/historique — toutes les lignes (sadm).
-     */
-    get: operations['admin_parametres_historique_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/parametres/{cle}/restaurer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Restaurer la valeur précédente d'un paramètre
-     * @description Restaurer = créer une nouvelle ligne avec l'ancienne valeur (02 §2.8).
-     */
-    post: operations['admin_parametres_restaurer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/referentiels/{type_ref}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister un référentiel (gestion)
-     * @description Toutes les entrées d'un type, actifs et inactifs.
-     */
-    get: operations['admin_referentiels_list'];
-    put?: never;
-    /**
-     * Ajouter une entrée de référentiel
-     * @description /admin/referentiels/{type} — liste de gestion (sadm) + ajout.
-     */
-    post: operations['admin_referentiels_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/referentiels/entrees/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Renommer le libellé d'une entrée
-     * @description Le code stable ne change jamais ; l'ancien libellé est audité.
-     */
-    put: operations['admin_referentiels_entrees_update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/referentiels/entrees/{id}/desactiver/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Désactiver une entrée de référentiel
-     * @description L'entrée reste en base (un code utilisé ne se supprime jamais) ; elle disparaît des formulaires.
-     */
-    post: operations['admin_referentiels_entrees_desactiver_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/remboursements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * File des remboursements
-     * @description GET /admin/remboursements — file de traitement (filtrable par statut).
-     */
-    get: operations['admin_remboursements_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/remboursements/{identifiant}/approuver/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Approuver (montant total ou partiel) */
-    post: operations['admin_remboursements_approuver_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/remboursements/{identifiant}/examiner/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Passer la demande en examen */
-    post: operations['admin_remboursements_examiner_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/remboursements/{identifiant}/executer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Enregistrer la référence du renvoi (approuvé → effectue)
-     * @description Q-26 : l'admin a effectué le renvoi hors plateforme, il enregistre la référence.
-     */
-    post: operations['admin_remboursements_executer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/remboursements/{identifiant}/refuser/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Refuser avec motif obligatoire */
-    post: operations['admin_remboursements_refuser_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/reversements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Historique des reversements
-     * @description GET/POST /admin/reversements — historique et enregistrement (adm).
-     */
-    get: operations['admin_reversements_retrieve'];
-    put?: never;
-    /**
-     * Enregistrer un reversement manuel
-     * @description Montant ≤ solde disponible, référence opérateur obligatoire, audit systématique. Le paiement sort du circuit NotchPay (Q-11).
-     */
-    post: operations['admin_reversements_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/signalements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** File des signalements (filtrable par statut) */
-    get: operations['admin_signalements_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/signalements/{identifiant}/traiter/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Traiter un signalement (statut + décision, audit) */
-    post: operations['admin_signalements_traiter_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/soldes/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Soldes positifs à reverser
-     * @description File de travail pour les reversements manuels (Q-11).
-     */
-    get: operations['admin_soldes_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister les utilisateurs (admin)
-     * @description GET /admin/utilisateurs — liste ; POST — création d'admin (sadm seul, 403 sinon).
-     */
-    get: operations['admin_utilisateurs_lister'];
-    put?: never;
-    /**
-     * Créer un compte d'administration
-     * @description Réservé au super-admin (admin et super_admin ne s'inscrivent pas, 02 §2.1). Le mot de passe temporaire n'est renvoyé qu'une fois.
-     */
-    post: operations['admin_utilisateurs_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter un utilisateur (admin)
-     * @description GET /admin/utilisateurs/{id} — détail + dossier ingénieur (D-13).
-     */
-    get: operations['admin_utilisateurs_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/{id}/reactiver/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Réactiver un compte suspendu
-     * @description POST /admin/utilisateurs/{id}/reactiver.
-     */
-    post: operations['admin_utilisateurs_reactiver_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/{id}/reinitialiser-mot-de-passe/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Émettre un mot de passe temporaire
-     * @description Le mot de passe n'est renvoyé qu'une seule fois, jamais stocké ni journalisé en clair ; le compte devra le changer à la connexion. Toutes les sessions en cours sont révoquées.
-     */
-    post: operations['admin_utilisateurs_reinitialiser_mot_de_passe_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/{id}/suspendre/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Suspendre un compte
-     * @description Le compte devient inaccessible et TOUTES ses sessions sont révoquées immédiatement. Motif obligatoire, notifié et journalisé.
-     */
-    post: operations['admin_utilisateurs_suspendre_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/compteurs/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Compteurs d'administration
-     * @description Ingénieurs en attente de validation, demandes de réinitialisation en attente (Q-23) et comptes suspendus.
-     */
-    get: operations['admin_utilisateurs_compteurs_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/admin/utilisateurs/demandes-reinitialisation/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister les demandes de réinitialisation en attente
-     * @description GET /admin/utilisateurs/demandes-reinitialisation — file Q-23.
-     */
-    get: operations['admin_utilisateurs_demandes_reinitialisation_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/connexion/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Se connecter
-     * @description Identifiant : téléphone E.164 ou email. Message identique si le compte n'existe pas (anti-énumération). Compte suspendu → 403 compte_suspendu.
-     */
-    post: operations['auth_connexion_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/deconnexion/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Se déconnecter
-     * @description POST /auth/deconnexion — révoque la session courante et purge le cookie.
-     */
-    post: operations['auth_deconnexion_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/demande-reinitialisation/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Demander une réinitialisation de mot de passe
-     * @description L'administrateur vérifie l'identité par téléphone puis génère un mot de passe temporaire (F-03). Réponse identique que le compte existe ou non.
-     */
-    post: operations['auth_demande_reinitialisation_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/inscription/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Créer un compte
-     * @description Rôles autorisés : agriculteur, acheteur, ingenieur_agronome, livreur. L'ingénieur est créé en attente de validation administrateur (D-13). Établit la session : jeton d'accès dans la réponse, jeton de rafraîchissement en cookie httpOnly.
-     */
-    post: operations['auth_inscription_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/auth/rafraichir/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Renouveler la session
-     * @description Utilise le cookie httpOnly, révoque le jeton présenté (rotation) et établit une nouvelle session. Réutilisation d'un jeton déjà tourné → révocation de toutes les sessions de l'utilisateur.
-     */
-    post: operations['auth_rafraichir_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Passer une commande (un seul agriculteur) */
-    post: operations['commandes_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{commande_id}/livraison/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter la livraison d'une commande
-     * @description GET /commandes/{id}/livraison — livraison liée (parties + admin).
-     */
-    get: operations['commandes_livraison_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Consulter une commande */
-    get: operations['commandes_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/accepter/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Accepter une commande (réserve le stock) */
-    post: operations['commandes_accepter_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/annuler/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Annuler une commande avant paiement */
-    post: operations['commandes_annuler_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/code-remise/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lire son code de remise (acheteur uniquement) */
-    get: operations['commandes_code_remise_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/evaluation/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter mon évaluation de cette commande
-     * @description POST /commandes/{id}/evaluation — seulement si livrée, une fois (02 §2.3).
-     */
-    get: operations['commandes_evaluation_retrieve'];
-    put?: never;
-    /**
-     * Évaluer une commande livrée (1..5)
-     * @description POST /commandes/{id}/evaluation — seulement si livrée, une fois (02 §2.3).
-     */
-    post: operations['commandes_evaluation_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/historique/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Historique des statuts d'une commande */
-    get: operations['commandes_historique_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/paiements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Initier le paiement d'une commande acceptée
-     * @description En-tête `Idempotency-Key` : la même clé renvoie le même paiement sans nouvel effet (double clic sans doublon).
-     */
-    post: operations['commandes_paiements_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/preparer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Marquer une commande payée en préparation */
-    post: operations['commandes_preparer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/{identifiant}/rejeter/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Rejeter une commande (motif obligatoire) */
-    post: operations['commandes_rejeter_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/devis/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Chiffrer une commande sans la créer */
-    post: operations['commandes_devis_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/mes-achats/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lister mes achats */
-    get: operations['commandes_mes_achats_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/commandes/mes-ventes/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lister mes ventes */
-    get: operations['commandes_mes_ventes_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dev/horloge': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Décaler ou figer l'horloge (dev/test)
-     * @description Décale l'heure ou la fige pour tester les expirations et délais.
-     */
-    post: operations['dev_horloge_create'];
-    /**
-     * Réinitialiser l'horloge (dev/test)
-     * @description Rétablit le temps réel.
-     */
-    delete: operations['dev_horloge_destroy'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dev/taches/{nom}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Exécuter une tâche planifiée immédiatement (dev/test)
-     * @description Déclenchement immédiat d'une tâche de fond pour les tests E2E.
-     */
-    post: operations['dev_taches_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/exploitations/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Lister les exploitations de l'agriculteur */
-    get: operations['exploitations_list'];
-    put?: never;
-    /** Créer une exploitation */
-    post: operations['exploitations_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/exploitations/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Consulter une exploitation */
-    get: operations['exploitations_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Modifier une exploitation */
-    patch: operations['exploitations_partial_update'];
-    trace?: never;
-  };
-  '/api/v1/exploitations/{identifiant}/archiver/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Archiver une exploitation */
-    post: operations['exploitations_archiver_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/exploitations/{identifiant}/plannings/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Historique des générations d'une exploitation
-     * @description Réservé au propriétaire, à un ingénieur affecté et à l'admin.
-     */
-    get: operations['exploitations_plannings_retrieve'];
-    put?: never;
-    /**
-     * Générer un planning cultural assisté par IA
-     * @description En-tête `Idempotency-Key` supporté. Dépassement de quota → 429 `quota_atteint`. L'IA ne reçoit aucune donnée personnelle ; le centre est arrondi à 0,1°. Seules les générations réussies décomptent le quota.
-     */
-    post: operations['exploitations_plannings_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/exploitations/{identifiant}/recommandations/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Demander une recommandation agronomique à l'IA
-     * @description Quota séparé (`recommandation`). En-tête `Idempotency-Key` supporté ; dépassement → 429 `quota_atteint`.
-     */
-    post: operations['exploitations_recommandations_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/fichiers/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Téléverser un fichier
-     * @description Upload multipart (champ binaire `fichier` + `contexte`). Le type est vérifié sur le contenu, les tailles maximales viennent des paramètres de la plateforme ; les métadonnées EXIF des images sont retirées. Retourne l'identifiant du fichier.
-     */
-    post: operations['fichiers_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/fichiers/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Obtenir un fichier
-     * @description Renvoie une redirection 302 vers une URL signée HMAC de courte durée. Règles d'accès par contexte : photos de produits publiques, justificatifs visibles par le propriétaire et les admins ; un fichier non visible pour l'appelant renvoie 404.
-     */
-    get: operations['fichiers_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/fichiers/{id}/contenu/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Télécharger le contenu d'un fichier
-     * @description Point d'arrivée de la redirection de `GET /fichiers/{id}`. Autorisé uniquement par la signature HMAC ; signature invalide → 404, lien expiré → 410.
-     */
-    get: operations['fichiers_contenu_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/generations-ia/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Détail d'une génération IA (propriétaire, ingénieur affecté, admin) */
-    get: operations['generations_ia_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/generations-ia/{identifiant}/corrections/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Corriger une génération IA (ne mute jamais la réponse originale)
-     * @description Réservé à un ingénieur affecté à un accompagnement actif de l'exploitation. Tout autre appelant reçoit 404 ; un acheteur/un livreur est refusé plus en amont (403).
-     */
-    post: operations['generations_ia_corrections_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ia/quota/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Quota mensuel de générations IA (consommé / limite par type) */
-    get: operations['ia_quota_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ingenieurs/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister les ingénieurs validés et disponibles
-     * @description Filtres `specialite` (code du référentiel), `region` et, depuis F-11, `exploitation_id` (la zone de l'ingénieur couvre le centre de l'exploitation).
-     */
-    get: operations['ingenieurs_lister'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ingenieurs/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter le profil public d'un ingénieur
-     * @description GET /ingenieurs/{id} — profil public, sans téléphone (03 SPEC-01).
-     */
-    get: operations['ingenieurs_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ingenieurs/moi/justificatifs/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister ses justificatifs
-     * @description GET/POST /ingenieurs/moi/justificatifs — dossier de candidature (D-13).
-     */
-    get: operations['ingenieurs_moi_justificatifs_list'];
-    put?: never;
-    /**
-     * Déposer un justificatif
-     * @description Rattache un fichier déjà téléversé en contexte `justificatif`.
-     */
-    post: operations['ingenieurs_moi_justificatifs_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ingenieurs/moi/profil/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter son profil professionnel
-     * @description GET/PUT /ingenieurs/moi/profil — accessible même en attente de validation.
-     */
-    get: operations['ingenieurs_moi_profil_retrieve'];
-    /**
-     * Mettre à jour son profil professionnel
-     * @description Spécialités (référentiel), zone (centre + rayon), tarif borné par les paramètres de consultation, disponibilité, biographie, modalités, photo. La mise en disponibilité exige un profil complet et validé.
-     */
-    put: operations['ingenieurs_moi_profil_update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Consulter une livraison (données selon rôle et étape) */
-    get: operations['livraisons_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/accepter/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Accepter une livraison (un seul gagnant, sinon 409) */
-    post: operations['livraisons_accepter_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/confirmer-remise/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Confirmer la remise par le code (bloqué après 5 échecs) */
-    post: operations['livraisons_confirmer_remise_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/demarrer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Démarrer la course (produit récupéré, stock consommé) */
-    post: operations['livraisons_demarrer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/desister/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Se désister (retour à proposée) */
-    post: operations['livraisons_desister_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/historique/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Historique des statuts d'une livraison */
-    get: operations['livraisons_historique_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/incidents/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Déclarer un incident (photo possible) */
-    post: operations['livraisons_incidents_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/itineraire/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Itinéraire GeoJSON de la livraison */
-    get: operations['livraisons_itineraire_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/position/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Mettre à jour sa position pendant la course
-     * @description POST /livraisons/{id}/position — le livreur publie sa position en course.
-     */
-    post: operations['livraisons_position_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/{identifiant}/reprogrammer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Reprogrammer après incident (avec paiement si client absent) */
-    post: operations['livraisons_reprogrammer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/disponibles/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Livraisons proposées, triées par distance (sans adresse exacte) */
-    get: operations['livraisons_disponibles_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livraisons/mes-livraisons/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Mes livraisons acceptées et en cours */
-    get: operations['livraisons_mes_livraisons_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/livreurs/moi/disponibilite/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter sa disponibilité de livreur
-     * @description GET/PUT /livreurs/moi/disponibilite — bouton disponible/indisponible (LIV-01).
-     */
-    get: operations['livreurs_moi_disponibilite_retrieve'];
-    /**
-     * Se rendre disponible ou indisponible
-     * @description Se rendre disponible exige une position (GeoJSON Point dans l'emprise du Cameroun) au moins une fois.
-     */
-    put: operations['livreurs_moi_disponibilite_update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/notifications/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister ses notifications
-     * @description GET /notifications — la liste du destinataire courant.
-     */
-    get: operations['notifications_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/notifications/{id}/lue/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Marquer une notification comme lue
-     * @description POST /notifications/{id}/lue — destinataire uniquement (autrui → 404).
-     */
-    post: operations['notifications_lue_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/notifications/compteur/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Compteur de notifications non lues
-     * @description GET /notifications/compteur — nombre de non lues (cloche, polling 30 s).
-     */
-    get: operations['notifications_compteur_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/notifications/tout-lire/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Marquer toutes les notifications comme lues
-     * @description POST /notifications/tout-lire — marque toutes les non lues comme lues.
-     */
-    post: operations['notifications_tout_lire_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/paiements/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Consulter un paiement */
-    get: operations['paiements_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/parametres/publics/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Obtenir les paramètres publics de la plateforme
-     * @description Retourne la liste des paramètres nécessaires aux clients (frais de livraison, plafonds, tolérances, limites de fichiers).
-     */
-    get: operations['parametres_publics_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/produits/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter le catalogue public
-     * @description POST /produits (publication, agriculteur) et GET /produits (catalogue public).
-     */
-    get: operations['produits_catalogue'];
-    put?: never;
-    /**
-     * Publier un produit
-     * @description POST /produits (publication, agriculteur) et GET /produits (catalogue public).
-     */
-    post: operations['produits_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/produits/{identifiant}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter un produit (vue complète pour le propriétaire)
-     * @description Le propriétaire reçoit tous les champs (stock réservé, statut) ; les autres visiteurs reçoivent la vue publique, 404 si indisponible.
-     */
-    get: operations['produits_detail'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Modifier un produit
-     * @description GET /produits/{id} et PATCH /produits/{id}.
-     *
-     *     GET : le propriétaire reçoit la vue complète (y compris `epuise` et
-     *     `retire` pour gérer son stock) ; tout autre visiteur reçoit la vue
-     *     publique, 404 si le produit n'est pas au catalogue. PATCH : propriétaire.
-     */
-    patch: operations['produits_partial_update'];
-    trace?: never;
-  };
-  '/api/v1/produits/{identifiant}/photos/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** Réordonner les photos du produit */
-    put: operations['produits_photos_update'];
-    /** Ajouter une photo au produit */
-    post: operations['produits_photos_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/produits/{identifiant}/photos/{fichier_id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Dissocier une photo du produit */
-    delete: operations['produits_photos_destroy'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/produits/{identifiant}/retirer/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** Retirer un produit de la vente (historique conservé) */
-    post: operations['produits_retirer_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/produits/{identifiant}/stock/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Ajuster le stock (refusé sous la quantité réservée) */
-    patch: operations['produits_stock_partial_update'];
-    trace?: never;
-  };
-  '/api/v1/produits/mes-produits/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister mes produits (tous statuts)
-     * @description GET /produits/mes-produits — produits de l'agriculteur, tous statuts.
-     */
-    get: operations['produits_mes_produits_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/referentiels/{type_ref}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister un référentiel par type
-     * @description Retourne la liste des entrées actives d'un référentiel (region, unite, categorie_produit, type_sol, specialite, culture).
-     */
-    get: operations['referentiels_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/remboursements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Demander un remboursement dans le délai paramétré
-     * @description POST /remboursements — demande de remboursement (acheteur, SPEC-05).
-     */
-    post: operations['remboursements_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/remboursements/mes-demandes/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Mes demandes de remboursement
-     * @description GET /remboursements/mes-demandes — suivi par l'acheteur.
-     */
-    get: operations['remboursements_mes_demandes_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sante': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Santé de l'API (liveness)
-     * @description Indique que le processus HTTP répond.
-     */
-    get: operations['sante_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/sante/pret': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Disponibilité de l'API (readiness)
-     * @description Vérifie la connexion MySQL et l'absence de migrations en attente.
-     */
-    get: operations['sante_pret_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/signalements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Signaler un problème (utilisateur, produit, commande, livraison…)
-     * @description POST /signalements — tout utilisateur authentifié et actif (SPEC-10).
-     */
-    post: operations['signalements_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/signalements/mes-signalements/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Mes signalements et leur avancement */
-    get: operations['signalements_mes_signalements_list'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/soldes/moi/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter son solde de gains
-     * @description Décomposition du solde (Q-11) : gains acquis, remboursements imputés, déjà reversé, solde disponible. Jamais stocké, recalculé.
-     */
-    get: operations['soldes_moi_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/utilisateurs/moi/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Consulter son profil
-     * @description GET/PATCH /utilisateurs/moi — profil personnel, y compris compte en attente.
-     */
-    get: operations['utilisateurs_moi_retrieve'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Modifier son profil
-     * @description Nom, email, région, téléphone ; le rôle n'est jamais modifiable ici.
-     */
-    patch: operations['utilisateurs_moi_partial_update'];
-    trace?: never;
-  };
-  '/api/v1/utilisateurs/moi/adresses/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * Lister ses adresses
-     * @description GET/POST /utilisateurs/moi/adresses.
-     */
-    get: operations['utilisateurs_moi_adresses_list'];
-    put?: never;
-    /**
-     * Ajouter une adresse
-     * @description GET/POST /utilisateurs/moi/adresses.
-     */
-    post: operations['utilisateurs_moi_adresses_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/utilisateurs/moi/adresses/{id}/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /**
-     * Supprimer son adresse
-     * @description PATCH/DELETE /utilisateurs/moi/adresses/{id} — propriétaire uniquement (sinon 404).
-     */
-    delete: operations['utilisateurs_moi_adresses_destroy'];
-    options?: never;
-    head?: never;
-    /**
-     * Modifier son adresse
-     * @description PATCH/DELETE /utilisateurs/moi/adresses/{id} — propriétaire uniquement (sinon 404).
-     */
-    patch: operations['utilisateurs_moi_adresses_partial_update'];
-    trace?: never;
-  };
-  '/api/v1/utilisateurs/moi/mot-de-passe/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /**
-     * Changer son mot de passe
-     * @description PUT /utilisateurs/moi/mot-de-passe — remet doit_changer_mot_de_passe à false.
-     */
-    put: operations['utilisateurs_moi_mot_de_passe_update'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/webhooks/notchpay/': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * Webhook NotchPay (confirmation des paiements)
-     * @description Signature invalide → 401. Événement déjà reçu → 200 sans effet. Seul ce point d'entrée fait passer un paiement à `reussi`.
-     */
-    post: operations['webhooks_notchpay_create'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/v1/accompagnements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les accompagnements visibles par l'appelant
+         * @description POST /accompagnements — crée une demande ; GET — liste selon le rôle.
+         */
+        get: operations["accompagnements_lister"];
+        put?: never;
+        /**
+         * Créer une demande d'accompagnement
+         * @description POST /accompagnements — crée une demande ; GET — liste selon le rôle.
+         */
+        post: operations["accompagnements_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Détail d'un accompagnement (parties + admin) */
+        get: operations["accompagnements_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/accepter/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accepter la demande */
+        post: operations["accompagnements_accepter_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/annuler/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Annuler sa demande */
+        post: operations["accompagnements_annuler_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/changer-ingenieur/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Changer l'ingénieur affecté (Q-29, historisé)
+         * @description Avant paiement : agriculteur ou admin. Après paiement : admin uniquement, montant conservé (hypothèse Q-44).
+         */
+        post: operations["accompagnements_changer_ingenieur_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/confirmer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirmer le RDV et initier le paiement
+         * @description En-tête `Idempotency-Key` supporté ; retourne l'URL NotchPay. Le passage à `planifiee` se fait au webhook (Q-05).
+         */
+        post: operations["accompagnements_confirmer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/marquer-manque/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Marquer le RDV manqué (Q-30)
+         * @description Ingénieur absent → remboursement automatique. Agriculteur absent → reprogrammation gratuite.
+         */
+        post: operations["accompagnements_marquer_manque_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/planifier/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Planifier le rendez-vous (conflit de créneau → 409)
+         * @description Verrou SELECT FOR UPDATE sur les RDV chevauchants du même ingénieur ; fige le montant avant confirmation.
+         */
+        post: operations["accompagnements_planifier_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/refuser/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refuser la demande (motif obligatoire) */
+        post: operations["accompagnements_refuser_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/{identifiant}/terminer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clôturer l'accompagnement (observation obligatoire) */
+        post: operations["accompagnements_terminer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/demandes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Demandes reçues par cet ingénieur */
+        get: operations["accompagnements_demandes_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/accompagnements/devis/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Devis consultation + déplacement, sans rien créer
+         * @description Consultation = tarif profil ingénieur ; déplacement = 2 × km aller arrondi au km supérieur × tarif km, borné min/plafond (P-06). Refuse le présentiel si la distance dépasse `deplacement.distance_max_km` (hypothèse Q-44).
+         */
+        post: operations["accompagnements_devis_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/audit/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter le journal d'audit
+         * @description Filtres : acteur, entité, action, période (debut/fin ISO).
+         */
+        get: operations["admin_audit_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/audit/export/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Exporter l'audit en CSV
+         * @description Mêmes filtres que la liste ; export sans pagination.
+         */
+        get: operations["admin_audit_export_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ingenieurs/{id}/refuser/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Refuser le profil d'un ingénieur
+         * @description Le motif est obligatoire (vide → 422 `motif_obligatoire`) et notifié (D-13).
+         */
+        post: operations["admin_ingenieurs_refuser_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/ingenieurs/{id}/valider/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Valider le profil d'un ingénieur
+         * @description Après examen des justificatifs (D-13). Rend le compte actif et notifie l'ingénieur. Journalisé dans JOURNAL_AUDIT.
+         */
+        post: operations["admin_ingenieurs_valider_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/offres/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les offres d'abonnement versionnées
+         * @description GET /admin/offres (adm lecture) ; POST (sadm) — nouvelle version d'offre.
+         */
+        get: operations["admin_offres_list"];
+        put?: never;
+        /**
+         * Enregistrer une nouvelle version d'offre
+         * @description Réservé au super-admin. Les versions précédentes restent en base ; la nouvelle version s'applique aux nouveaux abonnements (P-05).
+         */
+        post: operations["admin_offres_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/parametres/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les paramètres (admin)
+         * @description Chaque paramètre du registre avec sa valeur en vigueur, ses bornes et ses valeurs planifiées. Lecture seule pour l'admin.
+         */
+        get: operations["admin_parametres_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/parametres/{cle}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Définir une nouvelle valeur de paramètre
+         * @description Bornes vérifiées, motif obligatoire, date d'effet immédiate ou future. Chaque changement crée une nouvelle ligne (02 §2.8) et une entrée d'audit.
+         */
+        post: operations["admin_parametres_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/parametres/{cle}/historique/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Historique d'un paramètre
+         * @description GET /admin/parametres/{cle}/historique — toutes les lignes (sadm).
+         */
+        get: operations["admin_parametres_historique_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/parametres/{cle}/restaurer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restaurer la valeur précédente d'un paramètre
+         * @description Restaurer = créer une nouvelle ligne avec l'ancienne valeur (02 §2.8).
+         */
+        post: operations["admin_parametres_restaurer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/referentiels/{type_ref}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister un référentiel (gestion)
+         * @description Toutes les entrées d'un type, actifs et inactifs.
+         */
+        get: operations["admin_referentiels_list"];
+        put?: never;
+        /**
+         * Ajouter une entrée de référentiel
+         * @description /admin/referentiels/{type} — liste de gestion (sadm) + ajout.
+         */
+        post: operations["admin_referentiels_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/referentiels/entrees/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Renommer le libellé d'une entrée
+         * @description Le code stable ne change jamais ; l'ancien libellé est audité.
+         */
+        put: operations["admin_referentiels_entrees_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/referentiels/entrees/{id}/desactiver/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Désactiver une entrée de référentiel
+         * @description L'entrée reste en base (un code utilisé ne se supprime jamais) ; elle disparaît des formulaires.
+         */
+        post: operations["admin_referentiels_entrees_desactiver_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/remboursements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * File des remboursements
+         * @description GET /admin/remboursements — file de traitement (filtrable par statut).
+         */
+        get: operations["admin_remboursements_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/remboursements/{identifiant}/approuver/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Approuver (montant total ou partiel) */
+        post: operations["admin_remboursements_approuver_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/remboursements/{identifiant}/examiner/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Passer la demande en examen */
+        post: operations["admin_remboursements_examiner_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/remboursements/{identifiant}/executer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enregistrer la référence du renvoi (approuvé → effectue)
+         * @description Q-26 : l'admin a effectué le renvoi hors plateforme, il enregistre la référence.
+         */
+        post: operations["admin_remboursements_executer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/remboursements/{identifiant}/refuser/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refuser avec motif obligatoire */
+        post: operations["admin_remboursements_refuser_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reversements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Historique des reversements
+         * @description GET/POST /admin/reversements — historique et enregistrement (adm).
+         */
+        get: operations["admin_reversements_retrieve"];
+        put?: never;
+        /**
+         * Enregistrer un reversement manuel
+         * @description Montant ≤ solde disponible, référence opérateur obligatoire, audit systématique. Le paiement sort du circuit NotchPay (Q-11).
+         */
+        post: operations["admin_reversements_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/signalements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** File des signalements (filtrable par statut) */
+        get: operations["admin_signalements_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/signalements/{identifiant}/traiter/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Traiter un signalement (statut + décision, audit) */
+        post: operations["admin_signalements_traiter_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/soldes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Soldes positifs à reverser
+         * @description File de travail pour les reversements manuels (Q-11).
+         */
+        get: operations["admin_soldes_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les utilisateurs (admin)
+         * @description GET /admin/utilisateurs — liste ; POST — création d'admin (sadm seul, 403 sinon).
+         */
+        get: operations["admin_utilisateurs_lister"];
+        put?: never;
+        /**
+         * Créer un compte d'administration
+         * @description Réservé au super-admin (admin et super_admin ne s'inscrivent pas, 02 §2.1). Le mot de passe temporaire n'est renvoyé qu'une fois.
+         */
+        post: operations["admin_utilisateurs_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter un utilisateur (admin)
+         * @description GET /admin/utilisateurs/{id} — détail + dossier ingénieur (D-13).
+         */
+        get: operations["admin_utilisateurs_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/{id}/reactiver/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Réactiver un compte suspendu
+         * @description POST /admin/utilisateurs/{id}/reactiver.
+         */
+        post: operations["admin_utilisateurs_reactiver_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/{id}/reinitialiser-mot-de-passe/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Émettre un mot de passe temporaire
+         * @description Le mot de passe n'est renvoyé qu'une seule fois, jamais stocké ni journalisé en clair ; le compte devra le changer à la connexion. Toutes les sessions en cours sont révoquées.
+         */
+        post: operations["admin_utilisateurs_reinitialiser_mot_de_passe_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/{id}/suspendre/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Suspendre un compte
+         * @description Le compte devient inaccessible et TOUTES ses sessions sont révoquées immédiatement. Motif obligatoire, notifié et journalisé.
+         */
+        post: operations["admin_utilisateurs_suspendre_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/compteurs/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compteurs d'administration
+         * @description Ingénieurs en attente de validation, demandes de réinitialisation en attente (Q-23) et comptes suspendus.
+         */
+        get: operations["admin_utilisateurs_compteurs_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/utilisateurs/demandes-reinitialisation/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les demandes de réinitialisation en attente
+         * @description GET /admin/utilisateurs/demandes-reinitialisation — file Q-23.
+         */
+        get: operations["admin_utilisateurs_demandes_reinitialisation_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/connexion/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Se connecter
+         * @description Identifiant : téléphone E.164 ou email. Message identique si le compte n'existe pas (anti-énumération). Compte suspendu → 403 compte_suspendu.
+         */
+        post: operations["auth_connexion_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/deconnexion/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Se déconnecter
+         * @description POST /auth/deconnexion — révoque la session courante et purge le cookie.
+         */
+        post: operations["auth_deconnexion_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/demande-reinitialisation/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Demander une réinitialisation de mot de passe
+         * @description L'administrateur vérifie l'identité par téléphone puis génère un mot de passe temporaire (F-03). Réponse identique que le compte existe ou non.
+         */
+        post: operations["auth_demande_reinitialisation_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/inscription/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Créer un compte
+         * @description Rôles autorisés : agriculteur, acheteur, ingenieur_agronome, livreur. L'ingénieur est créé en attente de validation administrateur (D-13). Établit la session : jeton d'accès dans la réponse, jeton de rafraîchissement en cookie httpOnly.
+         */
+        post: operations["auth_inscription_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/rafraichir/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Renouveler la session
+         * @description Utilise le cookie httpOnly, révoque le jeton présenté (rotation) et établit une nouvelle session. Réutilisation d'un jeton déjà tourné → révocation de toutes les sessions de l'utilisateur.
+         */
+        post: operations["auth_rafraichir_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blocages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bloquer un utilisateur
+         * @description Un blocage empêche tout échange de messages entre les deux comptes (Q-15).
+         */
+        post: operations["blocages_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/blocages/{utilisateur_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Débloquer un utilisateur
+         * @description DELETE /blocages/{utilisateur_id} — débloque un utilisateur.
+         */
+        delete: operations["blocages_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Passer une commande (un seul agriculteur) */
+        post: operations["commandes_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{commande_id}/livraison/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter la livraison d'une commande
+         * @description GET /commandes/{id}/livraison — livraison liée (parties + admin).
+         */
+        get: operations["commandes_livraison_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consulter une commande */
+        get: operations["commandes_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/accepter/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accepter une commande (réserve le stock) */
+        post: operations["commandes_accepter_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/annuler/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Annuler une commande avant paiement */
+        post: operations["commandes_annuler_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/code-remise/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lire son code de remise (acheteur uniquement) */
+        get: operations["commandes_code_remise_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/evaluation/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter mon évaluation de cette commande
+         * @description POST /commandes/{id}/evaluation — seulement si livrée, une fois (02 §2.3).
+         */
+        get: operations["commandes_evaluation_retrieve"];
+        put?: never;
+        /**
+         * Évaluer une commande livrée (1..5)
+         * @description POST /commandes/{id}/evaluation — seulement si livrée, une fois (02 §2.3).
+         */
+        post: operations["commandes_evaluation_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/historique/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Historique des statuts d'une commande */
+        get: operations["commandes_historique_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/paiements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Initier le paiement d'une commande acceptée
+         * @description En-tête `Idempotency-Key` : la même clé renvoie le même paiement sans nouvel effet (double clic sans doublon).
+         */
+        post: operations["commandes_paiements_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/preparer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Marquer une commande payée en préparation */
+        post: operations["commandes_preparer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/{identifiant}/rejeter/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rejeter une commande (motif obligatoire) */
+        post: operations["commandes_rejeter_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/devis/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Chiffrer une commande sans la créer */
+        post: operations["commandes_devis_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/mes-achats/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lister mes achats */
+        get: operations["commandes_mes_achats_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/commandes/mes-ventes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lister mes ventes */
+        get: operations["commandes_mes_ventes_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister ses conversations
+         * @description GET/POST /conversations — liste des siennes, ouverture/obtention.
+         */
+        get: operations["conversations_list"];
+        put?: never;
+        /**
+         * Ouvrir ou obtenir une conversation
+         * @description Exige exactement un rattachement : `commande_id` ou `accompagnement_id`. L'appelant doit être une partie de la relation, sinon 404. Une seule conversation par relation (Q-46a).
+         */
+        post: operations["conversations_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtenir une conversation
+         * @description GET /conversations/{id} — détail d'une conversation participante.
+         */
+        get: operations["conversations_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/lu/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Marquer les messages comme lus
+         * @description POST /conversations/{id}/lu — pointe le dernier message lu (accusé).
+         */
+        post: operations["conversations_lu_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversations/{id}/messages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les messages d'une conversation
+         * @description GET/POST /conversations/{id}/messages — historique et envoi.
+         */
+        get: operations["conversations_messages_list"];
+        put?: never;
+        /**
+         * Envoyer un message
+         * @description `id_client` (UUID) requis et idempotent : un renvoi après reconnexion ne crée jamais de doublon. `contenu` et/ou `fichier_id` obligatoire, sinon 422 `message_vide`. Si un participant a bloqué l'autre, 403 `blocage_actif` (Q-15). Le `contenu` est stocké en texte brut.
+         */
+        post: operations["conversations_messages_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dev/horloge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Décaler ou figer l'horloge (dev/test)
+         * @description Décale l'heure ou la fige pour tester les expirations et délais.
+         */
+        post: operations["dev_horloge_create"];
+        /**
+         * Réinitialiser l'horloge (dev/test)
+         * @description Rétablit le temps réel.
+         */
+        delete: operations["dev_horloge_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dev/taches/{nom}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Exécuter une tâche planifiée immédiatement (dev/test)
+         * @description Déclenchement immédiat d'une tâche de fond pour les tests E2E.
+         */
+        post: operations["dev_taches_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exploitations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lister les exploitations de l'agriculteur */
+        get: operations["exploitations_list"];
+        put?: never;
+        /** Créer une exploitation */
+        post: operations["exploitations_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exploitations/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consulter une exploitation */
+        get: operations["exploitations_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Modifier une exploitation */
+        patch: operations["exploitations_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/exploitations/{identifiant}/archiver/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archiver une exploitation */
+        post: operations["exploitations_archiver_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exploitations/{identifiant}/plannings/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Historique des générations d'une exploitation
+         * @description Réservé au propriétaire, à un ingénieur affecté et à l'admin.
+         */
+        get: operations["exploitations_plannings_retrieve"];
+        put?: never;
+        /**
+         * Générer un planning cultural assisté par IA
+         * @description En-tête `Idempotency-Key` supporté. Dépassement de quota → 429 `quota_atteint`. L'IA ne reçoit aucune donnée personnelle ; le centre est arrondi à 0,1°. Seules les générations réussies décomptent le quota.
+         */
+        post: operations["exploitations_plannings_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/exploitations/{identifiant}/recommandations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Demander une recommandation agronomique à l'IA
+         * @description Quota séparé (`recommandation`). En-tête `Idempotency-Key` supporté ; dépassement → 429 `quota_atteint`.
+         */
+        post: operations["exploitations_recommandations_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fichiers/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Téléverser un fichier
+         * @description Upload multipart (champ binaire `fichier` + `contexte`). Le type est vérifié sur le contenu, les tailles maximales viennent des paramètres de la plateforme ; les métadonnées EXIF des images sont retirées. Retourne l'identifiant du fichier.
+         */
+        post: operations["fichiers_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fichiers/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtenir un fichier
+         * @description Renvoie une redirection 302 vers une URL signée HMAC de courte durée. Règles d'accès par contexte : photos de produits publiques, justificatifs visibles par le propriétaire et les admins ; un fichier non visible pour l'appelant renvoie 404.
+         */
+        get: operations["fichiers_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fichiers/{id}/contenu/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Télécharger le contenu d'un fichier
+         * @description Point d'arrivée de la redirection de `GET /fichiers/{id}`. Autorisé uniquement par la signature HMAC ; signature invalide → 404, lien expiré → 410.
+         */
+        get: operations["fichiers_contenu_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/generations-ia/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Détail d'une génération IA (propriétaire, ingénieur affecté, admin) */
+        get: operations["generations_ia_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/generations-ia/{identifiant}/corrections/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Corriger une génération IA (ne mute jamais la réponse originale)
+         * @description Réservé à un ingénieur affecté à un accompagnement actif de l'exploitation. Tout autre appelant reçoit 404 ; un acheteur/un livreur est refusé plus en amont (403).
+         */
+        post: operations["generations_ia_corrections_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ia/quota/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Quota mensuel de générations IA (consommé / limite par type) */
+        get: operations["ia_quota_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingenieurs/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister les ingénieurs validés et disponibles
+         * @description Filtres `specialite` (code du référentiel), `region` et, depuis F-11, `exploitation_id` (la zone de l'ingénieur couvre le centre de l'exploitation).
+         */
+        get: operations["ingenieurs_lister"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingenieurs/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter le profil public d'un ingénieur
+         * @description GET /ingenieurs/{id} — profil public, sans téléphone (03 SPEC-01).
+         */
+        get: operations["ingenieurs_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingenieurs/moi/justificatifs/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister ses justificatifs
+         * @description GET/POST /ingenieurs/moi/justificatifs — dossier de candidature (D-13).
+         */
+        get: operations["ingenieurs_moi_justificatifs_list"];
+        put?: never;
+        /**
+         * Déposer un justificatif
+         * @description Rattache un fichier déjà téléversé en contexte `justificatif`.
+         */
+        post: operations["ingenieurs_moi_justificatifs_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingenieurs/moi/profil/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter son profil professionnel
+         * @description GET/PUT /ingenieurs/moi/profil — accessible même en attente de validation.
+         */
+        get: operations["ingenieurs_moi_profil_retrieve"];
+        /**
+         * Mettre à jour son profil professionnel
+         * @description Spécialités (référentiel), zone (centre + rayon), tarif borné par les paramètres de consultation, disponibilité, biographie, modalités, photo. La mise en disponibilité exige un profil complet et validé.
+         */
+        put: operations["ingenieurs_moi_profil_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consulter une livraison (données selon rôle et étape) */
+        get: operations["livraisons_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/accepter/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Accepter une livraison (un seul gagnant, sinon 409) */
+        post: operations["livraisons_accepter_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/confirmer-remise/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirmer la remise par le code (bloqué après 5 échecs) */
+        post: operations["livraisons_confirmer_remise_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/demarrer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Démarrer la course (produit récupéré, stock consommé) */
+        post: operations["livraisons_demarrer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/desister/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Se désister (retour à proposée) */
+        post: operations["livraisons_desister_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/historique/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Historique des statuts d'une livraison */
+        get: operations["livraisons_historique_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/incidents/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Déclarer un incident (photo possible) */
+        post: operations["livraisons_incidents_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/itineraire/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Itinéraire GeoJSON de la livraison */
+        get: operations["livraisons_itineraire_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/position/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mettre à jour sa position pendant la course
+         * @description POST /livraisons/{id}/position — le livreur publie sa position en course.
+         */
+        post: operations["livraisons_position_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/{identifiant}/reprogrammer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reprogrammer après incident (avec paiement si client absent) */
+        post: operations["livraisons_reprogrammer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/disponibles/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Livraisons proposées, triées par distance (sans adresse exacte) */
+        get: operations["livraisons_disponibles_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livraisons/mes-livraisons/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Mes livraisons acceptées et en cours */
+        get: operations["livraisons_mes_livraisons_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/livreurs/moi/disponibilite/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter sa disponibilité de livreur
+         * @description GET/PUT /livreurs/moi/disponibilite — bouton disponible/indisponible (LIV-01).
+         */
+        get: operations["livreurs_moi_disponibilite_retrieve"];
+        /**
+         * Se rendre disponible ou indisponible
+         * @description Se rendre disponible exige une position (GeoJSON Point dans l'emprise du Cameroun) au moins une fois.
+         */
+        put: operations["livreurs_moi_disponibilite_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister ses notifications
+         * @description GET /notifications — la liste du destinataire courant.
+         */
+        get: operations["notifications_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/{id}/lue/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Marquer une notification comme lue
+         * @description POST /notifications/{id}/lue — destinataire uniquement (autrui → 404).
+         */
+        post: operations["notifications_lue_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/compteur/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Compteur de notifications non lues
+         * @description GET /notifications/compteur — nombre de non lues (cloche, polling 30 s).
+         */
+        get: operations["notifications_compteur_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/notifications/tout-lire/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Marquer toutes les notifications comme lues
+         * @description POST /notifications/tout-lire — marque toutes les non lues comme lues.
+         */
+        post: operations["notifications_tout_lire_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/paiements/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consulter un paiement */
+        get: operations["paiements_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/parametres/publics/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Obtenir les paramètres publics de la plateforme
+         * @description Retourne la liste des paramètres nécessaires aux clients (frais de livraison, plafonds, tolérances, limites de fichiers).
+         */
+        get: operations["parametres_publics_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/produits/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter le catalogue public
+         * @description POST /produits (publication, agriculteur) et GET /produits (catalogue public).
+         */
+        get: operations["produits_catalogue"];
+        put?: never;
+        /**
+         * Publier un produit
+         * @description POST /produits (publication, agriculteur) et GET /produits (catalogue public).
+         */
+        post: operations["produits_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/produits/{identifiant}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter un produit (vue complète pour le propriétaire)
+         * @description Le propriétaire reçoit tous les champs (stock réservé, statut) ; les autres visiteurs reçoivent la vue publique, 404 si indisponible.
+         */
+        get: operations["produits_detail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Modifier un produit
+         * @description GET /produits/{id} et PATCH /produits/{id}.
+         *
+         *     GET : le propriétaire reçoit la vue complète (y compris `epuise` et
+         *     `retire` pour gérer son stock) ; tout autre visiteur reçoit la vue
+         *     publique, 404 si le produit n'est pas au catalogue. PATCH : propriétaire.
+         */
+        patch: operations["produits_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/produits/{identifiant}/photos/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Réordonner les photos du produit */
+        put: operations["produits_photos_update"];
+        /** Ajouter une photo au produit */
+        post: operations["produits_photos_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/produits/{identifiant}/photos/{fichier_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Dissocier une photo du produit */
+        delete: operations["produits_photos_destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/produits/{identifiant}/retirer/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Retirer un produit de la vente (historique conservé) */
+        post: operations["produits_retirer_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/produits/{identifiant}/stock/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Ajuster le stock (refusé sous la quantité réservée) */
+        patch: operations["produits_stock_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/produits/mes-produits/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister mes produits (tous statuts)
+         * @description GET /produits/mes-produits — produits de l'agriculteur, tous statuts.
+         */
+        get: operations["produits_mes_produits_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/referentiels/{type_ref}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister un référentiel par type
+         * @description Retourne la liste des entrées actives d'un référentiel (region, unite, categorie_produit, type_sol, specialite, culture).
+         */
+        get: operations["referentiels_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/remboursements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Demander un remboursement dans le délai paramétré
+         * @description POST /remboursements — demande de remboursement (acheteur, SPEC-05).
+         */
+        post: operations["remboursements_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/remboursements/mes-demandes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Mes demandes de remboursement
+         * @description GET /remboursements/mes-demandes — suivi par le demandeur (acheteur ou agriculteur, F-11).
+         */
+        get: operations["remboursements_mes_demandes_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sante": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Santé de l'API (liveness)
+         * @description Indique que le processus HTTP répond.
+         */
+        get: operations["sante_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sante/pret": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Disponibilité de l'API (readiness)
+         * @description Vérifie la connexion MySQL et l'absence de migrations en attente.
+         */
+        get: operations["sante_pret_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/signalements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Signaler un problème (utilisateur, produit, commande, livraison…)
+         * @description POST /signalements — tout utilisateur authentifié et actif (SPEC-10).
+         */
+        post: operations["signalements_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/signalements/mes-signalements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Mes signalements et leur avancement */
+        get: operations["signalements_mes_signalements_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/soldes/moi/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter son solde de gains
+         * @description Décomposition du solde (Q-11) : gains acquis, remboursements imputés, déjà reversé, solde disponible. Jamais stocké, recalculé.
+         */
+        get: operations["soldes_moi_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/statistiques/mes-accompagnements/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Statistiques d'accompagnements de l'ingénieur connecté */
+        get: operations["statistiques_mes_accompagnements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/statistiques/mes-livraisons/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Statistiques de livraisons du livreur connecté */
+        get: operations["statistiques_mes_livraisons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/statistiques/mes-ventes/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Statistiques de ventes de l'agriculteur connecté */
+        get: operations["statistiques_mes_ventes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/statistiques/plateforme/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Statistiques globales de la plateforme (admin / super-admin) */
+        get: operations["statistiques_plateforme"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/utilisateurs/moi/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Consulter son profil
+         * @description GET/PATCH /utilisateurs/moi — profil personnel, y compris compte en attente.
+         */
+        get: operations["utilisateurs_moi_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Modifier son profil
+         * @description Nom, email, région, téléphone ; le rôle n'est jamais modifiable ici.
+         */
+        patch: operations["utilisateurs_moi_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/utilisateurs/moi/adresses/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lister ses adresses
+         * @description GET/POST /utilisateurs/moi/adresses.
+         */
+        get: operations["utilisateurs_moi_adresses_list"];
+        put?: never;
+        /**
+         * Ajouter une adresse
+         * @description GET/POST /utilisateurs/moi/adresses.
+         */
+        post: operations["utilisateurs_moi_adresses_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/utilisateurs/moi/adresses/{id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Supprimer son adresse
+         * @description PATCH/DELETE /utilisateurs/moi/adresses/{id} — propriétaire uniquement (sinon 404).
+         */
+        delete: operations["utilisateurs_moi_adresses_destroy"];
+        options?: never;
+        head?: never;
+        /**
+         * Modifier son adresse
+         * @description PATCH/DELETE /utilisateurs/moi/adresses/{id} — propriétaire uniquement (sinon 404).
+         */
+        patch: operations["utilisateurs_moi_adresses_partial_update"];
+        trace?: never;
+    };
+    "/api/v1/utilisateurs/moi/mot-de-passe/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Changer son mot de passe
+         * @description PUT /utilisateurs/moi/mot-de-passe — remet doit_changer_mot_de_passe à false.
+         */
+        put: operations["utilisateurs_moi_mot_de_passe_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/webhooks/notchpay/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Webhook NotchPay (confirmation des paiements)
+         * @description Signature invalide → 401. Événement déjà reçu → 200 sans effet. Seul ce point d'entrée fait passer un paiement à `reussi`.
+         */
+        post: operations["webhooks_notchpay_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ws/ticket/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Demander un ticket WebSocket
+         * @description Émet un ticket jetable stocké au cache, à passer en query string (`/ws?ticket=…`) pour authentifier le canal. Le consumer le consomme à la connexion puis l'invalide.
+         */
+        post: operations["ws_ticket_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * @description * `ingenieur` - Ingénieur absent
-     *     * `agriculteur` - Agriculteur absent
-     * @enum {string}
-     */
-    AbsentEnum: 'ingenieur' | 'agriculteur';
-    /** @description Lecture publique d'un accompagnement (liste + détail). */
-    Accompagnement: {
-      readonly id: string;
-      readonly agriculteur: string;
-      readonly agriculteur_nom: string;
-      /** @description Ingénieur actuellement affecté */
-      readonly ingenieur: string | null;
-      readonly ingenieur_nom: string | null;
-      readonly exploitation: string;
-      readonly exploitation_nom: string | null;
-      readonly modalite: components['schemas']['ModaliteEnum'];
-      readonly motif: string;
-      readonly description: string | null;
-      readonly statut: components['schemas']['Statut86dEnum'];
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      lieu_rdv?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      readonly lieu_rdv_texte: string | null;
-      /**
-       * Format: uri
-       * @description Lien de visioconférence en modalité « en ligne » (hypothèse Q-44)
-       */
-      readonly lien_visio: string | null;
-      /** Format: date-time */
-      readonly date_rdv_debut: string | null;
-      /** Format: date-time */
-      readonly date_rdv_fin: string | null;
-      /** @description Figé à la confirmation (02 §2.5) */
-      readonly prix_consultation_fcfa: number | null;
-      /** @description Figé à la confirmation, 0 si en ligne (02 §2.5) */
-      readonly frais_deplacement_fcfa: number | null;
-      /** @description Aller simple, arrondie au km supérieur (02 §2.5, conventions §3) */
-      readonly distance_km: number | null;
-      /** @description Commission retenue sur la consultation, figée à la confirmation (Q-06) */
-      readonly commission_consultation_fcfa: number | null;
-      /** @description Compte rendu obligatoire de l'ingénieur à la clôture */
-      readonly observation: string | null;
-      readonly nb_rdv_manques: number;
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    /** @description POST /accompagnements — crée une demande en `demandee`. */
-    AccompagnementCreationRequest: {
-      exploitation_id: string;
-      ingenieur_id: string;
-      modalite: components['schemas']['ModaliteEnum'];
-      motif: string;
-      description?: string | null;
-    };
-    /** @description Détail + historique des transitions et affectations. */
-    AccompagnementDetail: {
-      readonly id: string;
-      readonly agriculteur: string;
-      readonly agriculteur_nom: string;
-      /** @description Ingénieur actuellement affecté */
-      readonly ingenieur: string | null;
-      readonly ingenieur_nom: string | null;
-      readonly exploitation: string;
-      readonly exploitation_nom: string | null;
-      readonly modalite: components['schemas']['ModaliteEnum'];
-      readonly motif: string;
-      readonly description: string | null;
-      readonly statut: components['schemas']['Statut86dEnum'];
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      lieu_rdv?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      readonly lieu_rdv_texte: string | null;
-      /**
-       * Format: uri
-       * @description Lien de visioconférence en modalité « en ligne » (hypothèse Q-44)
-       */
-      readonly lien_visio: string | null;
-      /** Format: date-time */
-      readonly date_rdv_debut: string | null;
-      /** Format: date-time */
-      readonly date_rdv_fin: string | null;
-      /** @description Figé à la confirmation (02 §2.5) */
-      readonly prix_consultation_fcfa: number | null;
-      /** @description Figé à la confirmation, 0 si en ligne (02 §2.5) */
-      readonly frais_deplacement_fcfa: number | null;
-      /** @description Aller simple, arrondie au km supérieur (02 §2.5, conventions §3) */
-      readonly distance_km: number | null;
-      /** @description Commission retenue sur la consultation, figée à la confirmation (Q-06) */
-      readonly commission_consultation_fcfa: number | null;
-      /** @description Compte rendu obligatoire de l'ingénieur à la clôture */
-      readonly observation: string | null;
-      readonly nb_rdv_manques: number;
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-      readonly historique: {
-        [key: string]: unknown;
-      }[];
-      readonly affectations: components['schemas']['AffectationIngenieur'][];
-    };
-    /** @description ADRESSE — position en GeoJSON Point (conventions §3). */
-    Adresse: {
-      readonly id: string;
-      /** @description Libellé court : « Domicile », « Boutique »… */
-      libelle: string;
-      /** @description Repères (les adresses postales sont rares au Cameroun) */
-      description?: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      ville: string;
-      region: string;
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    /** @description ADRESSE — position en GeoJSON Point (conventions §3). */
-    AdresseCreationRequest: {
-      /** @description Libellé court : « Domicile », « Boutique »… */
-      libelle: string;
-      /** @description Repères (les adresses postales sont rares au Cameroun) */
-      description?: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      ville: string;
-      region: string;
-    };
-    AffectationIngenieur: {
-      readonly id: string;
-      readonly ingenieur: string;
-      readonly ingenieur_nom: string;
-      /** Format: date-time */
-      readonly debut: string;
-      /** Format: date-time */
-      readonly fin: string | null;
-      readonly motif_fin:
-        (components['schemas']['MotifFinEnum'] | components['schemas']['NullEnum']) | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description POST /admin/remboursements/{id}/approuver — montant total ou partiel. */
-    ApprouverRemboursementRequest: {
-      montant_accorde_fcfa: number;
-    };
-    /** @description Ligne du journal d'audit, détaillée pour l'admin (ancienne/nouvelle). */
-    AuditEntree: {
-      id: string;
-      action: string;
-      entite_type: string;
-      entite_id: string | null;
-      readonly acteur_nom: string | null;
-      ancienne_valeur: unknown;
-      nouvelle_valeur: unknown;
-      /** Format: date-time */
-      cree_le: string;
-    };
-    CatalogueProduits: {
-      elements: components['schemas']['ProduitCatalogue'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    /** @description POST /{id}/changer-ingenieur — historisé (Q-29). */
-    ChangerIngenieurRequest: {
-      ingenieur_id: string;
-    };
-    /**
-     * @description * `utilisateur` - Utilisateur
-     *     * `message` - Message
-     *     * `produit` - Produit
-     *     * `commande` - Commande
-     *     * `livraison` - Livraison
-     *     * `accompagnement` - Accompagnement
-     * @enum {string}
-     */
-    CibleSignalementEnum:
-      'utilisateur' | 'message' | 'produit' | 'commande' | 'livraison' | 'accompagnement';
-    /** @description Saisie du code par le livreur : exactement 6 chiffres. */
-    CodeRemiseRequest: {
-      code: string;
-    };
-    CommandeDetail: {
-      readonly id: string;
-      reference: string;
-      statut?: components['schemas']['StatutCommandeEnum'];
-      readonly lignes: components['schemas']['LigneCommande'][];
-      readonly adresse_livraison: string;
-      readonly adresse_exacte_visible: boolean;
-      /** @description Zone affichée à l'agriculteur avant paiement (D-21) */
-      zone_livraison?: string;
-      distance_km: number;
-      sous_total_fcfa: number;
-      frais_livraison_fcfa: number;
-      total_fcfa: number;
-      readonly commission_taux_pb: number | null;
-      readonly commission_fcfa: number | null;
-      parametres_appliques?: unknown;
-      /** Format: date-time */
-      expire_le?: string | null;
-      motif_rejet?: string | null;
-      readonly agriculteur_nom: string;
-      readonly acheteur_nom: string;
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      maj_le?: string;
-    };
-    CommandeListe: {
-      readonly id: string;
-      reference: string;
-      statut?: components['schemas']['StatutCommandeEnum'];
-      total_fcfa: number;
-      sous_total_fcfa: number;
-      frais_livraison_fcfa: number;
-      readonly agriculteur_nom: string;
-      readonly acheteur_nom: string;
-      readonly nombre_lignes: number;
-      /** Format: date-time */
-      expire_le?: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description GET /admin/utilisateurs/compteurs — bandeaux ADM-01 (F-03 frontend point 5). */
-    CompteursAdmin: {
-      ingenieurs_en_attente: number;
-      reinitialisations_en_attente: number;
-      comptes_suspendus: number;
-      litiges_en_attente: number;
-      signalements_ouverts: number;
-    };
-    /** @description POST /{id}/confirmer — l'agriculteur accepte le montant et paie. */
-    ConfirmerRequest: {
-      operateur: components['schemas']['Operateur370Enum'];
-      telephone?: string;
-    };
-    /** @description POST /auth/connexion — téléphone E.164 ou email + mot de passe. */
-    ConnexionRequest: {
-      identifiant: string;
-      mot_de_passe: string;
-    };
-    /**
-     * @description * `produit` - Photo de produit
-     *     * `signalement` - Pièce d'un signalement
-     *     * `accompagnement` - Fichier d'un accompagnement
-     *     * `justificatif` - Justificatif professionnel
-     *     * `chat` - Fichier de conversation
-     *     * `incident` - Photo d'incident de livraison
-     * @enum {string}
-     */
-    ContexteEnum:
-      'produit' | 'signalement' | 'accompagnement' | 'justificatif' | 'chat' | 'incident';
-    /** @description POST /generations-ia/{id}/corrections. */
-    CorrectionCreationRequest: {
-      commentaire: string;
-      contenu_corrige?: unknown;
-    };
-    CorrectionIA: {
-      readonly id: string;
-      readonly ingenieur: string;
-      readonly ingenieur_nom: string;
-      commentaire: string;
-      /** @description Réponse complète corrigée ; peut rester null pour un simple avis. */
-      contenu_corrige?: unknown;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description POST /admin/utilisateurs (super-admin) — création d'un compte admin. */
-    CreationAdminRequest: {
-      nom: string;
-      telephone: string;
-      email?: string;
-      /** @default admin */
-      role: components['schemas']['RoleAdministrationEnum'];
-      region?: string;
-    };
-    /** @description POST /commandes — mêmes champs que le devis, avec écriture. */
-    CreationCommandeRequest: {
-      lignes: components['schemas']['LigneSaisieRequest'][];
-      adresse_id?: string;
-      adresse_texte?: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-    };
-    /** @description POST /auth/demande-reinitialisation (Q-23) — téléphone du compte. */
-    DemandeReinitialisationRequest: {
-      telephone: string;
-    };
-    /** @description POST /accompagnements/devis — calcule le prix sans rien créer. */
-    DevisCreationRequest: {
-      exploitation_id: string;
-      ingenieur_id: string;
-      modalite: components['schemas']['ModaliteEnum'];
-    };
-    DevisReponse: {
-      consultation_fcfa: number;
-      deplacement_fcfa: number;
-      distance_km_aller: number | null;
-      /** Format: double */
-      distance_exacte_km: number | null;
-      commission_consultation_fcfa: number;
-      taux_commission_pb: number;
-      total_fcfa: number;
-      'gain_ing\u00E9nieur_fcfa': number;
-    };
-    /** @description POST /commandes/devis — lignes + adresse (enregistrée ou saisie). */
-    DevisRequest: {
-      lignes: components['schemas']['LigneSaisieRequest'][];
-      adresse_id?: string;
-      adresse_texte?: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-    };
-    /** @description PUT /livreurs/moi/disponibilite — disponible + position optionnelle. */
-    DisponibiliteLivreurRequest: {
-      disponible: boolean;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      zone?: string | null;
-    };
-    Evaluation: {
-      readonly id: string;
-      readonly commande: string;
-      readonly acheteur: string;
-      readonly note_agriculteur: number;
-      readonly note_livreur: number | null;
-      readonly commentaire: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description POST /commandes/{id}/evaluation — 1..5, une seule fois (02 §2.3). */
-    EvaluationCreationRequest: {
-      note_agriculteur: number;
-      note_livreur?: number | null;
-      commentaire?: string | null;
-    };
-    /**
-     * @description POST /admin/remboursements/{id}/executer — référence du renvoi (Q-26).
-     *
-     *     La règle « référence non vide » vit dans le service (`reference_obligatoire`).
-     */
-    ExecuterRemboursementRequest: {
-      reference_operateur: string;
-    };
-    Exploitation: {
-      readonly id: string;
-      nom: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      parcelle: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      readonly centre: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      /** Format: decimal */
-      superficie_ha: string;
-      /** Format: decimal */
-      readonly superficie_calculee_ha: string;
-      type_sol: string;
-      region: string;
-      localite?: string;
-      readonly statut: components['schemas']['ExploitationStatutEnum'];
-      readonly nombre_produits: number;
-      readonly dernier_planning: unknown;
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    ExploitationCreationRequest: {
-      nom: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      parcelle: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      /** Format: decimal */
-      superficie_ha?: string | null;
-      type_sol: string;
-      region: string;
-      localite?: string;
-    };
-    /**
-     * @description * `active` - Active
-     *     * `archivee` - Archivée
-     * @enum {string}
-     */
-    ExploitationStatutEnum: 'active' | 'archivee';
-    /** @description Représentation publique d'un fichier (sans chemin de stockage). */
-    Fichier: {
-      readonly id: string;
-      /**
-       * @description Usage annoncé à l'upload ; détermine les règles d'accès
-       *
-       *     * `produit` - Photo de produit
-       *     * `signalement` - Pièce d'un signalement
-       *     * `accompagnement` - Fichier d'un accompagnement
-       *     * `justificatif` - Justificatif professionnel
-       *     * `chat` - Fichier de conversation
-       *     * `incident` - Photo d'incident de livraison
-       */
-      readonly contexte: components['schemas']['ContexteEnum'];
-      /** @description Nom donné par le client, affiché pour rappel uniquement */
-      readonly nom_original: string;
-      /** @description Type détecté sur le contenu (filetype), pas sur l'extension */
-      readonly type_mime: string;
-      /** @description Taille en octets après traitement (EXIF retiré) */
-      readonly taille_octets: number;
-      /** @description True seulement pour les photos de produits */
-      readonly public: boolean;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description Détail complet : payload, réponse originale immuable, corrections. */
-    GenerationIADetail: {
-      readonly id: string;
-      readonly type: components['schemas']['TypeGenerationEnum'];
-      readonly exploitation: string;
-      /** @description Agriculteur propriétaire qui a déclenché la génération. */
-      readonly demandeur: string;
-      readonly culture: string;
-      /** Format: date */
-      readonly periode_debut: string;
-      /** Format: date */
-      readonly periode_fin: string;
-      /** @description Payload exact envoyé au fournisseur IA (audit « aucune donnée personnelle », 01 §1ter). Construit par ServiceEntrees.construire(). */
-      readonly entrees: unknown;
-      /** @description Réponse validée par le schéma Pydantic ; jamais mutée après `reussie`. */
-      readonly reponse_originale: unknown;
-      readonly avertissement: string | null;
-      readonly fournisseur_ia: string;
-      readonly modele_ia: string;
-      readonly version_prompt: string;
-      readonly statut: components['schemas']['StatutGenerationEnum'];
-      /** @description Code + message lisible si statut = `echouee`. */
-      readonly erreur: string | null;
-      /** @description Clé `AAAA-MM` UTC de la génération, utilisée pour la remise à zéro mensuelle. */
-      readonly mois_quota: string;
-      /** @description En-tête `Idempotency-Key` de la requête POST (null si absent). */
-      readonly cle_idempotence: string | null;
-      readonly corrections: components['schemas']['CorrectionIA'][];
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    /** @description Vue légère pour l'historique d'une exploitation. */
-    GenerationIAList: {
-      readonly id: string;
-      readonly type: components['schemas']['TypeGenerationEnum'];
-      readonly statut: components['schemas']['StatutGenerationEnum'];
-      readonly culture: string;
-      /** Format: date */
-      readonly periode_debut: string;
-      /** Format: date */
-      readonly periode_fin: string;
-      readonly fournisseur_ia: string;
-      readonly modele_ia: string;
-      readonly version_prompt: string;
-      /** @description Clé `AAAA-MM` UTC de la génération, utilisée pour la remise à zéro mensuelle. */
-      readonly mois_quota: string;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    Incident: {
-      readonly id: string;
-      type: components['schemas']['TypeIncidentEnum'];
-      description?: string;
-      fichier?: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    IncidentCreationRequest: {
-      type: components['schemas']['TypeIncidentEnum'];
-      /** @default  */
-      description: string;
-      fichier_id?: string | null;
-    };
-    /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
-    IngenieurProfil: {
-      /** @description Liste de codes du référentiel `specialite` (validés par le service) */
-      specialites?: unknown;
-      /** @description Région d'intervention (filtre GET /ingenieurs) */
-      region?: string | null;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      zone_centre?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
-      zone_rayon_km?: number | null;
-      /** @description Prix de la consultation en FCFA (entier), hors déplacement */
-      tarif_consultation_fcfa?: number | null;
-      disponible?: boolean;
-      biographie?: string | null;
-      /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
-      modalites?: string | null;
-      readonly photo_id: string | null;
-      readonly statut_validation: components['schemas']['StatutValidationEnum'];
-      readonly motif_refus: string | null;
-      /** Format: date-time */
-      readonly valide_le: string | null;
-      readonly justificatifs: {
-        [key: string]: unknown;
-      }[];
-    };
-    /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
-    IngenieurProfilRequest: {
-      /** @description Liste de codes du référentiel `specialite` (validés par le service) */
-      specialites?: unknown;
-      /** @description Région d'intervention (filtre GET /ingenieurs) */
-      region?: string | null;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      zone_centre?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
-      zone_rayon_km?: number | null;
-      /** @description Prix de la consultation en FCFA (entier), hors déplacement */
-      tarif_consultation_fcfa?: number | null;
-      disponible?: boolean;
-      biographie?: string | null;
-      /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
-      modalites?: string | null;
-    };
-    /** @description GET /ingenieurs et /ingenieurs/{id} — profil public, sans téléphone (03). */
-    IngenieurPublic: {
-      readonly id: string;
-      readonly nom: string;
-      /** @description Liste de codes du référentiel `specialite` (validés par le service) */
-      specialites?: unknown;
-      /** @description Région d'intervention (filtre GET /ingenieurs) */
-      region?: string | null;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      readonly zone_centre: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
-      zone_rayon_km?: number | null;
-      /** @description Prix de la consultation en FCFA (entier), hors déplacement */
-      tarif_consultation_fcfa?: number | null;
-      disponible?: boolean;
-      biographie?: string | null;
-      /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
-      modalites?: string | null;
-      readonly photo_id: string | null;
-    };
-    /** @description POST /commandes/{id}/paiements — opérateur + numéro Mobile Money. */
-    InitierPaiementRequest: {
-      operateur: components['schemas']['OperateurPaiementEnum'];
-      telephone?: string;
-    };
-    /** @description POST /auth/inscription — rôles agriculteur, acheteur, ingénieur, livreur. */
-    InscriptionRequest: {
-      nom: string;
-      telephone: string;
-      email?: string;
-      mot_de_passe: string;
-      role: components['schemas']['RoleInscriptionEnum'];
-      region?: string;
-    };
-    /** @description Itinéraire : points GeoJSON + distance + durée (champs maison). */
-    Itineraire: {
-      point_depart: unknown;
-      point_arrivee: unknown;
-      /** Format: decimal */
-      distance_km: string;
-      duree_estimee_min: number | null;
-      source: string;
-    };
-    /** @description Pièce justificative avec son fichier (sans chemin de stockage). */
-    Justificatif: {
-      readonly id: string;
-      /**
-       * @description Nature du document
-       *
-       *     * `diplome` - Diplôme
-       *     * `piece_identite` - Pièce d'identité
-       *     * `autre` - Autre
-       */
-      readonly type: components['schemas']['TypeJustificatifEnum'];
-      readonly statut: components['schemas']['JustificatifStatutEnum'];
-      readonly fichier: components['schemas']['Fichier'];
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description POST /ingenieurs/moi/justificatifs — fichier déjà téléversé (`fichier_id`). */
-    JustificatifDepotRequest: {
-      fichier_id: string;
-      type: components['schemas']['TypeJustificatifEnum'];
-    };
-    /**
-     * @description * `soumise` - Soumise
-     *     * `acceptee` - Acceptée
-     *     * `rejetee` - Rejetée
-     * @enum {string}
-     */
-    JustificatifStatutEnum: 'soumise' | 'acceptee' | 'rejetee';
-    LigneCommande: {
-      readonly produit: string;
-      readonly nom_produit: string;
-      readonly unite: string;
-      /** Format: decimal */
-      readonly quantite: string;
-      readonly prix_unitaire_fcfa: number;
-      readonly total_ligne_fcfa: number;
-    };
-    LigneHistorique: {
-      ancien_statut: string | null;
-      nouveau_statut: string;
-      motif: string | null;
-      acteur_nom: string | null;
-      /** Format: date-time */
-      cree_le: string;
-    };
-    /** @description Ligne du panier envoyée au devis / à la création. */
-    LigneSaisieRequest: {
-      produit_id: string;
-      /** Format: decimal */
-      quantite: string;
-    };
-    ListeAccompagnements: {
-      elements: components['schemas']['Accompagnement'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeAudit: {
-      elements: components['schemas']['AuditEntree'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeCommandes: {
-      elements: components['schemas']['CommandeListe'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeDemandesReinitialisation: {
-      elements: components['schemas']['UtilisateurAdminListe'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeGenerationsIA: {
-      elements: components['schemas']['GenerationIAList'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeIngenieurs: {
-      elements: components['schemas']['IngenieurPublic'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeNotifications: {
-      elements: components['schemas']['Notification'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeReversements: {
-      elements: components['schemas']['Reversement'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    ListeUtilisateursAdmin: {
-      elements: components['schemas']['UtilisateurAdminListe'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    /** @description Vue détaillée : itinéraire + données sensibles déjà filtrées en amont. */
-    LivraisonDetail: {
-      readonly id: string;
-      readonly commande_reference: string;
-      statut?: components['schemas']['StatutLivraisonEnum'];
-      numero_tentative?: number;
-      readonly frais_livraison_fcfa: number;
-      readonly zone_livraison: string;
-      /** Format: decimal */
-      readonly distance_km: string;
-      readonly duree_estimee_min: number | null;
-      /** Format: date-time */
-      acceptee_le?: string | null;
-      readonly itineraire: components['schemas']['Itineraire'];
-      readonly livreur_nom: string | null;
-      readonly adresse_exacte: string;
-      readonly adresse_exacte_visible: boolean;
-      readonly telephone_acheteur: string | null;
-      readonly telephone_livreur: string | null;
-      readonly position_livreur: unknown;
-      tentatives_code_echouees?: number;
-      /** Format: date-time */
-      demarree_le?: string | null;
-      /** Format: date-time */
-      livree_le?: string | null;
-    };
-    /**
-     * @description Vue livreur avant acceptation : zone et distance, jamais d'adresse
-     *     exacte ni de téléphone (D-21).
-     */
-    LivraisonDisponible: {
-      readonly id: string;
-      readonly commande_reference: string;
-      statut?: components['schemas']['StatutLivraisonEnum'];
-      numero_tentative?: number;
-      readonly frais_livraison_fcfa: number;
-      readonly zone_livraison: string;
-      /** Format: decimal */
-      readonly distance_km: string;
-      readonly duree_estimee_min: number | null;
-      /** Format: date-time */
-      acceptee_le?: string | null;
-    };
-    /** @description GET /livreurs/moi/disponibilite — état courant du profil livreur. */
-    LivreurProfil: {
-      readonly disponible: boolean;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      readonly position: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      /** Format: date-time */
-      readonly position_maj_le: string | null;
-      /** @description Zone d'intervention déclarée */
-      readonly zone: string | null;
-    };
-    /** @description POST /{id}/marquer-manque — qui est absent (Q-30). */
-    MarquerManqueRequest: {
-      absent: components['schemas']['AbsentEnum'];
-    };
-    MesProduits: {
-      elements: components['schemas']['Produit'][];
-      page: number;
-      taille: number;
-      total: number;
-    };
-    /**
-     * @description * `en_ligne` - En ligne
-     *     * `presentiel` - Présentiel
-     * @enum {string}
-     */
-    ModaliteEnum: 'en_ligne' | 'presentiel';
-    /** @description PUT /utilisateurs/moi/mot-de-passe. */
-    MotDePasseRequest: {
-      mot_de_passe_actuel: string;
-      nouveau_mot_de_passe: string;
-    };
-    /** @description Réponse du mot de passe temporaire (Q-23) — affiché une seule fois. */
-    MotDePasseTemporaire: {
-      readonly mot_de_passe_temporaire: string;
-      readonly doit_changer_mot_de_passe: boolean;
-      readonly message: string;
-    };
-    /**
-     * @description * `indisponibilite` - Indisponibilité
-     *     * `desistement` - Désistement
-     *     * `refus` - Refus
-     *     * `termine` - Terminé
-     *     * `changement` - Changement d'ingénieur
-     * @enum {string}
-     */
-    MotifFinEnum: 'indisponibilite' | 'desistement' | 'refus' | 'termine' | 'changement';
-    /**
-     * @description * `produit_endommage` - Produit endommagé
-     *     * `produit_incorrect` - Produit incorrect
-     *     * `non_recu` - Non reçu
-     *     * `annulation` - Annulation
-     *     * `autre` - Autre
-     * @enum {string}
-     */
-    MotifRemboursementEnum:
-      'produit_endommage' | 'produit_incorrect' | 'non_recu' | 'annulation' | 'autre';
-    /** @description Rejet d'une commande : motif obligatoire. */
-    MotifRequest: {
-      motif: string;
-    };
-    /** @description Notification ; l'état lu est exposé par le champ dérivé `non_lue`. */
-    Notification: {
-      readonly id: string;
-      /**
-       * @description Catégorie affichée dans FE-05
-       *
-       *     * `commande` - Commande
-       *     * `paiement` - Paiement
-       *     * `livraison` - Livraison
-       *     * `accompagnement` - Accompagnement
-       *     * `abonnement` - Abonnement
-       *     * `administration` - Administration
-       *     * `signalement` - Signalement
-       */
-      readonly type: components['schemas']['TypeNotificationEnum'];
-      readonly titre: string;
-      readonly contenu: string;
-      /** @description Chemin applicatif à ouvrir (ex. /admin/utilisateurs) ; null si sans cible */
-      readonly lien: string | null;
-      readonly non_lue: boolean;
-      /**
-       * Format: date-time
-       * @description Date de lecture ; null = non lue
-       */
-      readonly lue_le: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @enum {unknown} */
-    NullEnum: null;
-    /**
-     * @description * `commande` - Commande
-     *     * `abonnement` - Abonnement
-     *     * `accompagnement` - Accompagnement
-     * @enum {string}
-     */
-    ObjetEnum: 'commande' | 'abonnement' | 'accompagnement';
-    /** @description GET /admin/offres — version en vigueur + versions historiques par code. */
-    OffreAdmin: {
-      code: string;
-      nom: string;
-      prix_mensuel_fcfa: number | null;
-      quota_planning_mois: number | null;
-      quota_recommandation_mois: number | null;
-      fonctionnalites?: {
-        [key: string]: unknown;
-      };
-      versions: components['schemas']['VersionOffre'][];
-    };
-    /** @description POST /admin/offres — nouvelle version d'une offre existante ou nouvelle. */
-    OffreCreationRequest: {
-      code: string;
-      nom: string;
-      prix_mensuel_fcfa: number;
-      quota_planning_mois: number;
-      quota_recommandation_mois: number;
-      fonctionnalites?: {
-        [key: string]: unknown;
-      };
-      /** Format: date-time */
-      date_effet?: string;
-    };
-    /**
-     * @description * `mtn_momo` - MTN
-     *     * `orange_money` - Orange
-     * @enum {string}
-     */
-    Operateur370Enum: 'mtn_momo' | 'orange_money';
-    /**
-     * @description * `mtn_momo` - MTN Mobile Money
-     *     * `orange_money` - Orange Money
-     * @enum {string}
-     */
-    OperateurPaiementEnum: 'mtn_momo' | 'orange_money';
-    Paiement: {
-      readonly id: string;
-      readonly objet: components['schemas']['ObjetEnum'];
-      readonly commande: string | null;
-      readonly commande_reference: string;
-      readonly commande_statut: string;
-      readonly montant_fcfa: number;
-      readonly operateur:
-        (components['schemas']['OperateurPaiementEnum'] | components['schemas']['NullEnum']) | null;
-      readonly reference_interne: string;
-      readonly reference_notchpay: string | null;
-      readonly statut: components['schemas']['PaiementStatutEnum'];
-      readonly url_paiement: string | null;
-      /** Format: date-time */
-      readonly confirme_le: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /**
-     * @description * `initie` - Initié
-     *     * `en_attente` - En attente
-     *     * `reussi` - Réussi
-     *     * `echoue` - Échoué
-     *     * `expire` - Expiré
-     * @enum {string}
-     */
-    PaiementStatutEnum: 'initie' | 'en_attente' | 'reussi' | 'echoue' | 'expire';
-    /** @description Ligne ADM-04 : un paramètre avec sa valeur en vigueur et ses bornes. */
-    ParametreAdmin: {
-      cle: string;
-      groupe: string;
-      valeur: number;
-      minimum: number;
-      maximum: number;
-      public: boolean;
-      planifiees: components['schemas']['ValeurPlanifiee'][];
-    };
-    /** @description POST /admin/parametres/{cle} — valeur, date d'effet, motif obligatoire. */
-    ParametreCreationRequest: {
-      valeur: number;
-      /** Format: date-time */
-      date_effet?: string;
-      motif: string;
-    };
-    /** @description Historique d'un paramètre (02 §2.8 : une ligne par changement). */
-    ParametreHistorique: {
-      id: string;
-      valeur: number;
-      /** Format: date-time */
-      date_effet: string;
-      motif: string | null;
-      auteur_nom: string | null;
-      /** Format: date-time */
-      cree_le: string;
-    };
-    /** @description PATCH : tous les champs facultatifs. */
-    PatchedAdresseModificationRequest: {
-      libelle?: string;
-      description?: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      ville?: string;
-      region?: string;
-    };
-    PatchedExploitationModificationRequest: {
-      nom?: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      parcelle?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-      /** Format: decimal */
-      superficie_ha?: string | null;
-      type_sol?: string;
-      region?: string;
-      localite?: string;
-    };
-    /** @description PATCH /utilisateurs/moi — nom, email, région, téléphone ; jamais le rôle. */
-    PatchedMiseAJourMoiRequest: {
-      nom?: string;
-      email?: string | null;
-      region?: string | null;
-      telephone?: string;
-    };
-    /** @description Vue propriétaire : tout le produit, stock réservé compris. */
-    PatchedProduitModificationRequest: {
-      nom?: string;
-      categorie?: string;
-      description?: string;
-      unite?: string;
-      prix_unitaire_fcfa?: number;
-      /** Format: decimal */
-      quantite_stock?: string;
-    };
-    /** @description PATCH /produits/{id}/stock — stock physique total (≥ réservé). */
-    PatchedStockRequest: {
-      /** Format: decimal */
-      quantite_stock?: string;
-    };
-    /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
-    PhotoAjout: {
-      fichier_id: string;
-      ordre?: number;
-    };
-    /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
-    PhotoAjoutRequest: {
-      fichier_id: string;
-      ordre?: number;
-    };
-    PhotoProduit: {
-      fichier_id: string;
-      readonly ordre: number;
-    };
-    /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
-    PhotosOrdre: {
-      fichier_ids: string[];
-    };
-    /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
-    PhotosOrdreRequest: {
-      fichier_ids: string[];
-    };
-    /** @description POST /{id}/planifier — date, durée, lieu ou lien. */
-    PlanifierRequest: {
-      /** Format: date-time */
-      date_debut: string;
-      /** Format: date-time */
-      date_fin: string;
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      lieu_rdv?: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      } | null;
-      lieu_rdv_texte?: string | null;
-      lien_visio?: string | null;
-    };
-    /** @description POST /exploitations/{id}/plannings. */
-    PlanningCreationRequest: {
-      culture: string;
-      /** Format: date */
-      periode_debut: string;
-      /** Format: date */
-      periode_fin: string;
-      infos_agronomiques?: string | null;
-    };
-    /** @description POST /livraisons/{id}/position — GeoJSON Point pendant la course. */
-    PositionLivreurRequest: {
-      /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
-      position: {
-        type: string;
-        /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
-        coordinates: unknown[];
-      };
-    };
-    /** @description Vue propriétaire : tout le produit, stock réservé compris. */
-    Produit: {
-      readonly id: string;
-      nom: string;
-      categorie: string;
-      description?: string;
-      unite: string;
-      prix_unitaire_fcfa: number;
-      /** Format: decimal */
-      quantite_stock?: string;
-      /** Format: decimal */
-      readonly quantite_reservee: string;
-      /** Format: decimal */
-      readonly quantite_disponible: string;
-      readonly statut: components['schemas']['ProduitStatutEnum'];
-      exploitation: string;
-      readonly exploitation_nom: string;
-      readonly photos: components['schemas']['PhotoProduit'][];
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    /**
-     * @description Vue publique : nom du producteur et région, jamais de téléphone ni de position.
-     *
-     *     Expose aussi `agriculteur_id` (UUID opaque) : le panier doit vérifier
-     *     qu'une commande concerne un seul agriculteur (D-02), le serveur retranche.
-     */
-    ProduitCatalogue: {
-      readonly id: string;
-      nom: string;
-      categorie: string;
-      description?: string;
-      unite: string;
-      prix_unitaire_fcfa: number;
-      /** Format: decimal */
-      readonly quantite_disponible: string;
-      readonly producteur_nom: string;
-      readonly agriculteur_id: string;
-      readonly region: string;
-      readonly localite: string;
-      readonly photos: components['schemas']['PhotoProduit'][];
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description Vue propriétaire : tout le produit, stock réservé compris. */
-    ProduitCreationRequest: {
-      nom: string;
-      categorie: string;
-      description?: string;
-      unite: string;
-      prix_unitaire_fcfa: number;
-      /** Format: decimal */
-      quantite_stock?: string;
-      exploitation_id: string;
-      photo_ids?: string[];
-    };
-    /**
-     * @description * `disponible` - Disponible
-     *     * `epuise` - Épuisé
-     *     * `retire` - Retiré
-     * @enum {string}
-     */
-    ProduitStatutEnum: 'disponible' | 'epuise' | 'retire';
-    /** @description POST /exploitations/{id}/recommandations. */
-    RecommandationCreationRequest: {
-      sujet: string;
-      culture?: string | null;
-      contexte?: string | null;
-    };
-    /** @description Représentation d'une entrée de référentiel. */
-    Referentiel: {
-      /** @description Identifiant code stable utilisé par les autres entités */
-      code: string;
-      /** @description Libellé affiché aux utilisateurs */
-      libelle: string;
-      /** @description Ordre de tri pour l'affichage */
-      ordre?: number;
-    };
-    /**
-     * @description Ligne de gestion : code stable + libellé + drapeau actif.
-     *
-     *     Le champ `type` est porteur à la lecture ; à l'écriture il vient de l'URL
-     *     (/admin/referentiels/{type}), donc non obligatoire dans le corps.
-     */
-    ReferentielAdmin: {
-      readonly id: string;
-      type?: string;
-      code: string;
-      libelle: string;
-      /** @default 0 */
-      ordre: number;
-      readonly actif: boolean;
-    };
-    /**
-     * @description Ligne de gestion : code stable + libellé + drapeau actif.
-     *
-     *     Le champ `type` est porteur à la lecture ; à l'écriture il vient de l'URL
-     *     (/admin/referentiels/{type}), donc non obligatoire dans le corps.
-     */
-    ReferentielAdminRequest: {
-      type?: string;
-      code: string;
-      libelle: string;
-      /** @default 0 */
-      ordre: number;
-    };
-    ReferentielRenommageRequest: {
-      libelle: string;
-    };
-    /**
-     * @description POST /admin/ingenieurs/{id}/refuser — presence de `motif` documentée ;
-     *     le contrôle métier (motif non vide → 422 `motif_obligatoire`) reste dans
-     *     le service, seul point de vérité (conventions §3).
-     */
-    RefusIngenieurRequest: {
-      motif: string;
-    };
-    /** @description POST /{id}/refuser — motif obligatoire (règle dans le service). */
-    RefusRequest: {
-      motif: string;
-    };
-    /**
-     * @description POST /admin/remboursements/{id}/refuser — motif obligatoire (07 §15.3).
-     *
-     *     La règle « motif non vide » vit dans le service (`motif_obligatoire`).
-     */
-    RefuserRemboursementRequest: {
-      motif: string;
-    };
-    Remboursement: {
-      readonly id: string;
-      readonly commande: string | null;
-      readonly commande_reference: string | null;
-      readonly accompagnement: string | null;
-      readonly paiement: string;
-      readonly demandeur: string;
-      readonly demandeur_nom: string;
-      readonly signalement: string | null;
-      readonly motif: components['schemas']['MotifRemboursementEnum'];
-      readonly montant_demande_fcfa: number;
-      readonly montant_accorde_fcfa: number | null;
-      readonly statut: components['schemas']['StatutRemboursementEnum'];
-      readonly statut_commande_origine: string;
-      readonly motif_decision: string | null;
-      /** Format: date-time */
-      readonly decide_le: string | null;
-      readonly reference_operateur: string | null;
-      readonly justificatifs: string[];
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    /** @description POST /remboursements — demande de l'acheteur (SPEC-05). */
-    RemboursementCreationRequest: {
-      commande_id: string;
-      motif: components['schemas']['MotifRemboursementEnum'];
-      montant_demande_fcfa: number;
-      justificatifs?: string[];
-      signalement_id?: string | null;
-    };
-    /** @description Réponse neutre uniforme (demande de réinitialisation, Q-23). */
-    ReponseMessage: {
-      readonly message: string;
-    };
-    /**
-     * @description Corps commun de /auth/inscription, /connexion et /rafraichir.
-     *
-     *     Sert uniquement à documenter le schéma OpenAPI ; la réponse est construite
-     *     dans `views._reponse_session`.
-     */
-    ReponseSession: {
-      readonly utilisateur: components['schemas']['Utilisateur'];
-      readonly jeton_acces: string;
-      /** Format: date-time */
-      readonly expire_le: string;
-    };
-    ReponseTache: {
-      tache: string;
-      statut: string;
-      resultat: string;
-    };
-    /** @description Reprogrammation : nouvelle adresse optionnelle + paiement si frais dus. */
-    ReprogrammerRequest: {
-      adresse_id?: string | null;
-      operateur?:
-        (components['schemas']['Operateur370Enum'] | components['schemas']['NullEnum']) | null;
-      /** @default  */
-      telephone: string;
-    };
-    /** @description Ligne d'historique de reversement (route admin seule : référence visible). */
-    Reversement: {
-      readonly id: string;
-      readonly beneficiaire_id: string;
-      beneficiaire_nom: string;
-      readonly montant_fcfa: number;
-      readonly operateur: components['schemas']['OperateurPaiementEnum'];
-      readonly reference_operateur: string;
-      effectue_par_nom?: string | null;
-      /** Format: date-time */
-      readonly effectue_le: string;
-      readonly note: string | null;
-    };
-    /** @description POST /admin/reversements — bénéficiaire, montant, opérateur, référence. */
-    ReversementCreationRequest: {
-      beneficiaire_id: string;
-      montant_fcfa: number;
-      operateur: components['schemas']['OperateurPaiementEnum'];
-      reference_operateur: string;
-      note?: string | null;
-    };
-    /**
-     * @description * `admin` - admin
-     *     * `super_admin` - super_admin
-     * @enum {string}
-     */
-    RoleAdministrationEnum: 'admin' | 'super_admin';
-    /**
-     * @description * `acheteur` - acheteur
-     *     * `agriculteur` - agriculteur
-     *     * `ingenieur_agronome` - ingenieur_agronome
-     *     * `livreur` - livreur
-     * @enum {string}
-     */
-    RoleInscriptionEnum: 'acheteur' | 'agriculteur' | 'ingenieur_agronome' | 'livreur';
-    /**
-     * @description * `agriculteur` - Agriculteur
-     *     * `acheteur` - Acheteur
-     *     * `ingenieur_agronome` - Ingénieur agronome
-     *     * `livreur` - Livreur
-     *     * `admin` - Administrateur
-     *     * `super_admin` - Super administrateur
-     * @enum {string}
-     */
-    RoleUtilisateurEnum:
-      'agriculteur' | 'acheteur' | 'ingenieur_agronome' | 'livreur' | 'admin' | 'super_admin';
-    SanteLivenessResponse: {
-      statut: string;
-      version: string;
-    };
-    SanteReadinessErrorResponse: {
-      statut: string;
-      base: string;
-      migrations_en_attente: number | null;
-    };
-    SanteReadinessResponse: {
-      statut: string;
-      base: string;
-      migrations_en_attente: number;
-    };
-    Signalement: {
-      readonly id: string;
-      readonly auteur: string;
-      readonly auteur_nom: string;
-      readonly cible_type: components['schemas']['CibleSignalementEnum'];
-      readonly cible_id: string;
-      readonly motif: string;
-      readonly description: string;
-      readonly statut: components['schemas']['StatutSignalementEnum'];
-      readonly decision: string | null;
-      readonly traite_par: string | null;
-      readonly traite_par_nom: string;
-      readonly fichiers: string[];
-      /** Format: date-time */
-      readonly cree_le: string;
-      /** Format: date-time */
-      readonly maj_le: string;
-    };
-    /** @description POST /signalements — cible + motif + fichiers (SPEC-10). */
-    SignalementCreationRequest: {
-      cible_type: components['schemas']['CibleSignalementEnum'];
-      cible_id: string;
-      motif: string;
-      description: string;
-      fichier_ids?: string[];
-    };
-    /** @description GET /soldes/moi — décomposition du solde (02 §2.4, jamais stocké). */
-    SoldeDetail: {
-      gains_acquis: number;
-      remboursements_imputes: number;
-      deja_reverse: number;
-      solde: number;
-    };
-    /** @description GET /admin/soldes — un bénéficiaire au solde positif. */
-    SoldeLigne: {
-      beneficiaire_id: string;
-      nom: string;
-      role: string;
-      gains_acquis: number;
-      remboursements_imputes: number;
-      deja_reverse: number;
-      solde: number;
-    };
-    /**
-     * @description * `demandee` - Demandée
-     *     * `acceptee` - Acceptée
-     *     * `refusee` - Refusée
-     *     * `annulee` - Annulée
-     *     * `planifiee` - Planifiée
-     *     * `terminee` - Terminée
-     *     * `manquee` - Manquée
-     * @enum {string}
-     */
-    Statut86dEnum:
-      'demandee' | 'acceptee' | 'refusee' | 'annulee' | 'planifiee' | 'terminee' | 'manquee';
-    /**
-     * @description * `en_attente` - En attente
-     *     * `acceptee` - Acceptée
-     *     * `paiement_en_attente` - Paiement en attente
-     *     * `payee` - Payée
-     *     * `preparation` - En préparation
-     *     * `remise_au_livreur` - Remise au livreur
-     *     * `livree` - Livrée
-     *     * `rejetee` - Rejetée
-     *     * `annulee` - Annulée
-     *     * `client_absent` - Client absent
-     *     * `echec_livraison` - Échec de livraison
-     *     * `remboursement_en_attente` - Remboursement en attente
-     *     * `remboursee` - Remboursée
-     * @enum {string}
-     */
-    StatutCommandeEnum:
-      | 'en_attente'
-      | 'acceptee'
-      | 'paiement_en_attente'
-      | 'payee'
-      | 'preparation'
-      | 'remise_au_livreur'
-      | 'livree'
-      | 'rejetee'
-      | 'annulee'
-      | 'client_absent'
-      | 'echec_livraison'
-      | 'remboursement_en_attente'
-      | 'remboursee';
-    /**
-     * @description * `actif` - Actif
-     *     * `en_attente_validation` - En attente de validation
-     *     * `suspendu` - Suspendu
-     *     * `anonymise` - Anonymisé
-     * @enum {string}
-     */
-    StatutCompteEnum: 'actif' | 'en_attente_validation' | 'suspendu' | 'anonymise';
-    /**
-     * @description * `en_cours` - En cours
-     *     * `reussie` - Réussie
-     *     * `echouee` - Échouée
-     * @enum {string}
-     */
-    StatutGenerationEnum: 'en_cours' | 'reussie' | 'echouee';
-    /**
-     * @description * `proposee` - Proposée
-     *     * `acceptee` - Acceptée
-     *     * `en_cours` - En cours
-     *     * `livree` - Livrée
-     *     * `client_absent` - Client absent
-     *     * `echec_livraison` - Échec de livraison
-     *     * `annulee` - Annulée
-     * @enum {string}
-     */
-    StatutLivraisonEnum:
-      | 'proposee'
-      | 'acceptee'
-      | 'en_cours'
-      | 'livree'
-      | 'client_absent'
-      | 'echec_livraison'
-      | 'annulee';
-    /**
-     * @description * `demande` - Demandé
-     *     * `en_examen` - En examen
-     *     * `approuve` - Approuvé
-     *     * `refuse` - Refusé
-     *     * `en_cours` - En cours
-     *     * `effectue` - Effectué
-     *     * `echoue` - Échoué
-     * @enum {string}
-     */
-    StatutRemboursementEnum:
-      'demande' | 'en_examen' | 'approuve' | 'refuse' | 'en_cours' | 'effectue' | 'echoue';
-    /**
-     * @description * `ouvert` - Ouvert
-     *     * `en_examen` - En examen
-     *     * `clos_fonde` - Closé — fondé
-     *     * `clos_non_fonde` - Closé — non fondé
-     * @enum {string}
-     */
-    StatutSignalementEnum: 'ouvert' | 'en_examen' | 'clos_fonde' | 'clos_non_fonde';
-    /**
-     * @description * `en_attente` - En attente
-     *     * `valide` - Validé
-     *     * `refuse` - Refusé
-     * @enum {string}
-     */
-    StatutValidationEnum: 'en_attente' | 'valide' | 'refuse';
-    /** @description POST /admin/utilisateurs/{id}/suspendre — motif obligatoire (affiché au user). */
-    SuspendreRequest: {
-      motif: string;
-    };
-    /** @description POST /fichiers — multipart : `fichier` (binaire) + `contexte`. */
-    TeleversementRequest: {
-      /** Format: binary */
-      fichier: string;
-      contexte: components['schemas']['ContexteEnum'];
-    };
-    /** @description POST /{id}/terminer — observation obligatoire. */
-    TerminerRequest: {
-      observation: string;
-    };
-    /** @description POST /admin/signalements/{id}/traiter — statut de décision + motif. */
-    TraiterSignalementRequest: {
-      statut: components['schemas']['TraiterSignalementStatutEnum'];
-      /** @default  */
-      decision: string;
-    };
-    /**
-     * @description * `en_examen` - En examen
-     *     * `clos_fonde` - Closé — fondé
-     *     * `clos_non_fonde` - Closé — non fondé
-     * @enum {string}
-     */
-    TraiterSignalementStatutEnum: 'en_examen' | 'clos_fonde' | 'clos_non_fonde';
-    /**
-     * @description * `planning` - Planning cultural
-     *     * `recommandation` - Recommandation agronomique
-     * @enum {string}
-     */
-    TypeGenerationEnum: 'planning' | 'recommandation';
-    /**
-     * @description * `client_absent` - Client absent
-     *     * `echec_livraison` - Échec de livraison
-     *     * `produit_endommage` - Produit endommagé
-     *     * `autre` - Autre
-     * @enum {string}
-     */
-    TypeIncidentEnum: 'client_absent' | 'echec_livraison' | 'produit_endommage' | 'autre';
-    /**
-     * @description * `diplome` - Diplôme
-     *     * `piece_identite` - Pièce d'identité
-     *     * `autre` - Autre
-     * @enum {string}
-     */
-    TypeJustificatifEnum: 'diplome' | 'piece_identite' | 'autre';
-    /**
-     * @description * `commande` - Commande
-     *     * `paiement` - Paiement
-     *     * `livraison` - Livraison
-     *     * `accompagnement` - Accompagnement
-     *     * `abonnement` - Abonnement
-     *     * `administration` - Administration
-     *     * `signalement` - Signalement
-     * @enum {string}
-     */
-    TypeNotificationEnum:
-      | 'commande'
-      | 'paiement'
-      | 'livraison'
-      | 'accompagnement'
-      | 'abonnement'
-      | 'administration'
-      | 'signalement';
-    /** @description Représentation de « moi » pour tout utilisateur connecté. */
-    Utilisateur: {
-      readonly id: string;
-      /** @description Nom complet ou raison sociale */
-      readonly nom: string;
-      /** @description Numéro de téléphone au format E.164 (+237XXXXXXXXX) */
-      readonly telephone: string;
-      /**
-       * Format: email
-       * @description Adresse email facultative
-       */
-      readonly email: string | null;
-      readonly role: components['schemas']['RoleUtilisateurEnum'];
-      readonly statut_compte: components['schemas']['StatutCompteEnum'];
-      readonly region: string | null;
-      readonly doit_changer_mot_de_passe: boolean;
-      /** Format: date-time */
-      readonly reinitialisation_demandee_le: string | null;
-      /** Format: date-time */
-      readonly derniere_connexion_le: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description GET /admin/utilisateurs/{id} — toutes les infos nécessaires à l'admin. */
-    UtilisateurAdminDetail: {
-      readonly id: string;
-      /** @description Nom complet ou raison sociale */
-      readonly nom: string;
-      /** @description Numéro de téléphone au format E.164 (+237XXXXXXXXX) */
-      readonly telephone: string;
-      /**
-       * Format: email
-       * @description Adresse email facultative
-       */
-      readonly email: string | null;
-      readonly role: components['schemas']['RoleUtilisateurEnum'];
-      readonly statut_compte: components['schemas']['StatutCompteEnum'];
-      readonly region: string | null;
-      readonly doit_changer_mot_de_passe: boolean;
-      /** Format: date-time */
-      readonly reinitialisation_demandee_le: string | null;
-      /** Format: date-time */
-      readonly derniere_connexion_le: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-      readonly profil_ingenieur: {
-        [key: string]: unknown;
-      } | null;
-    };
-    /** @description Ligne de GET /admin/utilisateurs — identité, rôle, statut, drapeaux. */
-    UtilisateurAdminListe: {
-      readonly id: string;
-      /** @description Nom complet ou raison sociale */
-      readonly nom: string;
-      /** @description Masqué en liste (conventions §6) ; complet dans le détail. */
-      readonly telephone: string;
-      readonly role: components['schemas']['RoleUtilisateurEnum'];
-      readonly statut_compte: components['schemas']['StatutCompteEnum'];
-      readonly region: string | null;
-      readonly doit_changer_mot_de_passe: boolean;
-      /** Format: date-time */
-      readonly reinitialisation_demandee_le: string | null;
-      /** Format: date-time */
-      readonly derniere_connexion_le: string | null;
-      /** Format: date-time */
-      readonly cree_le: string;
-    };
-    /** @description Planification d'une valeur à date d'effet future. */
-    ValeurPlanifiee: {
-      valeur: number;
-      /** Format: date-time */
-      date_effet: string;
-      motif: string | null;
-    };
-    VersionOffre: {
-      id: string;
-      prix_mensuel_fcfa: number;
-      quota_planning_mois: number;
-      quota_recommandation_mois: number;
-      /** Format: date-time */
-      date_effet: string;
-      active: boolean;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    schemas: {
+        /**
+         * @description * `ingenieur` - Ingénieur absent
+         *     * `agriculteur` - Agriculteur absent
+         * @enum {string}
+         */
+        AbsentEnum: "ingenieur" | "agriculteur";
+        /** @description Lecture publique d'un accompagnement (liste + détail). */
+        Accompagnement: {
+            readonly id: string;
+            readonly agriculteur: string;
+            readonly agriculteur_nom: string;
+            /** @description Ingénieur actuellement affecté */
+            readonly ingenieur: string | null;
+            readonly ingenieur_nom: string | null;
+            readonly exploitation: string;
+            readonly exploitation_nom: string | null;
+            readonly modalite: components["schemas"]["ModaliteEnum"];
+            readonly motif: string;
+            readonly description: string | null;
+            readonly statut: components["schemas"]["StatutAccompagnementEnum"];
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            lieu_rdv?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            readonly lieu_rdv_texte: string | null;
+            /**
+             * Format: uri
+             * @description Lien de visioconférence en modalité « en ligne » (hypothèse Q-44)
+             */
+            readonly lien_visio: string | null;
+            /** Format: date-time */
+            readonly date_rdv_debut: string | null;
+            /** Format: date-time */
+            readonly date_rdv_fin: string | null;
+            /** @description Figé à la confirmation (02 §2.5) */
+            readonly prix_consultation_fcfa: number | null;
+            /** @description Figé à la confirmation, 0 si en ligne (02 §2.5) */
+            readonly frais_deplacement_fcfa: number | null;
+            /** @description Aller simple, arrondie au km supérieur (02 §2.5, conventions §3) */
+            readonly distance_km: number | null;
+            /** @description Commission retenue sur la consultation, figée à la confirmation (Q-06) */
+            readonly commission_consultation_fcfa: number | null;
+            /** @description Compte rendu obligatoire de l'ingénieur à la clôture */
+            readonly observation: string | null;
+            readonly nb_rdv_manques: number;
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /** @description POST /accompagnements — crée une demande en `demandee`. */
+        AccompagnementCreationRequest: {
+            exploitation_id: string;
+            ingenieur_id: string;
+            modalite: components["schemas"]["ModaliteEnum"];
+            motif: string;
+            description?: string | null;
+        };
+        /** @description Détail + historique des transitions et affectations. */
+        AccompagnementDetail: {
+            readonly id: string;
+            readonly agriculteur: string;
+            readonly agriculteur_nom: string;
+            /** @description Ingénieur actuellement affecté */
+            readonly ingenieur: string | null;
+            readonly ingenieur_nom: string | null;
+            readonly exploitation: string;
+            readonly exploitation_nom: string | null;
+            readonly modalite: components["schemas"]["ModaliteEnum"];
+            readonly motif: string;
+            readonly description: string | null;
+            readonly statut: components["schemas"]["StatutAccompagnementEnum"];
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            lieu_rdv?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            readonly lieu_rdv_texte: string | null;
+            /**
+             * Format: uri
+             * @description Lien de visioconférence en modalité « en ligne » (hypothèse Q-44)
+             */
+            readonly lien_visio: string | null;
+            /** Format: date-time */
+            readonly date_rdv_debut: string | null;
+            /** Format: date-time */
+            readonly date_rdv_fin: string | null;
+            /** @description Figé à la confirmation (02 §2.5) */
+            readonly prix_consultation_fcfa: number | null;
+            /** @description Figé à la confirmation, 0 si en ligne (02 §2.5) */
+            readonly frais_deplacement_fcfa: number | null;
+            /** @description Aller simple, arrondie au km supérieur (02 §2.5, conventions §3) */
+            readonly distance_km: number | null;
+            /** @description Commission retenue sur la consultation, figée à la confirmation (Q-06) */
+            readonly commission_consultation_fcfa: number | null;
+            /** @description Compte rendu obligatoire de l'ingénieur à la clôture */
+            readonly observation: string | null;
+            readonly nb_rdv_manques: number;
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+            readonly historique: {
+                [key: string]: unknown;
+            }[];
+            readonly affectations: components["schemas"]["AffectationIngenieur"][];
+        };
+        /** @description ADRESSE — position en GeoJSON Point (conventions §3). */
+        Adresse: {
+            readonly id: string;
+            /** @description Libellé court : « Domicile », « Boutique »… */
+            libelle: string;
+            /** @description Repères (les adresses postales sont rares au Cameroun) */
+            description?: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            ville: string;
+            region: string;
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /** @description ADRESSE — position en GeoJSON Point (conventions §3). */
+        AdresseCreationRequest: {
+            /** @description Libellé court : « Domicile », « Boutique »… */
+            libelle: string;
+            /** @description Repères (les adresses postales sont rares au Cameroun) */
+            description?: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            ville: string;
+            region: string;
+        };
+        AffectationIngenieur: {
+            readonly id: string;
+            readonly ingenieur: string;
+            readonly ingenieur_nom: string;
+            /** Format: date-time */
+            readonly debut: string;
+            /** Format: date-time */
+            readonly fin: string | null;
+            readonly motif_fin: (components["schemas"]["MotifFinEnum"] | components["schemas"]["NullEnum"]) | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description POST /admin/remboursements/{id}/approuver — montant total ou partiel. */
+        ApprouverRemboursementRequest: {
+            montant_accorde_fcfa: number;
+        };
+        /** @description Ligne du journal d'audit, détaillée pour l'admin (ancienne/nouvelle). */
+        AuditEntree: {
+            id: string;
+            action: string;
+            entite_type: string;
+            entite_id: string | null;
+            readonly acteur_nom: string | null;
+            ancienne_valeur: unknown;
+            nouvelle_valeur: unknown;
+            /** Format: date-time */
+            cree_le: string;
+        };
+        Blocage: {
+            readonly id: string;
+            readonly bloqueur: string;
+            readonly bloque: string;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description POST /blocages — l'utilisateur à bloquer. */
+        BlocageCreationRequest: {
+            utilisateur_id: string;
+        };
+        CatalogueProduits: {
+            elements: components["schemas"]["ProduitCatalogue"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        /** @description POST /{id}/changer-ingenieur — historisé (Q-29). */
+        ChangerIngenieurRequest: {
+            ingenieur_id: string;
+        };
+        /**
+         * @description * `utilisateur` - Utilisateur
+         *     * `message` - Message
+         *     * `produit` - Produit
+         *     * `commande` - Commande
+         *     * `livraison` - Livraison
+         *     * `accompagnement` - Accompagnement
+         * @enum {string}
+         */
+        CibleSignalementEnum: "utilisateur" | "message" | "produit" | "commande" | "livraison" | "accompagnement";
+        /** @description Saisie du code par le livreur : exactement 6 chiffres. */
+        CodeRemiseRequest: {
+            code: string;
+        };
+        CommandeDetail: {
+            readonly id: string;
+            reference: string;
+            statut?: components["schemas"]["StatutCommandeEnum"];
+            readonly lignes: components["schemas"]["LigneCommande"][];
+            readonly adresse_livraison: string;
+            readonly adresse_exacte_visible: boolean;
+            /** @description Zone affichée à l'agriculteur avant paiement (D-21) */
+            zone_livraison?: string;
+            distance_km: number;
+            sous_total_fcfa: number;
+            frais_livraison_fcfa: number;
+            total_fcfa: number;
+            readonly commission_taux_pb: number | null;
+            readonly commission_fcfa: number | null;
+            parametres_appliques?: unknown;
+            /** Format: date-time */
+            expire_le?: string | null;
+            motif_rejet?: string | null;
+            readonly agriculteur_nom: string;
+            readonly acheteur_nom: string;
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            maj_le?: string;
+        };
+        CommandeListe: {
+            readonly id: string;
+            reference: string;
+            statut?: components["schemas"]["StatutCommandeEnum"];
+            total_fcfa: number;
+            sous_total_fcfa: number;
+            frais_livraison_fcfa: number;
+            readonly agriculteur_nom: string;
+            readonly acheteur_nom: string;
+            readonly nombre_lignes: number;
+            /** Format: date-time */
+            expire_le?: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description GET /admin/utilisateurs/compteurs — bandeaux ADM-01 (F-03 frontend point 5). */
+        CompteursAdmin: {
+            ingenieurs_en_attente: number;
+            reinitialisations_en_attente: number;
+            comptes_suspendus: number;
+            litiges_en_attente: number;
+            signalements_ouverts: number;
+        };
+        /** @description POST /{id}/confirmer — l'agriculteur accepte le montant et paie. */
+        ConfirmerRequest: {
+            operateur: components["schemas"]["OperateurPaiementEnum"];
+            telephone?: string;
+        };
+        /** @description POST /auth/connexion — téléphone E.164 ou email + mot de passe. */
+        ConnexionRequest: {
+            identifiant: string;
+            mot_de_passe: string;
+        };
+        /**
+         * @description * `produit` - Photo de produit
+         *     * `signalement` - Pièce d'un signalement
+         *     * `accompagnement` - Fichier d'un accompagnement
+         *     * `justificatif` - Justificatif professionnel
+         *     * `chat` - Fichier de conversation
+         *     * `incident` - Photo d'incident de livraison
+         * @enum {string}
+         */
+        ContexteEnum: "produit" | "signalement" | "accompagnement" | "justificatif" | "chat" | "incident";
+        /**
+         * @description Conversation enrichie de son autre participant et de ses non-lus.
+         *
+         *     `autre_participant` et `non_lus` dépendent de l'utilisateur qui consulte :
+         *     ils sont injectés via le `context["utilisateur"]` par la vue/le service.
+         */
+        Conversation: {
+            readonly id: string;
+            readonly type: components["schemas"]["TypeConversationEnum"];
+            readonly commande: string | null;
+            readonly accompagnement: string | null;
+            readonly autre_participant: unknown;
+            readonly non_lus: number;
+            readonly dernier_message: unknown;
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /** @description POST /conversations — exactement un de `commande_id` / `accompagnement_id`. */
+        ConversationCreationRequest: {
+            commande_id?: string;
+            accompagnement_id?: string;
+        };
+        /** @description POST /generations-ia/{id}/corrections. */
+        CorrectionCreationRequest: {
+            commentaire: string;
+            contenu_corrige?: unknown;
+        };
+        CorrectionIA: {
+            readonly id: string;
+            readonly ingenieur: string;
+            readonly ingenieur_nom: string;
+            commentaire: string;
+            /** @description Réponse complète corrigée ; peut rester null pour un simple avis. */
+            contenu_corrige?: unknown;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description POST /admin/utilisateurs (super-admin) — création d'un compte admin. */
+        CreationAdminRequest: {
+            nom: string;
+            telephone: string;
+            email?: string;
+            /** @default admin */
+            role: components["schemas"]["RoleAdministrationEnum"];
+            region?: string;
+        };
+        /** @description POST /commandes — mêmes champs que le devis, avec écriture. */
+        CreationCommandeRequest: {
+            lignes: components["schemas"]["LigneSaisieRequest"][];
+            adresse_id?: string;
+            adresse_texte?: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+        };
+        /** @description POST /auth/demande-reinitialisation (Q-23) — téléphone du compte. */
+        DemandeReinitialisationRequest: {
+            telephone: string;
+        };
+        /** @description POST /accompagnements/devis — calcule le prix sans rien créer. */
+        DevisCreationRequest: {
+            exploitation_id: string;
+            ingenieur_id: string;
+            modalite: components["schemas"]["ModaliteEnum"];
+        };
+        DevisReponse: {
+            consultation_fcfa: number;
+            deplacement_fcfa: number;
+            distance_km_aller: number | null;
+            /** Format: double */
+            distance_exacte_km: number | null;
+            commission_consultation_fcfa: number;
+            taux_commission_pb: number;
+            total_fcfa: number;
+            "gain_ing\u00E9nieur_fcfa": number;
+        };
+        /** @description POST /commandes/devis — lignes + adresse (enregistrée ou saisie). */
+        DevisRequest: {
+            lignes: components["schemas"]["LigneSaisieRequest"][];
+            adresse_id?: string;
+            adresse_texte?: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+        };
+        /** @description PUT /livreurs/moi/disponibilite — disponible + position optionnelle. */
+        DisponibiliteLivreurRequest: {
+            disponible: boolean;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            zone?: string | null;
+        };
+        Evaluation: {
+            readonly id: string;
+            readonly commande: string;
+            readonly acheteur: string;
+            readonly note_agriculteur: number;
+            readonly note_livreur: number | null;
+            readonly commentaire: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description POST /commandes/{id}/evaluation — 1..5, une seule fois (02 §2.3). */
+        EvaluationCreationRequest: {
+            note_agriculteur: number;
+            note_livreur?: number | null;
+            commentaire?: string | null;
+        };
+        /**
+         * @description POST /admin/remboursements/{id}/executer — référence du renvoi (Q-26).
+         *
+         *     La règle « référence non vide » vit dans le service (`reference_obligatoire`).
+         */
+        ExecuterRemboursementRequest: {
+            reference_operateur: string;
+        };
+        Exploitation: {
+            readonly id: string;
+            nom: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            parcelle: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            readonly centre: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            /** Format: decimal */
+            superficie_ha: string;
+            /** Format: decimal */
+            readonly superficie_calculee_ha: string;
+            type_sol: string;
+            region: string;
+            localite?: string;
+            readonly statut: components["schemas"]["ExploitationStatutEnum"];
+            readonly nombre_produits: number;
+            readonly dernier_planning: unknown;
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        ExploitationCreationRequest: {
+            nom: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            parcelle: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            /** Format: decimal */
+            superficie_ha?: string | null;
+            type_sol: string;
+            region: string;
+            localite?: string;
+        };
+        /**
+         * @description * `active` - Active
+         *     * `archivee` - Archivée
+         * @enum {string}
+         */
+        ExploitationStatutEnum: "active" | "archivee";
+        /** @description Représentation publique d'un fichier (sans chemin de stockage). */
+        Fichier: {
+            readonly id: string;
+            /**
+             * @description Usage annoncé à l'upload ; détermine les règles d'accès
+             *
+             *     * `produit` - Photo de produit
+             *     * `signalement` - Pièce d'un signalement
+             *     * `accompagnement` - Fichier d'un accompagnement
+             *     * `justificatif` - Justificatif professionnel
+             *     * `chat` - Fichier de conversation
+             *     * `incident` - Photo d'incident de livraison
+             */
+            readonly contexte: components["schemas"]["ContexteEnum"];
+            /** @description Nom donné par le client, affiché pour rappel uniquement */
+            readonly nom_original: string;
+            /** @description Type détecté sur le contenu (filetype), pas sur l'extension */
+            readonly type_mime: string;
+            /** @description Taille en octets après traitement (EXIF retiré) */
+            readonly taille_octets: number;
+            /** @description True seulement pour les photos de produits */
+            readonly public: boolean;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description Détail complet : payload, réponse originale immuable, corrections. */
+        GenerationIADetail: {
+            readonly id: string;
+            readonly type: components["schemas"]["TypeGenerationEnum"];
+            readonly exploitation: string;
+            /** @description Agriculteur propriétaire qui a déclenché la génération. */
+            readonly demandeur: string;
+            readonly culture: string;
+            /** Format: date */
+            readonly periode_debut: string;
+            /** Format: date */
+            readonly periode_fin: string;
+            /** @description Payload exact envoyé au fournisseur IA (audit « aucune donnée personnelle », 01 §1ter). Construit par ServiceEntrees.construire(). */
+            readonly entrees: unknown;
+            /** @description Réponse validée par le schéma Pydantic ; jamais mutée après `reussie`. */
+            readonly reponse_originale: unknown;
+            readonly avertissement: string | null;
+            readonly fournisseur_ia: string;
+            readonly modele_ia: string;
+            readonly version_prompt: string;
+            readonly statut: components["schemas"]["StatutGenerationEnum"];
+            /** @description Code + message lisible si statut = `echouee`. */
+            readonly erreur: string | null;
+            /** @description Clé `AAAA-MM` UTC de la génération, utilisée pour la remise à zéro mensuelle. */
+            readonly mois_quota: string;
+            /** @description En-tête `Idempotency-Key` de la requête POST (null si absent). */
+            readonly cle_idempotence: string | null;
+            readonly corrections: components["schemas"]["CorrectionIA"][];
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /** @description Vue légère pour l'historique d'une exploitation. */
+        GenerationIAList: {
+            readonly id: string;
+            readonly type: components["schemas"]["TypeGenerationEnum"];
+            readonly statut: components["schemas"]["StatutGenerationEnum"];
+            readonly culture: string;
+            /** Format: date */
+            readonly periode_debut: string;
+            /** Format: date */
+            readonly periode_fin: string;
+            readonly fournisseur_ia: string;
+            readonly modele_ia: string;
+            readonly version_prompt: string;
+            /** @description Clé `AAAA-MM` UTC de la génération, utilisée pour la remise à zéro mensuelle. */
+            readonly mois_quota: string;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        Incident: {
+            readonly id: string;
+            type: components["schemas"]["TypeIncidentEnum"];
+            description?: string;
+            fichier?: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        IncidentCreationRequest: {
+            type: components["schemas"]["TypeIncidentEnum"];
+            /** @default  */
+            description: string;
+            fichier_id?: string | null;
+        };
+        /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
+        IngenieurProfil: {
+            /** @description Liste de codes du référentiel `specialite` (validés par le service) */
+            specialites?: unknown;
+            /** @description Région d'intervention (filtre GET /ingenieurs) */
+            region?: string | null;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            zone_centre?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
+            zone_rayon_km?: number | null;
+            /** @description Prix de la consultation en FCFA (entier), hors déplacement */
+            tarif_consultation_fcfa?: number | null;
+            disponible?: boolean;
+            biographie?: string | null;
+            /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
+            modalites?: string | null;
+            readonly photo_id: string | null;
+            readonly statut_validation: components["schemas"]["StatutValidationEnum"];
+            readonly motif_refus: string | null;
+            /** Format: date-time */
+            readonly valide_le: string | null;
+            readonly justificatifs: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** @description GET/PUT /ingenieurs/moi/profil — vue complète pour l'ingénieur lui-même. */
+        IngenieurProfilRequest: {
+            /** @description Liste de codes du référentiel `specialite` (validés par le service) */
+            specialites?: unknown;
+            /** @description Région d'intervention (filtre GET /ingenieurs) */
+            region?: string | null;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            zone_centre?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
+            zone_rayon_km?: number | null;
+            /** @description Prix de la consultation en FCFA (entier), hors déplacement */
+            tarif_consultation_fcfa?: number | null;
+            disponible?: boolean;
+            biographie?: string | null;
+            /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
+            modalites?: string | null;
+        };
+        /** @description GET /ingenieurs et /ingenieurs/{id} — profil public, sans téléphone (03). */
+        IngenieurPublic: {
+            readonly id: string;
+            readonly nom: string;
+            /** @description Liste de codes du référentiel `specialite` (validés par le service) */
+            specialites?: unknown;
+            /** @description Région d'intervention (filtre GET /ingenieurs) */
+            region?: string | null;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            readonly zone_centre: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            /** @description Rayon d'intervention en km, borné par le paramètre plateforme */
+            zone_rayon_km?: number | null;
+            /** @description Prix de la consultation en FCFA (entier), hors déplacement */
+            tarif_consultation_fcfa?: number | null;
+            disponible?: boolean;
+            biographie?: string | null;
+            /** @description Modalités d'intervention (déplacements, visio, créneaux…) */
+            modalites?: string | null;
+            readonly photo_id: string | null;
+        };
+        /** @description POST /commandes/{id}/paiements — opérateur + numéro Mobile Money. */
+        InitierPaiementRequest: {
+            operateur: components["schemas"]["OperateurPaiementEnum"];
+            telephone?: string;
+        };
+        /** @description POST /auth/inscription — rôles agriculteur, acheteur, ingénieur, livreur. */
+        InscriptionRequest: {
+            nom: string;
+            telephone: string;
+            email?: string;
+            mot_de_passe: string;
+            role: components["schemas"]["RoleInscriptionEnum"];
+            region?: string;
+        };
+        /** @description Itinéraire : points GeoJSON + distance + durée (champs maison). */
+        Itineraire: {
+            point_depart: unknown;
+            point_arrivee: unknown;
+            /** Format: decimal */
+            distance_km: string;
+            duree_estimee_min: number | null;
+            source: string;
+        };
+        /** @description Pièce justificative avec son fichier (sans chemin de stockage). */
+        Justificatif: {
+            readonly id: string;
+            /**
+             * @description Nature du document
+             *
+             *     * `diplome` - Diplôme
+             *     * `piece_identite` - Pièce d'identité
+             *     * `autre` - Autre
+             */
+            readonly type: components["schemas"]["TypeJustificatifEnum"];
+            readonly statut: components["schemas"]["JustificatifStatutEnum"];
+            readonly fichier: components["schemas"]["Fichier"];
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description POST /ingenieurs/moi/justificatifs — fichier déjà téléversé (`fichier_id`). */
+        JustificatifDepotRequest: {
+            fichier_id: string;
+            type: components["schemas"]["TypeJustificatifEnum"];
+        };
+        /**
+         * @description * `soumise` - Soumise
+         *     * `acceptee` - Acceptée
+         *     * `rejetee` - Rejetée
+         * @enum {string}
+         */
+        JustificatifStatutEnum: "soumise" | "acceptee" | "rejetee";
+        LigneCommande: {
+            readonly produit: string;
+            readonly nom_produit: string;
+            readonly unite: string;
+            /** Format: decimal */
+            readonly quantite: string;
+            readonly prix_unitaire_fcfa: number;
+            readonly total_ligne_fcfa: number;
+        };
+        LigneHistorique: {
+            ancien_statut: string | null;
+            nouveau_statut: string;
+            motif: string | null;
+            acteur_nom: string | null;
+            /** Format: date-time */
+            cree_le: string;
+        };
+        /** @description Ligne du panier envoyée au devis / à la création. */
+        LigneSaisieRequest: {
+            produit_id: string;
+            /** Format: decimal */
+            quantite: string;
+        };
+        ListeAccompagnements: {
+            elements: components["schemas"]["Accompagnement"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeAudit: {
+            elements: components["schemas"]["AuditEntree"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeCommandes: {
+            elements: components["schemas"]["CommandeListe"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeConversations: {
+            elements: components["schemas"]["Conversation"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeDemandesReinitialisation: {
+            elements: components["schemas"]["UtilisateurAdminListe"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeGenerationsIA: {
+            elements: components["schemas"]["GenerationIAList"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeIngenieurs: {
+            elements: components["schemas"]["IngenieurPublic"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeNotifications: {
+            elements: components["schemas"]["Notification"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeReversements: {
+            elements: components["schemas"]["Reversement"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        ListeUtilisateursAdmin: {
+            elements: components["schemas"]["UtilisateurAdminListe"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        /** @description Vue détaillée : itinéraire + données sensibles déjà filtrées en amont. */
+        LivraisonDetail: {
+            readonly id: string;
+            readonly commande_reference: string;
+            statut?: components["schemas"]["StatutLivraisonEnum"];
+            numero_tentative?: number;
+            readonly frais_livraison_fcfa: number;
+            readonly zone_livraison: string;
+            /** Format: decimal */
+            readonly distance_km: string;
+            readonly duree_estimee_min: number | null;
+            /** Format: date-time */
+            acceptee_le?: string | null;
+            readonly itineraire: components["schemas"]["Itineraire"];
+            readonly livreur_nom: string | null;
+            readonly adresse_exacte: string;
+            readonly adresse_exacte_visible: boolean;
+            readonly telephone_acheteur: string | null;
+            readonly telephone_livreur: string | null;
+            readonly position_livreur: unknown;
+            tentatives_code_echouees?: number;
+            /** Format: date-time */
+            demarree_le?: string | null;
+            /** Format: date-time */
+            livree_le?: string | null;
+        };
+        /**
+         * @description Vue livreur avant acceptation : zone et distance, jamais d'adresse
+         *     exacte ni de téléphone (D-21).
+         */
+        LivraisonDisponible: {
+            readonly id: string;
+            readonly commande_reference: string;
+            statut?: components["schemas"]["StatutLivraisonEnum"];
+            numero_tentative?: number;
+            readonly frais_livraison_fcfa: number;
+            readonly zone_livraison: string;
+            /** Format: decimal */
+            readonly distance_km: string;
+            readonly duree_estimee_min: number | null;
+            /** Format: date-time */
+            acceptee_le?: string | null;
+        };
+        /** @description GET /livreurs/moi/disponibilite — état courant du profil livreur. */
+        LivreurProfil: {
+            readonly disponible: boolean;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            readonly position: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            /** Format: date-time */
+            readonly position_maj_le: string | null;
+            /** @description Zone d'intervention déclarée */
+            readonly zone: string | null;
+        };
+        /** @description POST /conversations/{id}/lu — pointe le dernier message lu du participant. */
+        MarquerLuRequest: {
+            dernier_message_lu_id: string;
+        };
+        /** @description POST /{id}/marquer-manque — qui est absent (Q-30). */
+        MarquerManqueRequest: {
+            absent: components["schemas"]["AbsentEnum"];
+        };
+        MesAccompagnements: {
+            periode: components["schemas"]["Periode"];
+            nombre_accompagnements: number;
+            accompagnements_par_statut: {
+                [key: string]: number;
+            };
+            terminees: number;
+            revenu_net_fcfa: number;
+            serie: components["schemas"]["PointSerie"][];
+        };
+        MesLivraisons: {
+            periode: components["schemas"]["Periode"];
+            nombre_livraisons: number;
+            livraisons_par_statut: {
+                [key: string]: number;
+            };
+            livrees: number;
+            frais_cumules_fcfa: number;
+            serie: components["schemas"]["PointSerie"][];
+        };
+        MesProduits: {
+            elements: components["schemas"]["Produit"][];
+            page: number;
+            taille: number;
+            total: number;
+        };
+        MesVentes: {
+            periode: components["schemas"]["Periode"];
+            nombre_ventes: number;
+            chiffre_affaires_brut_fcfa: number;
+            commissions_fcfa: number;
+            revenu_net_fcfa: number;
+            /** Format: double */
+            quantite_totale: number;
+            produits_populaires: components["schemas"]["ProduitPopulaire"][];
+            serie: components["schemas"]["PointSerie"][];
+        };
+        /**
+         * @description Message rendu au client. `contenu` est du **texte brut** ; le client le
+         *     rend échappé (React) — aucune exécution de script (PW-F13-04).
+         */
+        Message: {
+            readonly id: string;
+            readonly conversation: string;
+            readonly auteur: string;
+            /** @description Identifiant client (UUID) : clé d'idempotence, unique par auteur. */
+            readonly id_client: string;
+            /** @description Texte brut ; rendu comme du texte côté client (aucune exécution de script). */
+            readonly contenu: string | null;
+            readonly fichier: components["schemas"]["Fichier"];
+            /**
+             * Format: date-time
+             * @description Soft delete ; null = message visible.
+             */
+            readonly supprime_le: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description POST /conversations/{id}/messages — `id_client` requis (idempotence). */
+        MessageCreationRequest: {
+            contenu?: string;
+            fichier_id?: string;
+            id_client: string;
+        };
+        /**
+         * @description * `en_ligne` - En ligne
+         *     * `presentiel` - Présentiel
+         * @enum {string}
+         */
+        ModaliteEnum: "en_ligne" | "presentiel";
+        /** @description PUT /utilisateurs/moi/mot-de-passe. */
+        MotDePasseRequest: {
+            mot_de_passe_actuel: string;
+            nouveau_mot_de_passe: string;
+        };
+        /** @description Réponse du mot de passe temporaire (Q-23) — affiché une seule fois. */
+        MotDePasseTemporaire: {
+            readonly mot_de_passe_temporaire: string;
+            readonly doit_changer_mot_de_passe: boolean;
+            readonly message: string;
+        };
+        /**
+         * @description * `indisponibilite` - Indisponibilité
+         *     * `desistement` - Désistement
+         *     * `refus` - Refus
+         *     * `termine` - Terminé
+         *     * `changement` - Changement d'ingénieur
+         * @enum {string}
+         */
+        MotifFinEnum: "indisponibilite" | "desistement" | "refus" | "termine" | "changement";
+        /**
+         * @description * `produit_endommage` - Produit endommagé
+         *     * `produit_incorrect` - Produit incorrect
+         *     * `non_recu` - Non reçu
+         *     * `annulation` - Annulation
+         *     * `autre` - Autre
+         * @enum {string}
+         */
+        MotifRemboursementEnum: "produit_endommage" | "produit_incorrect" | "non_recu" | "annulation" | "autre";
+        /** @description Rejet d'une commande : motif obligatoire. */
+        MotifRequest: {
+            motif: string;
+        };
+        /** @description Notification ; l'état lu est exposé par le champ dérivé `non_lue`. */
+        Notification: {
+            readonly id: string;
+            /**
+             * @description Catégorie affichée dans FE-05
+             *
+             *     * `commande` - Commande
+             *     * `paiement` - Paiement
+             *     * `livraison` - Livraison
+             *     * `accompagnement` - Accompagnement
+             *     * `abonnement` - Abonnement
+             *     * `administration` - Administration
+             *     * `signalement` - Signalement
+             *     * `chat` - Chat
+             */
+            readonly type: components["schemas"]["TypeNotificationEnum"];
+            readonly titre: string;
+            readonly contenu: string;
+            /** @description Chemin applicatif à ouvrir (ex. /admin/utilisateurs) ; null si sans cible */
+            readonly lien: string | null;
+            readonly non_lue: boolean;
+            /**
+             * Format: date-time
+             * @description Date de lecture ; null = non lue
+             */
+            readonly lue_le: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @enum {unknown} */
+        NullEnum: null;
+        /**
+         * @description * `commande` - Commande
+         *     * `abonnement` - Abonnement
+         *     * `accompagnement` - Accompagnement
+         * @enum {string}
+         */
+        ObjetEnum: "commande" | "abonnement" | "accompagnement";
+        /** @description GET /admin/offres — version en vigueur + versions historiques par code. */
+        OffreAdmin: {
+            code: string;
+            nom: string;
+            prix_mensuel_fcfa: number | null;
+            quota_planning_mois: number | null;
+            quota_recommandation_mois: number | null;
+            fonctionnalites?: {
+                [key: string]: unknown;
+            };
+            versions: components["schemas"]["VersionOffre"][];
+        };
+        /** @description POST /admin/offres — nouvelle version d'une offre existante ou nouvelle. */
+        OffreCreationRequest: {
+            code: string;
+            nom: string;
+            prix_mensuel_fcfa: number;
+            quota_planning_mois: number;
+            quota_recommandation_mois: number;
+            fonctionnalites?: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            date_effet?: string;
+        };
+        /**
+         * @description * `mtn_momo` - MTN Mobile Money
+         *     * `orange_money` - Orange Money
+         * @enum {string}
+         */
+        OperateurPaiementEnum: "mtn_momo" | "orange_money";
+        Paiement: {
+            readonly id: string;
+            readonly objet: components["schemas"]["ObjetEnum"];
+            readonly commande: string | null;
+            readonly commande_reference: string;
+            readonly commande_statut: string;
+            readonly montant_fcfa: number;
+            readonly operateur: (components["schemas"]["OperateurPaiementEnum"] | components["schemas"]["NullEnum"]) | null;
+            readonly reference_interne: string;
+            readonly reference_notchpay: string | null;
+            readonly statut: components["schemas"]["PaiementStatutEnum"];
+            readonly url_paiement: string | null;
+            /** Format: date-time */
+            readonly confirme_le: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /**
+         * @description * `initie` - Initié
+         *     * `en_attente` - En attente
+         *     * `reussi` - Réussi
+         *     * `echoue` - Échoué
+         *     * `expire` - Expiré
+         * @enum {string}
+         */
+        PaiementStatutEnum: "initie" | "en_attente" | "reussi" | "echoue" | "expire";
+        /** @description Ligne ADM-04 : un paramètre avec sa valeur en vigueur et ses bornes. */
+        ParametreAdmin: {
+            cle: string;
+            groupe: string;
+            valeur: number;
+            minimum: number;
+            maximum: number;
+            public: boolean;
+            planifiees: components["schemas"]["ValeurPlanifiee"][];
+        };
+        /** @description POST /admin/parametres/{cle} — valeur, date d'effet, motif obligatoire. */
+        ParametreCreationRequest: {
+            valeur: number;
+            /** Format: date-time */
+            date_effet?: string;
+            motif: string;
+        };
+        /** @description Historique d'un paramètre (02 §2.8 : une ligne par changement). */
+        ParametreHistorique: {
+            id: string;
+            valeur: number;
+            /** Format: date-time */
+            date_effet: string;
+            motif: string | null;
+            auteur_nom: string | null;
+            /** Format: date-time */
+            cree_le: string;
+        };
+        /** @description PATCH : tous les champs facultatifs. */
+        PatchedAdresseModificationRequest: {
+            libelle?: string;
+            description?: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            ville?: string;
+            region?: string;
+        };
+        PatchedExploitationModificationRequest: {
+            nom?: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            parcelle?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+            /** Format: decimal */
+            superficie_ha?: string | null;
+            type_sol?: string;
+            region?: string;
+            localite?: string;
+        };
+        /** @description PATCH /utilisateurs/moi — nom, email, région, téléphone ; jamais le rôle. */
+        PatchedMiseAJourMoiRequest: {
+            nom?: string;
+            email?: (string) | null;
+            region?: string | null;
+            telephone?: string;
+        };
+        /** @description Vue propriétaire : tout le produit, stock réservé compris. */
+        PatchedProduitModificationRequest: {
+            nom?: string;
+            categorie?: string;
+            description?: string;
+            unite?: string;
+            prix_unitaire_fcfa?: number;
+            /** Format: decimal */
+            quantite_stock?: string;
+        };
+        /** @description PATCH /produits/{id}/stock — stock physique total (≥ réservé). */
+        PatchedStockRequest: {
+            /** Format: decimal */
+            quantite_stock?: string;
+        };
+        Periode: {
+            du?: string | null;
+            au?: string | null;
+        };
+        /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
+        PhotoAjout: {
+            fichier_id: string;
+            ordre?: number;
+        };
+        /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
+        PhotoAjoutRequest: {
+            fichier_id: string;
+            ordre?: number;
+        };
+        PhotoProduit: {
+            fichier_id: string;
+            readonly ordre: number;
+        };
+        /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
+        PhotosOrdre: {
+            fichier_ids: string[];
+        };
+        /** @description PUT /produits/{id}/photos — nouvel ordre complet des photos. */
+        PhotosOrdreRequest: {
+            fichier_ids: string[];
+        };
+        /** @description POST /{id}/planifier — date, durée, lieu ou lien. */
+        PlanifierRequest: {
+            /** Format: date-time */
+            date_debut: string;
+            /** Format: date-time */
+            date_fin: string;
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            lieu_rdv?: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            } | null;
+            lieu_rdv_texte?: string | null;
+            lien_visio?: (string) | null;
+        };
+        /** @description POST /exploitations/{id}/plannings. */
+        PlanningCreationRequest: {
+            culture: string;
+            /** Format: date */
+            periode_debut: string;
+            /** Format: date */
+            periode_fin: string;
+            infos_agronomiques?: string | null;
+        };
+        Plateforme: {
+            periode: components["schemas"]["Periode"];
+            utilisateurs_par_role: {
+                [key: string]: number;
+            };
+            total_utilisateurs: number;
+            commandes_par_statut: {
+                [key: string]: number;
+            };
+            total_commandes: number;
+            chiffre_affaires_fcfa: number;
+            remboursements: components["schemas"]["Remboursements"];
+            livraisons_par_statut: {
+                [key: string]: number;
+            };
+            total_livraisons: number;
+            accompagnements_par_statut: {
+                [key: string]: number;
+            };
+            total_accompagnements: number;
+            generations_ia_par_statut: {
+                [key: string]: number;
+            };
+            total_generations_ia: number;
+            revenus_plateforme_fcfa: number;
+            serie: components["schemas"]["PointSerie"][];
+        };
+        PointSerie: {
+            /** @description Clé ISO : AAAA-MM-JJ, AAAA-SSnn ou AAAA-MM. */
+            periode: string;
+            nombre: number;
+            montant_fcfa: number;
+        };
+        /** @description POST /livraisons/{id}/position — GeoJSON Point pendant la course. */
+        PositionLivreurRequest: {
+            /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
+            position: {
+                type: string;
+                /** @description Coordonnées GeoJSON (imbrication selon le type : Point, LineString ou Polygon). */
+                coordinates: unknown[];
+            };
+        };
+        /** @description Vue propriétaire : tout le produit, stock réservé compris. */
+        Produit: {
+            readonly id: string;
+            nom: string;
+            categorie: string;
+            description?: string;
+            unite: string;
+            prix_unitaire_fcfa: number;
+            /** Format: decimal */
+            quantite_stock?: string;
+            /** Format: decimal */
+            readonly quantite_reservee: string;
+            /** Format: decimal */
+            readonly quantite_disponible: string;
+            readonly statut: components["schemas"]["ProduitStatutEnum"];
+            exploitation: string;
+            readonly exploitation_nom: string;
+            readonly photos: components["schemas"]["PhotoProduit"][];
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /**
+         * @description Vue publique : nom du producteur et région, jamais de téléphone ni de position.
+         *
+         *     Expose aussi `agriculteur_id` (UUID opaque) : le panier doit vérifier
+         *     qu'une commande concerne un seul agriculteur (D-02), le serveur retranche.
+         */
+        ProduitCatalogue: {
+            readonly id: string;
+            nom: string;
+            categorie: string;
+            description?: string;
+            unite: string;
+            prix_unitaire_fcfa: number;
+            /** Format: decimal */
+            readonly quantite_disponible: string;
+            readonly producteur_nom: string;
+            readonly agriculteur_id: string;
+            readonly region: string;
+            readonly localite: string;
+            readonly photos: components["schemas"]["PhotoProduit"][];
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description Vue propriétaire : tout le produit, stock réservé compris. */
+        ProduitCreationRequest: {
+            nom: string;
+            categorie: string;
+            description?: string;
+            unite: string;
+            prix_unitaire_fcfa: number;
+            /** Format: decimal */
+            quantite_stock?: string;
+            exploitation_id: string;
+            photo_ids?: string[];
+        };
+        ProduitPopulaire: {
+            nom_produit: string;
+            /** Format: double */
+            unites: number;
+            total_fcfa: number;
+        };
+        /**
+         * @description * `disponible` - Disponible
+         *     * `epuise` - Épuisé
+         *     * `retire` - Retiré
+         * @enum {string}
+         */
+        ProduitStatutEnum: "disponible" | "epuise" | "retire";
+        /** @description POST /exploitations/{id}/recommandations. */
+        RecommandationCreationRequest: {
+            sujet: string;
+            culture?: string | null;
+            contexte?: string | null;
+        };
+        /** @description Représentation d'une entrée de référentiel. */
+        Referentiel: {
+            /** @description Identifiant code stable utilisé par les autres entités */
+            code: string;
+            /** @description Libellé affiché aux utilisateurs */
+            libelle: string;
+            /** @description Ordre de tri pour l'affichage */
+            ordre?: number;
+        };
+        /**
+         * @description Ligne de gestion : code stable + libellé + drapeau actif.
+         *
+         *     Le champ `type` est porteur à la lecture ; à l'écriture il vient de l'URL
+         *     (/admin/referentiels/{type}), donc non obligatoire dans le corps.
+         */
+        ReferentielAdmin: {
+            readonly id: string;
+            type?: string;
+            code: string;
+            libelle: string;
+            /** @default 0 */
+            ordre: number;
+            readonly actif: boolean;
+        };
+        /**
+         * @description Ligne de gestion : code stable + libellé + drapeau actif.
+         *
+         *     Le champ `type` est porteur à la lecture ; à l'écriture il vient de l'URL
+         *     (/admin/referentiels/{type}), donc non obligatoire dans le corps.
+         */
+        ReferentielAdminRequest: {
+            type?: string;
+            code: string;
+            libelle: string;
+            /** @default 0 */
+            ordre: number;
+        };
+        ReferentielRenommageRequest: {
+            libelle: string;
+        };
+        /**
+         * @description POST /admin/ingenieurs/{id}/refuser — presence de `motif` documentée ;
+         *     le contrôle métier (motif non vide → 422 `motif_obligatoire`) reste dans
+         *     le service, seul point de vérité (conventions §3).
+         */
+        RefusIngenieurRequest: {
+            motif: string;
+        };
+        /** @description POST /{id}/refuser — motif obligatoire (règle dans le service). */
+        RefusRequest: {
+            motif: string;
+        };
+        /**
+         * @description POST /admin/remboursements/{id}/refuser — motif obligatoire (07 §15.3).
+         *
+         *     La règle « motif non vide » vit dans le service (`motif_obligatoire`).
+         */
+        RefuserRemboursementRequest: {
+            motif: string;
+        };
+        Remboursement: {
+            readonly id: string;
+            readonly commande: string | null;
+            readonly commande_reference: string | null;
+            readonly accompagnement: string | null;
+            readonly paiement: string;
+            readonly demandeur: string;
+            readonly demandeur_nom: string;
+            readonly signalement: string | null;
+            readonly motif: components["schemas"]["MotifRemboursementEnum"];
+            readonly montant_demande_fcfa: number;
+            readonly montant_accorde_fcfa: number | null;
+            readonly statut: components["schemas"]["StatutRemboursementEnum"];
+            readonly statut_commande_origine: string;
+            readonly motif_decision: string | null;
+            /** Format: date-time */
+            readonly decide_le: string | null;
+            readonly reference_operateur: string | null;
+            readonly justificatifs: string[];
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /** @description POST /remboursements — demande de l'acheteur (SPEC-05). */
+        RemboursementCreationRequest: {
+            commande_id: string;
+            motif: components["schemas"]["MotifRemboursementEnum"];
+            montant_demande_fcfa: number;
+            justificatifs?: string[];
+            signalement_id?: string | null;
+        };
+        Remboursements: {
+            nombre: number;
+            montant_effectue_fcfa: number;
+        };
+        /** @description Réponse neutre uniforme (demande de réinitialisation, Q-23). */
+        ReponseMessage: {
+            readonly message: string;
+        };
+        /**
+         * @description Corps commun de /auth/inscription, /connexion et /rafraichir.
+         *
+         *     Sert uniquement à documenter le schéma OpenAPI ; la réponse est construite
+         *     dans `views._reponse_session`.
+         */
+        ReponseSession: {
+            readonly utilisateur: components["schemas"]["Utilisateur"];
+            readonly jeton_acces: string;
+            /** Format: date-time */
+            readonly expire_le: string;
+        };
+        ReponseTache: {
+            tache: string;
+            statut: string;
+            resultat: string;
+        };
+        /** @description Reprogrammation : nouvelle adresse optionnelle + paiement si frais dus. */
+        ReprogrammerRequest: {
+            adresse_id?: string | null;
+            operateur?: (components["schemas"]["OperateurPaiementEnum"] | components["schemas"]["NullEnum"]) | null;
+            /** @default  */
+            telephone: string;
+        };
+        /** @description Ligne d'historique de reversement (route admin seule : référence visible). */
+        Reversement: {
+            readonly id: string;
+            readonly beneficiaire_id: string;
+            beneficiaire_nom: string;
+            readonly montant_fcfa: number;
+            readonly operateur: components["schemas"]["OperateurPaiementEnum"];
+            readonly reference_operateur: string;
+            effectue_par_nom?: string | null;
+            /** Format: date-time */
+            readonly effectue_le: string;
+            readonly note: string | null;
+        };
+        /** @description POST /admin/reversements — bénéficiaire, montant, opérateur, référence. */
+        ReversementCreationRequest: {
+            beneficiaire_id: string;
+            montant_fcfa: number;
+            operateur: components["schemas"]["OperateurPaiementEnum"];
+            reference_operateur: string;
+            note?: string | null;
+        };
+        /**
+         * @description * `admin` - admin
+         *     * `super_admin` - super_admin
+         * @enum {string}
+         */
+        RoleAdministrationEnum: "admin" | "super_admin";
+        /**
+         * @description * `acheteur` - acheteur
+         *     * `agriculteur` - agriculteur
+         *     * `ingenieur_agronome` - ingenieur_agronome
+         *     * `livreur` - livreur
+         * @enum {string}
+         */
+        RoleInscriptionEnum: "acheteur" | "agriculteur" | "ingenieur_agronome" | "livreur";
+        /**
+         * @description * `agriculteur` - Agriculteur
+         *     * `acheteur` - Acheteur
+         *     * `ingenieur_agronome` - Ingénieur agronome
+         *     * `livreur` - Livreur
+         *     * `admin` - Administrateur
+         *     * `super_admin` - Super administrateur
+         * @enum {string}
+         */
+        RoleUtilisateurEnum: "agriculteur" | "acheteur" | "ingenieur_agronome" | "livreur" | "admin" | "super_admin";
+        SanteLivenessResponse: {
+            statut: string;
+            version: string;
+        };
+        SanteReadinessErrorResponse: {
+            statut: string;
+            base: string;
+            migrations_en_attente: number | null;
+        };
+        SanteReadinessResponse: {
+            statut: string;
+            base: string;
+            migrations_en_attente: number;
+        };
+        Signalement: {
+            readonly id: string;
+            readonly auteur: string;
+            readonly auteur_nom: string;
+            readonly cible_type: components["schemas"]["CibleSignalementEnum"];
+            readonly cible_id: string;
+            readonly motif: string;
+            readonly description: string;
+            readonly statut: components["schemas"]["StatutSignalementEnum"];
+            readonly decision: string | null;
+            readonly traite_par: string | null;
+            readonly traite_par_nom: string;
+            readonly fichiers: string[];
+            /** Format: date-time */
+            readonly cree_le: string;
+            /** Format: date-time */
+            readonly maj_le: string;
+        };
+        /** @description POST /signalements — cible + motif + fichiers (SPEC-10). */
+        SignalementCreationRequest: {
+            cible_type: components["schemas"]["CibleSignalementEnum"];
+            cible_id: string;
+            motif: string;
+            description: string;
+            fichier_ids?: string[];
+        };
+        /** @description GET /soldes/moi — décomposition du solde (02 §2.4, jamais stocké). */
+        SoldeDetail: {
+            gains_acquis: number;
+            remboursements_imputes: number;
+            deja_reverse: number;
+            solde: number;
+        };
+        /** @description GET /admin/soldes — un bénéficiaire au solde positif. */
+        SoldeLigne: {
+            beneficiaire_id: string;
+            nom: string;
+            role: string;
+            gains_acquis: number;
+            remboursements_imputes: number;
+            deja_reverse: number;
+            solde: number;
+        };
+        /**
+         * @description * `demandee` - Demandée
+         *     * `acceptee` - Acceptée
+         *     * `refusee` - Refusée
+         *     * `annulee` - Annulée
+         *     * `planifiee` - Planifiée
+         *     * `terminee` - Terminée
+         *     * `manquee` - Manquée
+         * @enum {string}
+         */
+        StatutAccompagnementEnum: "demandee" | "acceptee" | "refusee" | "annulee" | "planifiee" | "terminee" | "manquee";
+        /**
+         * @description * `en_attente` - En attente
+         *     * `acceptee` - Acceptée
+         *     * `paiement_en_attente` - Paiement en attente
+         *     * `payee` - Payée
+         *     * `preparation` - En préparation
+         *     * `remise_au_livreur` - Remise au livreur
+         *     * `livree` - Livrée
+         *     * `rejetee` - Rejetée
+         *     * `annulee` - Annulée
+         *     * `client_absent` - Client absent
+         *     * `echec_livraison` - Échec de livraison
+         *     * `remboursement_en_attente` - Remboursement en attente
+         *     * `remboursee` - Remboursée
+         * @enum {string}
+         */
+        StatutCommandeEnum: "en_attente" | "acceptee" | "paiement_en_attente" | "payee" | "preparation" | "remise_au_livreur" | "livree" | "rejetee" | "annulee" | "client_absent" | "echec_livraison" | "remboursement_en_attente" | "remboursee";
+        /**
+         * @description * `actif` - Actif
+         *     * `en_attente_validation` - En attente de validation
+         *     * `suspendu` - Suspendu
+         *     * `anonymise` - Anonymisé
+         * @enum {string}
+         */
+        StatutCompteEnum: "actif" | "en_attente_validation" | "suspendu" | "anonymise";
+        /**
+         * @description * `en_cours` - En cours
+         *     * `reussie` - Réussie
+         *     * `echouee` - Échouée
+         * @enum {string}
+         */
+        StatutGenerationEnum: "en_cours" | "reussie" | "echouee";
+        /**
+         * @description * `proposee` - Proposée
+         *     * `acceptee` - Acceptée
+         *     * `en_cours` - En cours
+         *     * `livree` - Livrée
+         *     * `client_absent` - Client absent
+         *     * `echec_livraison` - Échec de livraison
+         *     * `annulee` - Annulée
+         * @enum {string}
+         */
+        StatutLivraisonEnum: "proposee" | "acceptee" | "en_cours" | "livree" | "client_absent" | "echec_livraison" | "annulee";
+        /**
+         * @description * `demande` - Demandé
+         *     * `en_examen` - En examen
+         *     * `approuve` - Approuvé
+         *     * `refuse` - Refusé
+         *     * `en_cours` - En cours
+         *     * `effectue` - Effectué
+         *     * `echoue` - Échoué
+         * @enum {string}
+         */
+        StatutRemboursementEnum: "demande" | "en_examen" | "approuve" | "refuse" | "en_cours" | "effectue" | "echoue";
+        /**
+         * @description * `ouvert` - Ouvert
+         *     * `en_examen` - En examen
+         *     * `clos_fonde` - Closé — fondé
+         *     * `clos_non_fonde` - Closé — non fondé
+         * @enum {string}
+         */
+        StatutSignalementEnum: "ouvert" | "en_examen" | "clos_fonde" | "clos_non_fonde";
+        /**
+         * @description * `en_attente` - En attente
+         *     * `valide` - Validé
+         *     * `refuse` - Refusé
+         * @enum {string}
+         */
+        StatutValidationEnum: "en_attente" | "valide" | "refuse";
+        /** @description POST /admin/utilisateurs/{id}/suspendre — motif obligatoire (affiché au user). */
+        SuspendreRequest: {
+            motif: string;
+        };
+        /** @description POST /fichiers — multipart : `fichier` (binaire) + `contexte`. */
+        TeleversementRequest: {
+            /** Format: binary */
+            fichier: string;
+            contexte: components["schemas"]["ContexteEnum"];
+        };
+        /** @description POST /{id}/terminer — observation obligatoire. */
+        TerminerRequest: {
+            observation: string;
+        };
+        /** @description POST /admin/signalements/{id}/traiter — statut de décision + motif. */
+        TraiterSignalementRequest: {
+            statut: components["schemas"]["TraiterSignalementStatutEnum"];
+            /** @default  */
+            decision: string;
+        };
+        /**
+         * @description * `en_examen` - En examen
+         *     * `clos_fonde` - Closé — fondé
+         *     * `clos_non_fonde` - Closé — non fondé
+         * @enum {string}
+         */
+        TraiterSignalementStatutEnum: "en_examen" | "clos_fonde" | "clos_non_fonde";
+        /**
+         * @description * `commande` - Commande
+         *     * `accompagnement` - Accompagnement
+         * @enum {string}
+         */
+        TypeConversationEnum: "commande" | "accompagnement";
+        /**
+         * @description * `planning` - Planning cultural
+         *     * `recommandation` - Recommandation agronomique
+         * @enum {string}
+         */
+        TypeGenerationEnum: "planning" | "recommandation";
+        /**
+         * @description * `client_absent` - Client absent
+         *     * `echec_livraison` - Échec de livraison
+         *     * `produit_endommage` - Produit endommagé
+         *     * `autre` - Autre
+         * @enum {string}
+         */
+        TypeIncidentEnum: "client_absent" | "echec_livraison" | "produit_endommage" | "autre";
+        /**
+         * @description * `diplome` - Diplôme
+         *     * `piece_identite` - Pièce d'identité
+         *     * `autre` - Autre
+         * @enum {string}
+         */
+        TypeJustificatifEnum: "diplome" | "piece_identite" | "autre";
+        /**
+         * @description * `commande` - Commande
+         *     * `paiement` - Paiement
+         *     * `livraison` - Livraison
+         *     * `accompagnement` - Accompagnement
+         *     * `abonnement` - Abonnement
+         *     * `administration` - Administration
+         *     * `signalement` - Signalement
+         *     * `chat` - Chat
+         * @enum {string}
+         */
+        TypeNotificationEnum: "commande" | "paiement" | "livraison" | "accompagnement" | "abonnement" | "administration" | "signalement" | "chat";
+        /** @description Représentation de « moi » pour tout utilisateur connecté. */
+        Utilisateur: {
+            readonly id: string;
+            /** @description Nom complet ou raison sociale */
+            readonly nom: string;
+            /** @description Numéro de téléphone au format E.164 (+237XXXXXXXXX) */
+            readonly telephone: string;
+            /**
+             * Format: email
+             * @description Adresse email facultative
+             */
+            readonly email: string | null;
+            readonly role: components["schemas"]["RoleUtilisateurEnum"];
+            readonly statut_compte: components["schemas"]["StatutCompteEnum"];
+            readonly region: string | null;
+            readonly doit_changer_mot_de_passe: boolean;
+            /** Format: date-time */
+            readonly reinitialisation_demandee_le: string | null;
+            /** Format: date-time */
+            readonly derniere_connexion_le: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description GET /admin/utilisateurs/{id} — toutes les infos nécessaires à l'admin. */
+        UtilisateurAdminDetail: {
+            readonly id: string;
+            /** @description Nom complet ou raison sociale */
+            readonly nom: string;
+            /** @description Numéro de téléphone au format E.164 (+237XXXXXXXXX) */
+            readonly telephone: string;
+            /**
+             * Format: email
+             * @description Adresse email facultative
+             */
+            readonly email: string | null;
+            readonly role: components["schemas"]["RoleUtilisateurEnum"];
+            readonly statut_compte: components["schemas"]["StatutCompteEnum"];
+            readonly region: string | null;
+            readonly doit_changer_mot_de_passe: boolean;
+            /** Format: date-time */
+            readonly reinitialisation_demandee_le: string | null;
+            /** Format: date-time */
+            readonly derniere_connexion_le: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+            readonly profil_ingenieur: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** @description Ligne de GET /admin/utilisateurs — identité, rôle, statut, drapeaux. */
+        UtilisateurAdminListe: {
+            readonly id: string;
+            /** @description Nom complet ou raison sociale */
+            readonly nom: string;
+            /** @description Masqué en liste (conventions §6) ; complet dans le détail. */
+            readonly telephone: string;
+            readonly role: components["schemas"]["RoleUtilisateurEnum"];
+            readonly statut_compte: components["schemas"]["StatutCompteEnum"];
+            readonly region: string | null;
+            readonly doit_changer_mot_de_passe: boolean;
+            /** Format: date-time */
+            readonly reinitialisation_demandee_le: string | null;
+            /** Format: date-time */
+            readonly derniere_connexion_le: string | null;
+            /** Format: date-time */
+            readonly cree_le: string;
+        };
+        /** @description Planification d'une valeur à date d'effet future. */
+        ValeurPlanifiee: {
+            valeur: number;
+            /** Format: date-time */
+            date_effet: string;
+            motif: string | null;
+        };
+        VersionOffre: {
+            id: string;
+            prix_mensuel_fcfa: number;
+            quota_planning_mois: number;
+            quota_recommandation_mois: number;
+            /** Format: date-time */
+            date_effet: string;
+            active: boolean;
+        };
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  accompagnements_lister: {
-    parameters: {
-      query?: {
-        /** @description Filtre côté client, ignoré ici */
-        role?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeAccompagnements'];
-        };
-      };
-    };
-  };
-  accompagnements_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AccompagnementCreationRequest'];
-        'multipart/form-data': components['schemas']['AccompagnementCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-    };
-  };
-  accompagnements_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AccompagnementDetail'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  accompagnements_accepter_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-    };
-  };
-  accompagnements_annuler_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-    };
-  };
-  accompagnements_changer_ingenieur_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ChangerIngenieurRequest'];
-        'multipart/form-data': components['schemas']['ChangerIngenieurRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-    };
-  };
-  accompagnements_confirmer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConfirmerRequest'];
-        'multipart/form-data': components['schemas']['ConfirmerRequest'];
-      };
-    };
-    responses: {
-      /** @description No response body */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  accompagnements_marquer_manque_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MarquerManqueRequest'];
-        'multipart/form-data': components['schemas']['MarquerManqueRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-    };
-  };
-  accompagnements_planifier_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PlanifierRequest'];
-        'multipart/form-data': components['schemas']['PlanifierRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-      /** @description conflit_creneau */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  accompagnements_refuser_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefusRequest'];
-        'multipart/form-data': components['schemas']['RefusRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-      /** @description motif_obligatoire */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  accompagnements_terminer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TerminerRequest'];
-        'multipart/form-data': components['schemas']['TerminerRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'];
-        };
-      };
-      /** @description observation_obligatoire */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  accompagnements_demandes_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Accompagnement'][];
-        };
-      };
-    };
-  };
-  accompagnements_devis_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DevisCreationRequest'];
-        'multipart/form-data': components['schemas']['DevisCreationRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DevisReponse'];
-        };
-      };
-      /** @description validation */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_audit_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Identifiant de l'acteur */
-        acteur?: string;
-        /** @description Action journalisée */
-        action?: string;
-        /** @description Date de début (ISO 8601) */
-        debut?: string;
-        /** @description Type d'entité auditée */
-        entite_type?: string;
-        /** @description Date de fin (ISO 8601) */
-        fin?: string;
-        /** @description Page de résultats (défaut 1) */
-        page?: number;
-        /** @description Taille de page, 1–100 (défaut 20) */
-        taille?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeAudit'];
-        };
-      };
-    };
-  };
-  admin_audit_export_retrieve: {
-    parameters: {
-      query?: {
-        acteur?: string;
-        action?: string;
-        debut?: string;
-        entite_type?: string;
-        fin?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Fichier CSV */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_ingenieurs_refuser_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefusIngenieurRequest'];
-        'multipart/form-data': components['schemas']['RefusIngenieurRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['IngenieurPublic'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description transition_invalide */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description motif_obligatoire */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_ingenieurs_valider_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['IngenieurPublic'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description transition_invalide */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_offres_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OffreAdmin'][];
-        };
-      };
-    };
-  };
-  admin_offres_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OffreCreationRequest'];
-        'multipart/form-data': components['schemas']['OffreCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OffreAdmin'];
-        };
-      };
-      /** @description permission_refusee */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description prix_invalide | quota_invalide */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_parametres_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ParametreAdmin'][];
-        };
-      };
-    };
-  };
-  admin_parametres_create: {
-    parameters: {
-      query?: {
-        /** @description Clé du paramètre (groupe.nom) */
-        cle?: string;
-      };
-      header?: never;
-      path: {
-        cle: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ParametreCreationRequest'];
-        'multipart/form-data': components['schemas']['ParametreCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ParametreHistorique'];
-        };
-      };
-      /** @description permission_refusee */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description parametre_inconnu */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description valeur_hors_bornes */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_parametres_historique_list: {
-    parameters: {
-      query?: {
-        /** @description Clé du paramètre */
-        cle?: string;
-      };
-      header?: never;
-      path: {
-        cle: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ParametreHistorique'][];
-        };
-      };
-      /** @description parametre_inconnu */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_parametres_restaurer_create: {
-    parameters: {
-      query?: {
-        /** @description Clé du paramètre */
-        cle?: string;
-      };
-      header?: never;
-      path: {
-        cle: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ParametreHistorique'];
-        };
-      };
-      /** @description parametre_inconnu */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description restauration_impossible */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_referentiels_list: {
-    parameters: {
-      query?: {
-        type_ref?: string;
-      };
-      header?: never;
-      path: {
-        type_ref: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReferentielAdmin'][];
-        };
-      };
-      /** @description type_referentiel_inconnu */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_referentiels_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        type_ref: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ReferentielAdminRequest'];
-        'multipart/form-data': components['schemas']['ReferentielAdminRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReferentielAdmin'];
-        };
-      };
-      /** @description code_existant */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description type_referentiel_inconnu | champ_requis */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_referentiels_entrees_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ReferentielRenommageRequest'];
-        'multipart/form-data': components['schemas']['ReferentielRenommageRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReferentielAdmin'];
-        };
-      };
-      /** @description referentiel_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_referentiels_entrees_desactiver_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReferentielAdmin'];
-        };
-      };
-      /** @description referentiel_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description deja_desactive */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_remboursements_list: {
-    parameters: {
-      query?: {
-        /** @description Filtre de statut */
-        statut?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'][];
-        };
-      };
-    };
-  };
-  admin_remboursements_approuver_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ApprouverRemboursementRequest'];
-        'multipart/form-data': components['schemas']['ApprouverRemboursementRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'];
-        };
-      };
-    };
-  };
-  admin_remboursements_examiner_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'];
-        };
-      };
-    };
-  };
-  admin_remboursements_executer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ExecuterRemboursementRequest'];
-        'multipart/form-data': components['schemas']['ExecuterRemboursementRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'];
-        };
-      };
-    };
-  };
-  admin_remboursements_refuser_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RefuserRemboursementRequest'];
-        'multipart/form-data': components['schemas']['RefuserRemboursementRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'];
-        };
-      };
-    };
-  };
-  admin_reversements_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Filtre par identifiant bénéficiaire */
-        beneficiaire?: string;
-        /** @description Page de résultats (défaut 1) */
-        page?: number;
-        /** @description Taille de page, 1–100 (défaut 20) */
-        taille?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeReversements'];
-        };
-      };
-    };
-  };
-  admin_reversements_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ReversementCreationRequest'];
-        'multipart/form-data': components['schemas']['ReversementCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Reversement'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description montant_invalide | reference_requise | montant_superieur_solde | beneficiaire_invalide */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_signalements_list: {
-    parameters: {
-      query?: {
-        /** @description Filtre de statut */
-        statut?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Signalement'][];
-        };
-      };
-    };
-  };
-  admin_signalements_traiter_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TraiterSignalementRequest'];
-        'multipart/form-data': components['schemas']['TraiterSignalementRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Signalement'];
-        };
-      };
-    };
-  };
-  admin_soldes_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SoldeLigne'][];
-        };
-      };
-    };
-  };
-  admin_utilisateurs_lister: {
-    parameters: {
-      query?: {
-        /** @description Nom ou téléphone */
-        recherche?: string;
-        /** @description Filtre par rôle */
-        role?: string;
-        /** @description Filtre par statut de compte */
-        statut?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeUtilisateursAdmin'];
-        };
-      };
-    };
-  };
-  admin_utilisateurs_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreationAdminRequest'];
-        'multipart/form-data': components['schemas']['CreationAdminRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MotDePasseTemporaire'];
-        };
-      };
-      /** @description permission_refusee */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_utilisateurs_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UtilisateurAdminDetail'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_utilisateurs_reactiver_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UtilisateurAdminDetail'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description transition_invalide */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_utilisateurs_reinitialiser_mot_de_passe_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MotDePasseTemporaire'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_utilisateurs_suspendre_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SuspendreRequest'];
-        'multipart/form-data': components['schemas']['SuspendreRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UtilisateurAdminDetail'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description transition_invalide */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  admin_utilisateurs_compteurs_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CompteursAdmin'];
-        };
-      };
-    };
-  };
-  admin_utilisateurs_demandes_reinitialisation_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeDemandesReinitialisation'];
-        };
-      };
-    };
-  };
-  auth_connexion_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConnexionRequest'];
-        'multipart/form-data': components['schemas']['ConnexionRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReponseSession'];
-        };
-      };
-      /** @description identifiants_invalides */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description compte_suspendu */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description limite_debit_atteinte */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  auth_deconnexion_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Session révoquée, cookie supprimé */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  auth_demande_reinitialisation_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DemandeReinitialisationRequest'];
-        'multipart/form-data': components['schemas']['DemandeReinitialisationRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReponseMessage'];
-        };
-      };
-    };
-  };
-  auth_inscription_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['InscriptionRequest'];
-        'multipart/form-data': components['schemas']['InscriptionRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReponseSession'];
-        };
-      };
-      /** @description compte_existant (téléphone ou email déjà utilisé) */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description validation_invalide / telephone_invalide / role_inconnu */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description limite_debit_atteinte */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  auth_rafraichir_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReponseSession'];
-        };
-      };
-      /** @description session_invalide / sessions_revoquees / session_expiree */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description compte_suspendu */
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  commandes_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CreationCommandeRequest'];
-        'multipart/form-data': components['schemas']['CreationCommandeRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommandeDetail'];
-        };
-      };
-    };
-  };
-  commandes_livraison_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        commande_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDetail'];
-        };
-      };
-      /** @description Aucune livraison */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  commandes_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommandeDetail'];
-        };
-      };
-      /** @description Commande introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  commandes_accepter_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommandeDetail'];
-        };
-      };
-    };
-  };
-  commandes_annuler_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommandeDetail'];
-        };
-      };
-    };
-  };
-  commandes_code_remise_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Code à 6 chiffres */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  commandes_evaluation_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Evaluation'];
-        };
-      };
-      /** @description Aucune évaluation */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  commandes_evaluation_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationCreationRequest'];
-        'multipart/form-data': components['schemas']['EvaluationCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Evaluation'];
-        };
-      };
-    };
-  };
-  commandes_historique_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LigneHistorique'][];
-        };
-      };
-    };
-  };
-  commandes_paiements_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['InitierPaiementRequest'];
-        'multipart/form-data': components['schemas']['InitierPaiementRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Paiement'];
-        };
-      };
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Paiement'];
-        };
-      };
-    };
-  };
-  commandes_preparer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommandeDetail'];
-        };
-      };
-    };
-  };
-  commandes_rejeter_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MotifRequest'];
-        'multipart/form-data': components['schemas']['MotifRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CommandeDetail'];
-        };
-      };
-    };
-  };
-  commandes_devis_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DevisRequest'];
-        'multipart/form-data': components['schemas']['DevisRequest'];
-      };
-    };
-    responses: {
-      /** @description Devis calculé */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  commandes_mes_achats_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Filtre de statut */
-        statut?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeCommandes'];
-        };
-      };
-    };
-  };
-  commandes_mes_ventes_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Filtre de statut */
-        statut?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeCommandes'];
-        };
-      };
-    };
-  };
-  dev_horloge_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': {
-          decalage_minutes?: number;
-          /** Format: date-time */
-          date_iso?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Horloge mise à jour */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  dev_horloge_destroy: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Horloge réinitialisée */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  dev_taches_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        nom: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ReponseTache'];
-        };
-      };
-      /** @description Tâche inconnue */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  exploitations_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Exploitation'][];
-        };
-      };
-    };
-  };
-  exploitations_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ExploitationCreationRequest'];
-        'multipart/form-data': components['schemas']['ExploitationCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Exploitation'];
-        };
-      };
-    };
-  };
-  exploitations_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Exploitation'];
-        };
-      };
-      /** @description Ressource introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  exploitations_partial_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['PatchedExploitationModificationRequest'];
-        'multipart/form-data': components['schemas']['PatchedExploitationModificationRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Exploitation'];
-        };
-      };
-    };
-  };
-  exploitations_archiver_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Exploitation'];
-        };
-      };
-    };
-  };
-  exploitations_plannings_retrieve: {
-    parameters: {
-      query?: {
-        page?: number;
-        taille?: number;
-      };
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeGenerationsIA'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  exploitations_plannings_create: {
-    parameters: {
-      query?: {
-        /** @description Modes du fournisseur factice (local/test uniquement) : `normal`, `invalide`, `echec`, `timeout`. Ignoré sinon. */
-        test_simule?: string;
-      };
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PlanningCreationRequest'];
-        'multipart/form-data': components['schemas']['PlanningCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['GenerationIADetail'];
-        };
-      };
-      /** @description quota_atteint */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description reponse_invalide */
-      502: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description limite_fournisseur */
-      503: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  exploitations_recommandations_create: {
-    parameters: {
-      query?: {
-        /** @description Modes du fournisseur factice (local/test uniquement) : `normal`, `invalide`, `echec`, `timeout`. Ignoré sinon. */
-        test_simule?: string;
-      };
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RecommandationCreationRequest'];
-        'multipart/form-data': components['schemas']['RecommandationCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['GenerationIADetail'];
-        };
-      };
-      /** @description quota_atteint */
-      429: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  fichiers_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': components['schemas']['TeleversementRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Fichier'];
-        };
-      };
-    };
-  };
-  fichiers_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Redirection vers l'URL signée */
-      302: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  fichiers_contenu_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Timestamp d'expiration (secondes) */
-        expire?: number;
-        /** @description Signature HMAC-SHA256 */
-        signature?: string;
-      };
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Contenu binaire du fichier */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': string;
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description url_expiree */
-      410: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  generations_ia_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['GenerationIADetail'];
-        };
-      };
-      /** @description generation_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  generations_ia_corrections_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CorrectionCreationRequest'];
-        'multipart/form-data': components['schemas']['CorrectionCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CorrectionIA'];
-        };
-      };
-      /** @description generation_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ia_quota_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No response body */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ingenieurs_lister: {
-    parameters: {
-      query?: {
-        /** @description Filtre par zone (F-11) */
-        exploitation_id?: string;
-        /** @description Code de région */
-        region?: string;
-        /** @description Code de spécialité */
-        specialite?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeIngenieurs'];
-        };
-      };
-    };
-  };
-  ingenieurs_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['IngenieurPublic'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ingenieurs_moi_justificatifs_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Justificatif'][];
-        };
-      };
-    };
-  };
-  ingenieurs_moi_justificatifs_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['JustificatifDepotRequest'];
-        'multipart/form-data': components['schemas']['JustificatifDepotRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Justificatif'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ingenieurs_moi_profil_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['IngenieurProfil'];
-        };
-      };
-    };
-  };
-  ingenieurs_moi_profil_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['IngenieurProfilRequest'];
-        'multipart/form-data': components['schemas']['IngenieurProfilRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['IngenieurProfil'];
-        };
-      };
-      /** @description validation_invalide */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  livraisons_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDetail'];
-        };
-      };
-      /** @description Livraison introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  livraisons_accepter_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDisponible'];
-        };
-      };
-    };
-  };
-  livraisons_confirmer_remise_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['CodeRemiseRequest'];
-        'multipart/form-data': components['schemas']['CodeRemiseRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDisponible'];
-        };
-      };
-    };
-  };
-  livraisons_demarrer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDisponible'];
-        };
-      };
-    };
-  };
-  livraisons_desister_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDisponible'];
-        };
-      };
-    };
-  };
-  livraisons_historique_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Historique */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  livraisons_incidents_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['IncidentCreationRequest'];
-        'multipart/form-data': components['schemas']['IncidentCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Incident'];
-        };
-      };
-    };
-  };
-  livraisons_itineraire_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Itinéraire GeoJSON */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  livraisons_position_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PositionLivreurRequest'];
-        'multipart/form-data': components['schemas']['PositionLivreurRequest'];
-      };
-    };
-    responses: {
-      /** @description Position enregistrée */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  livraisons_reprogrammer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['ReprogrammerRequest'];
-        'multipart/form-data': components['schemas']['ReprogrammerRequest'];
-      };
-    };
-    responses: {
-      /** @description Reprogrammée ou paiement initié */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  livraisons_disponibles_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDisponible'][];
-        };
-      };
-    };
-  };
-  livraisons_mes_livraisons_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivraisonDisponible'][];
-        };
-      };
-    };
-  };
-  livreurs_moi_disponibilite_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivreurProfil'];
-        };
-      };
-    };
-  };
-  livreurs_moi_disponibilite_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DisponibiliteLivreurRequest'];
-        'multipart/form-data': components['schemas']['DisponibiliteLivreurRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LivreurProfil'];
-        };
-      };
-    };
-  };
-  notifications_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Filtrer sur les non lues */
-        non_lues?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ListeNotifications'];
-        };
-      };
-    };
-  };
-  notifications_lue_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Notification'];
-        };
-      };
-      /** @description ressource_introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  notifications_compteur_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  notifications_tout_lire_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            [key: string]: unknown;
-          };
-        };
-      };
-    };
-  };
-  paiements_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Paiement'];
-        };
-      };
-      /** @description Paiement introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  parametres_publics_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Dictionnaire des paramètres publics avec leurs valeurs courantes */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  produits_catalogue: {
-    parameters: {
-      query?: {
-        /** @description Code de catégorie */
-        categorie?: string;
-        /** @description Page de résultats (défaut 1) */
-        page?: number;
-        /** @description Prix plafond en FCFA */
-        prix_max?: number;
-        /** @description Prix plancher en FCFA */
-        prix_min?: number;
-        /** @description Recherche dans nom et description */
-        q?: string;
-        /** @description Code de région de l'exploitation */
-        region?: string;
-        /** @description Taille de page, 1–100 (défaut 20) */
-        taille?: number;
-        /** @description recent (défaut), prix_asc ou prix_desc */
-        tri?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['CatalogueProduits'];
-        };
-      };
-    };
-  };
-  produits_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ProduitCreationRequest'];
-        'multipart/form-data': components['schemas']['ProduitCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Produit'];
-        };
-      };
-    };
-  };
-  produits_detail: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ProduitCatalogue'];
-        };
-      };
-      /** @description Produit indisponible */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  produits_partial_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['PatchedProduitModificationRequest'];
-        'multipart/form-data': components['schemas']['PatchedProduitModificationRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Produit'];
-        };
-      };
-    };
-  };
-  produits_photos_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PhotosOrdreRequest'];
-        'multipart/form-data': components['schemas']['PhotosOrdreRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PhotosOrdre'];
-        };
-      };
-    };
-  };
-  produits_photos_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PhotoAjoutRequest'];
-        'multipart/form-data': components['schemas']['PhotoAjoutRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PhotoAjout'];
-        };
-      };
-    };
-  };
-  produits_photos_destroy: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        fichier_id: string;
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Photo dissociée */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  produits_retirer_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Produit'];
-        };
-      };
-    };
-  };
-  produits_stock_partial_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        identifiant: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['PatchedStockRequest'];
-        'multipart/form-data': components['schemas']['PatchedStockRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Produit'];
-        };
-      };
-    };
-  };
-  produits_mes_produits_retrieve: {
-    parameters: {
-      query?: {
-        /** @description Page de résultats (défaut 1) */
-        page?: number;
-        /** @description Taille de page, 1–100 (défaut 20) */
-        taille?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MesProduits'];
-        };
-      };
-    };
-  };
-  referentiels_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        type_ref: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Referentiel'][];
-        };
-      };
-      /** @description Référentiel introuvable */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  remboursements_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RemboursementCreationRequest'];
-        'multipart/form-data': components['schemas']['RemboursementCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'];
-        };
-      };
-    };
-  };
-  remboursements_mes_demandes_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Remboursement'][];
-        };
-      };
-    };
-  };
-  sante_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SanteLivenessResponse'];
-        };
-      };
-    };
-  };
-  sante_pret_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SanteReadinessResponse'];
-        };
-      };
-      503: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SanteReadinessErrorResponse'];
-        };
-      };
-    };
-  };
-  signalements_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SignalementCreationRequest'];
-        'multipart/form-data': components['schemas']['SignalementCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Signalement'];
-        };
-      };
-    };
-  };
-  signalements_mes_signalements_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Signalement'][];
-        };
-      };
-    };
-  };
-  soldes_moi_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SoldeDetail'];
-        };
-      };
-    };
-  };
-  utilisateurs_moi_retrieve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Utilisateur'];
-        };
-      };
-    };
-  };
-  utilisateurs_moi_partial_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['PatchedMiseAJourMoiRequest'];
-        'multipart/form-data': components['schemas']['PatchedMiseAJourMoiRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Utilisateur'];
-        };
-      };
-      /** @description compte_existant */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description validation_invalide / telephone_invalide */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  utilisateurs_moi_adresses_list: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Adresse'][];
-        };
-      };
-    };
-  };
-  utilisateurs_moi_adresses_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AdresseCreationRequest'];
-        'multipart/form-data': components['schemas']['AdresseCreationRequest'];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Adresse'];
-        };
-      };
-      /** @description geometrie_invalide / hors_emprise_cameroun */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  utilisateurs_moi_adresses_destroy: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Adresse supprimée */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  utilisateurs_moi_adresses_partial_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['PatchedAdresseModificationRequest'];
-        'multipart/form-data': components['schemas']['PatchedAdresseModificationRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Adresse'];
-        };
-      };
-      /** @description ressource_introuvable (autre propriétaire ou inexistante) */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  utilisateurs_moi_mot_de_passe_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MotDePasseRequest'];
-        'multipart/form-data': components['schemas']['MotDePasseRequest'];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Utilisateur'];
-        };
-      };
-      /** @description mot_de_passe_incorrect / validation_invalide */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  webhooks_notchpay_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': Record<string, never>;
-      };
-    };
-    responses: {
-      /** @description Événement traité, rejoué, ignoré ou en erreur */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Webhook illisible ou incomplet */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Signature invalide */
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
+    accompagnements_lister: {
+        parameters: {
+            query?: {
+                /** @description Filtre côté client, ignoré ici */
+                role?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeAccompagnements"];
+                };
+            };
+        };
+    };
+    accompagnements_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccompagnementCreationRequest"];
+                "multipart/form-data": components["schemas"]["AccompagnementCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+        };
+    };
+    accompagnements_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccompagnementDetail"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    accompagnements_accepter_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+        };
+    };
+    accompagnements_annuler_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+        };
+    };
+    accompagnements_changer_ingenieur_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangerIngenieurRequest"];
+                "multipart/form-data": components["schemas"]["ChangerIngenieurRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+        };
+    };
+    accompagnements_confirmer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmerRequest"];
+                "multipart/form-data": components["schemas"]["ConfirmerRequest"];
+            };
+        };
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    accompagnements_marquer_manque_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarquerManqueRequest"];
+                "multipart/form-data": components["schemas"]["MarquerManqueRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+        };
+    };
+    accompagnements_planifier_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanifierRequest"];
+                "multipart/form-data": components["schemas"]["PlanifierRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+            /** @description conflit_creneau */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    accompagnements_refuser_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefusRequest"];
+                "multipart/form-data": components["schemas"]["RefusRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+            /** @description motif_obligatoire */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    accompagnements_terminer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TerminerRequest"];
+                "multipart/form-data": components["schemas"]["TerminerRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"];
+                };
+            };
+            /** @description observation_obligatoire */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    accompagnements_demandes_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Accompagnement"][];
+                };
+            };
+        };
+    };
+    accompagnements_devis_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DevisCreationRequest"];
+                "multipart/form-data": components["schemas"]["DevisCreationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DevisReponse"];
+                };
+            };
+            /** @description validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_audit_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Identifiant de l'acteur */
+                acteur?: string;
+                /** @description Action journalisée */
+                action?: string;
+                /** @description Date de début (ISO 8601) */
+                debut?: string;
+                /** @description Type d'entité auditée */
+                entite_type?: string;
+                /** @description Date de fin (ISO 8601) */
+                fin?: string;
+                /** @description Page de résultats (défaut 1) */
+                page?: number;
+                /** @description Taille de page, 1–100 (défaut 20) */
+                taille?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeAudit"];
+                };
+            };
+        };
+    };
+    admin_audit_export_retrieve: {
+        parameters: {
+            query?: {
+                acteur?: string;
+                action?: string;
+                debut?: string;
+                entite_type?: string;
+                fin?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fichier CSV */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_ingenieurs_refuser_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefusIngenieurRequest"];
+                "multipart/form-data": components["schemas"]["RefusIngenieurRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngenieurPublic"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description transition_invalide */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description motif_obligatoire */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_ingenieurs_valider_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngenieurPublic"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description transition_invalide */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_offres_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OffreAdmin"][];
+                };
+            };
+        };
+    };
+    admin_offres_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OffreCreationRequest"];
+                "multipart/form-data": components["schemas"]["OffreCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OffreAdmin"];
+                };
+            };
+            /** @description permission_refusee */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description prix_invalide | quota_invalide */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_parametres_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParametreAdmin"][];
+                };
+            };
+        };
+    };
+    admin_parametres_create: {
+        parameters: {
+            query?: {
+                /** @description Clé du paramètre (groupe.nom) */
+                cle?: string;
+            };
+            header?: never;
+            path: {
+                cle: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParametreCreationRequest"];
+                "multipart/form-data": components["schemas"]["ParametreCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParametreHistorique"];
+                };
+            };
+            /** @description permission_refusee */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description parametre_inconnu */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description valeur_hors_bornes */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_parametres_historique_list: {
+        parameters: {
+            query?: {
+                /** @description Clé du paramètre */
+                cle?: string;
+            };
+            header?: never;
+            path: {
+                cle: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParametreHistorique"][];
+                };
+            };
+            /** @description parametre_inconnu */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_parametres_restaurer_create: {
+        parameters: {
+            query?: {
+                /** @description Clé du paramètre */
+                cle?: string;
+            };
+            header?: never;
+            path: {
+                cle: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ParametreHistorique"];
+                };
+            };
+            /** @description parametre_inconnu */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description restauration_impossible */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_referentiels_list: {
+        parameters: {
+            query?: {
+                type_ref?: string;
+            };
+            header?: never;
+            path: {
+                type_ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferentielAdmin"][];
+                };
+            };
+            /** @description type_referentiel_inconnu */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_referentiels_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                type_ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferentielAdminRequest"];
+                "multipart/form-data": components["schemas"]["ReferentielAdminRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferentielAdmin"];
+                };
+            };
+            /** @description code_existant */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description type_referentiel_inconnu | champ_requis */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_referentiels_entrees_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReferentielRenommageRequest"];
+                "multipart/form-data": components["schemas"]["ReferentielRenommageRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferentielAdmin"];
+                };
+            };
+            /** @description referentiel_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_referentiels_entrees_desactiver_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReferentielAdmin"];
+                };
+            };
+            /** @description referentiel_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description deja_desactive */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_remboursements_list: {
+        parameters: {
+            query?: {
+                /** @description Filtre de statut */
+                statut?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"][];
+                };
+            };
+        };
+    };
+    admin_remboursements_approuver_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprouverRemboursementRequest"];
+                "multipart/form-data": components["schemas"]["ApprouverRemboursementRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"];
+                };
+            };
+        };
+    };
+    admin_remboursements_examiner_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"];
+                };
+            };
+        };
+    };
+    admin_remboursements_executer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecuterRemboursementRequest"];
+                "multipart/form-data": components["schemas"]["ExecuterRemboursementRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"];
+                };
+            };
+        };
+    };
+    admin_remboursements_refuser_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefuserRemboursementRequest"];
+                "multipart/form-data": components["schemas"]["RefuserRemboursementRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"];
+                };
+            };
+        };
+    };
+    admin_reversements_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Filtre par identifiant bénéficiaire */
+                beneficiaire?: string;
+                /** @description Page de résultats (défaut 1) */
+                page?: number;
+                /** @description Taille de page, 1–100 (défaut 20) */
+                taille?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeReversements"];
+                };
+            };
+        };
+    };
+    admin_reversements_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReversementCreationRequest"];
+                "multipart/form-data": components["schemas"]["ReversementCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Reversement"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description montant_invalide | reference_requise | montant_superieur_solde | beneficiaire_invalide */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_signalements_list: {
+        parameters: {
+            query?: {
+                /** @description Filtre de statut */
+                statut?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Signalement"][];
+                };
+            };
+        };
+    };
+    admin_signalements_traiter_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TraiterSignalementRequest"];
+                "multipart/form-data": components["schemas"]["TraiterSignalementRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Signalement"];
+                };
+            };
+        };
+    };
+    admin_soldes_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoldeLigne"][];
+                };
+            };
+        };
+    };
+    admin_utilisateurs_lister: {
+        parameters: {
+            query?: {
+                /** @description Nom ou téléphone */
+                recherche?: string;
+                /** @description Filtre par rôle */
+                role?: string;
+                /** @description Filtre par statut de compte */
+                statut?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeUtilisateursAdmin"];
+                };
+            };
+        };
+    };
+    admin_utilisateurs_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreationAdminRequest"];
+                "multipart/form-data": components["schemas"]["CreationAdminRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MotDePasseTemporaire"];
+                };
+            };
+            /** @description permission_refusee */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_utilisateurs_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilisateurAdminDetail"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_utilisateurs_reactiver_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilisateurAdminDetail"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description transition_invalide */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_utilisateurs_reinitialiser_mot_de_passe_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MotDePasseTemporaire"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_utilisateurs_suspendre_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuspendreRequest"];
+                "multipart/form-data": components["schemas"]["SuspendreRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UtilisateurAdminDetail"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description transition_invalide */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    admin_utilisateurs_compteurs_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompteursAdmin"];
+                };
+            };
+        };
+    };
+    admin_utilisateurs_demandes_reinitialisation_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeDemandesReinitialisation"];
+                };
+            };
+        };
+    };
+    auth_connexion_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnexionRequest"];
+                "multipart/form-data": components["schemas"]["ConnexionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReponseSession"];
+                };
+            };
+            /** @description identifiants_invalides */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description compte_suspendu */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description limite_debit_atteinte */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    auth_deconnexion_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Session révoquée, cookie supprimé */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    auth_demande_reinitialisation_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DemandeReinitialisationRequest"];
+                "multipart/form-data": components["schemas"]["DemandeReinitialisationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReponseMessage"];
+                };
+            };
+        };
+    };
+    auth_inscription_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InscriptionRequest"];
+                "multipart/form-data": components["schemas"]["InscriptionRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReponseSession"];
+                };
+            };
+            /** @description compte_existant (téléphone ou email déjà utilisé) */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description validation_invalide / telephone_invalide / role_inconnu */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description limite_debit_atteinte */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    auth_rafraichir_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReponseSession"];
+                };
+            };
+            /** @description session_invalide / sessions_revoquees / session_expiree */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description compte_suspendu */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    blocages_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BlocageCreationRequest"];
+                "multipart/form-data": components["schemas"]["BlocageCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Blocage"];
+                };
+            };
+        };
+    };
+    blocages_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                utilisateur_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Débloqué */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description aucun blocage actif */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    commandes_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreationCommandeRequest"];
+                "multipart/form-data": components["schemas"]["CreationCommandeRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandeDetail"];
+                };
+            };
+        };
+    };
+    commandes_livraison_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commande_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDetail"];
+                };
+            };
+            /** @description Aucune livraison */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    commandes_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandeDetail"];
+                };
+            };
+            /** @description Commande introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    commandes_accepter_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandeDetail"];
+                };
+            };
+        };
+    };
+    commandes_annuler_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandeDetail"];
+                };
+            };
+        };
+    };
+    commandes_code_remise_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Code à 6 chiffres */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    commandes_evaluation_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Evaluation"];
+                };
+            };
+            /** @description Aucune évaluation */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    commandes_evaluation_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluationCreationRequest"];
+                "multipart/form-data": components["schemas"]["EvaluationCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Evaluation"];
+                };
+            };
+        };
+    };
+    commandes_historique_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LigneHistorique"][];
+                };
+            };
+        };
+    };
+    commandes_paiements_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InitierPaiementRequest"];
+                "multipart/form-data": components["schemas"]["InitierPaiementRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Paiement"];
+                };
+            };
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Paiement"];
+                };
+            };
+        };
+    };
+    commandes_preparer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandeDetail"];
+                };
+            };
+        };
+    };
+    commandes_rejeter_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MotifRequest"];
+                "multipart/form-data": components["schemas"]["MotifRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommandeDetail"];
+                };
+            };
+        };
+    };
+    commandes_devis_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DevisRequest"];
+                "multipart/form-data": components["schemas"]["DevisRequest"];
+            };
+        };
+        responses: {
+            /** @description Devis calculé */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    commandes_mes_achats_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Filtre de statut */
+                statut?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeCommandes"];
+                };
+            };
+        };
+    };
+    commandes_mes_ventes_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Filtre de statut */
+                statut?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeCommandes"];
+                };
+            };
+        };
+    };
+    conversations_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeConversations"];
+                };
+            };
+        };
+    };
+    conversations_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ConversationCreationRequest"];
+                "multipart/form-data": components["schemas"]["ConversationCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conversation"];
+                };
+            };
+        };
+    };
+    conversations_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Conversation"];
+                };
+            };
+            /** @description conversation_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    conversations_lu_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarquerLuRequest"];
+                "multipart/form-data": components["schemas"]["MarquerLuRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    conversations_messages_list: {
+        parameters: {
+            query?: {
+                /** @description Curseur : id du message le plus ancien déjà vu */
+                avant?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"][];
+                };
+            };
+            /** @description conversation_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    conversations_messages_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MessageCreationRequest"];
+                "multipart/form-data": components["schemas"]["MessageCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            /** @description blocage_actif */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description message_vide */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    dev_horloge_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    decalage_minutes?: number;
+                    /** Format: date-time */
+                    date_iso?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Horloge mise à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    dev_horloge_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Horloge réinitialisée */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    dev_taches_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                nom: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReponseTache"];
+                };
+            };
+            /** @description Tâche inconnue */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    exploitations_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Exploitation"][];
+                };
+            };
+        };
+    };
+    exploitations_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExploitationCreationRequest"];
+                "multipart/form-data": components["schemas"]["ExploitationCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Exploitation"];
+                };
+            };
+        };
+    };
+    exploitations_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Exploitation"];
+                };
+            };
+            /** @description Ressource introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    exploitations_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedExploitationModificationRequest"];
+                "multipart/form-data": components["schemas"]["PatchedExploitationModificationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Exploitation"];
+                };
+            };
+        };
+    };
+    exploitations_archiver_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Exploitation"];
+                };
+            };
+        };
+    };
+    exploitations_plannings_retrieve: {
+        parameters: {
+            query?: {
+                page?: number;
+                taille?: number;
+            };
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeGenerationsIA"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    exploitations_plannings_create: {
+        parameters: {
+            query?: {
+                /** @description Modes du fournisseur factice (local/test uniquement) : `normal`, `invalide`, `echec`, `timeout`. Ignoré sinon. */
+                test_simule?: string;
+            };
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanningCreationRequest"];
+                "multipart/form-data": components["schemas"]["PlanningCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationIADetail"];
+                };
+            };
+            /** @description quota_atteint */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description reponse_invalide */
+            502: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description limite_fournisseur */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    exploitations_recommandations_create: {
+        parameters: {
+            query?: {
+                /** @description Modes du fournisseur factice (local/test uniquement) : `normal`, `invalide`, `echec`, `timeout`. Ignoré sinon. */
+                test_simule?: string;
+            };
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecommandationCreationRequest"];
+                "multipart/form-data": components["schemas"]["RecommandationCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationIADetail"];
+                };
+            };
+            /** @description quota_atteint */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    fichiers_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["TeleversementRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Fichier"];
+                };
+            };
+        };
+    };
+    fichiers_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Redirection vers l'URL signée */
+            302: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    fichiers_contenu_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Timestamp d'expiration (secondes) */
+                expire?: number;
+                /** @description Signature HMAC-SHA256 */
+                signature?: string;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Contenu binaire du fichier */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description url_expiree */
+            410: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    generations_ia_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerationIADetail"];
+                };
+            };
+            /** @description generation_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    generations_ia_corrections_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CorrectionCreationRequest"];
+                "multipart/form-data": components["schemas"]["CorrectionCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CorrectionIA"];
+                };
+            };
+            /** @description generation_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ia_quota_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No response body */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ingenieurs_lister: {
+        parameters: {
+            query?: {
+                /** @description Filtre par zone (F-11) */
+                exploitation_id?: string;
+                /** @description Code de région */
+                region?: string;
+                /** @description Code de spécialité */
+                specialite?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeIngenieurs"];
+                };
+            };
+        };
+    };
+    ingenieurs_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngenieurPublic"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ingenieurs_moi_justificatifs_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Justificatif"][];
+                };
+            };
+        };
+    };
+    ingenieurs_moi_justificatifs_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["JustificatifDepotRequest"];
+                "multipart/form-data": components["schemas"]["JustificatifDepotRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Justificatif"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ingenieurs_moi_profil_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngenieurProfil"];
+                };
+            };
+        };
+    };
+    ingenieurs_moi_profil_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["IngenieurProfilRequest"];
+                "multipart/form-data": components["schemas"]["IngenieurProfilRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngenieurProfil"];
+                };
+            };
+            /** @description validation_invalide */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    livraisons_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDetail"];
+                };
+            };
+            /** @description Livraison introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    livraisons_accepter_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDisponible"];
+                };
+            };
+        };
+    };
+    livraisons_confirmer_remise_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CodeRemiseRequest"];
+                "multipart/form-data": components["schemas"]["CodeRemiseRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDisponible"];
+                };
+            };
+        };
+    };
+    livraisons_demarrer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDisponible"];
+                };
+            };
+        };
+    };
+    livraisons_desister_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDisponible"];
+                };
+            };
+        };
+    };
+    livraisons_historique_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Historique */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    livraisons_incidents_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IncidentCreationRequest"];
+                "multipart/form-data": components["schemas"]["IncidentCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Incident"];
+                };
+            };
+        };
+    };
+    livraisons_itineraire_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Itinéraire GeoJSON */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    livraisons_position_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PositionLivreurRequest"];
+                "multipart/form-data": components["schemas"]["PositionLivreurRequest"];
+            };
+        };
+        responses: {
+            /** @description Position enregistrée */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    livraisons_reprogrammer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReprogrammerRequest"];
+                "multipart/form-data": components["schemas"]["ReprogrammerRequest"];
+            };
+        };
+        responses: {
+            /** @description Reprogrammée ou paiement initié */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    livraisons_disponibles_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDisponible"][];
+                };
+            };
+        };
+    };
+    livraisons_mes_livraisons_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivraisonDisponible"][];
+                };
+            };
+        };
+    };
+    livreurs_moi_disponibilite_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivreurProfil"];
+                };
+            };
+        };
+    };
+    livreurs_moi_disponibilite_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisponibiliteLivreurRequest"];
+                "multipart/form-data": components["schemas"]["DisponibiliteLivreurRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LivreurProfil"];
+                };
+            };
+        };
+    };
+    notifications_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Filtrer sur les non lues */
+                non_lues?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListeNotifications"];
+                };
+            };
+        };
+    };
+    notifications_lue_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Notification"];
+                };
+            };
+            /** @description ressource_introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    notifications_compteur_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    notifications_tout_lire_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    paiements_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Paiement"];
+                };
+            };
+            /** @description Paiement introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    parametres_publics_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dictionnaire des paramètres publics avec leurs valeurs courantes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    produits_catalogue: {
+        parameters: {
+            query?: {
+                /** @description Code de catégorie */
+                categorie?: string;
+                /** @description Page de résultats (défaut 1) */
+                page?: number;
+                /** @description Prix plafond en FCFA */
+                prix_max?: number;
+                /** @description Prix plancher en FCFA */
+                prix_min?: number;
+                /** @description Recherche dans nom et description */
+                q?: string;
+                /** @description Code de région de l'exploitation */
+                region?: string;
+                /** @description Taille de page, 1–100 (défaut 20) */
+                taille?: number;
+                /** @description recent (défaut), prix_asc ou prix_desc */
+                tri?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogueProduits"];
+                };
+            };
+        };
+    };
+    produits_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProduitCreationRequest"];
+                "multipart/form-data": components["schemas"]["ProduitCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Produit"];
+                };
+            };
+        };
+    };
+    produits_detail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProduitCatalogue"];
+                };
+            };
+            /** @description Produit indisponible */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    produits_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedProduitModificationRequest"];
+                "multipart/form-data": components["schemas"]["PatchedProduitModificationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Produit"];
+                };
+            };
+        };
+    };
+    produits_photos_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhotosOrdreRequest"];
+                "multipart/form-data": components["schemas"]["PhotosOrdreRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhotosOrdre"];
+                };
+            };
+        };
+    };
+    produits_photos_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhotoAjoutRequest"];
+                "multipart/form-data": components["schemas"]["PhotoAjoutRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PhotoAjout"];
+                };
+            };
+        };
+    };
+    produits_photos_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fichier_id: string;
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Photo dissociée */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    produits_retirer_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Produit"];
+                };
+            };
+        };
+    };
+    produits_stock_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                identifiant: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedStockRequest"];
+                "multipart/form-data": components["schemas"]["PatchedStockRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Produit"];
+                };
+            };
+        };
+    };
+    produits_mes_produits_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Page de résultats (défaut 1) */
+                page?: number;
+                /** @description Taille de page, 1–100 (défaut 20) */
+                taille?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MesProduits"];
+                };
+            };
+        };
+    };
+    referentiels_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                type_ref: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Referentiel"][];
+                };
+            };
+            /** @description Référentiel introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    remboursements_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RemboursementCreationRequest"];
+                "multipart/form-data": components["schemas"]["RemboursementCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"];
+                };
+            };
+        };
+    };
+    remboursements_mes_demandes_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Remboursement"][];
+                };
+            };
+        };
+    };
+    sante_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SanteLivenessResponse"];
+                };
+            };
+        };
+    };
+    sante_pret_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SanteReadinessResponse"];
+                };
+            };
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SanteReadinessErrorResponse"];
+                };
+            };
+        };
+    };
+    signalements_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignalementCreationRequest"];
+                "multipart/form-data": components["schemas"]["SignalementCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Signalement"];
+                };
+            };
+        };
+    };
+    signalements_mes_signalements_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Signalement"][];
+                };
+            };
+        };
+    };
+    soldes_moi_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoldeDetail"];
+                };
+            };
+        };
+    };
+    statistiques_mes_accompagnements: {
+        parameters: {
+            query?: {
+                /** @description Date de fin inclusive (AAAA-MM-JJ). */
+                au?: string;
+                /** @description Date de début inclusive (AAAA-MM-JJ). */
+                du?: string;
+                /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+                granularite?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MesAccompagnements"];
+                };
+            };
+        };
+    };
+    statistiques_mes_livraisons: {
+        parameters: {
+            query?: {
+                /** @description Date de fin inclusive (AAAA-MM-JJ). */
+                au?: string;
+                /** @description Date de début inclusive (AAAA-MM-JJ). */
+                du?: string;
+                /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+                granularite?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MesLivraisons"];
+                };
+            };
+        };
+    };
+    statistiques_mes_ventes: {
+        parameters: {
+            query?: {
+                /** @description Date de fin inclusive (AAAA-MM-JJ). */
+                au?: string;
+                /** @description Date de début inclusive (AAAA-MM-JJ). */
+                du?: string;
+                /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+                granularite?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MesVentes"];
+                };
+            };
+        };
+    };
+    statistiques_plateforme: {
+        parameters: {
+            query?: {
+                /** @description Date de fin inclusive (AAAA-MM-JJ). */
+                au?: string;
+                /** @description Date de début inclusive (AAAA-MM-JJ). */
+                du?: string;
+                /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+                granularite?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Plateforme"];
+                };
+            };
+        };
+    };
+    utilisateurs_moi_retrieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Utilisateur"];
+                };
+            };
+        };
+    };
+    utilisateurs_moi_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedMiseAJourMoiRequest"];
+                "multipart/form-data": components["schemas"]["PatchedMiseAJourMoiRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Utilisateur"];
+                };
+            };
+            /** @description compte_existant */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description validation_invalide / telephone_invalide */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    utilisateurs_moi_adresses_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Adresse"][];
+                };
+            };
+        };
+    };
+    utilisateurs_moi_adresses_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdresseCreationRequest"];
+                "multipart/form-data": components["schemas"]["AdresseCreationRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Adresse"];
+                };
+            };
+            /** @description geometrie_invalide / hors_emprise_cameroun */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    utilisateurs_moi_adresses_destroy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Adresse supprimée */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    utilisateurs_moi_adresses_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedAdresseModificationRequest"];
+                "multipart/form-data": components["schemas"]["PatchedAdresseModificationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Adresse"];
+                };
+            };
+            /** @description ressource_introuvable (autre propriétaire ou inexistante) */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    utilisateurs_moi_mot_de_passe_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MotDePasseRequest"];
+                "multipart/form-data": components["schemas"]["MotDePasseRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Utilisateur"];
+                };
+            };
+            /** @description mot_de_passe_incorrect / validation_invalide */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    webhooks_notchpay_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Événement traité, rejoué, ignoré ou en erreur */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Webhook illisible ou incomplet */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Signature invalide */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ws_ticket_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
 }

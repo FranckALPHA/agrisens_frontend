@@ -49,7 +49,11 @@ function bearer(jeton: string): Record<string, string> {
 }
 
 /** Connexion via le formulaire de la PWA (parcours réel FE-02). */
-async function connexionUI(page: Page, telephone: string, motDePasse = MOT_DE_PASSE): Promise<void> {
+async function connexionUI(
+  page: Page,
+  telephone: string,
+  motDePasse = MOT_DE_PASSE
+): Promise<void> {
   await page.goto('/connexion');
   await page.getByLabel(/^Téléphone ou email/).fill(telephone);
   await page.getByLabel(/^Mot de passe/).fill(motDePasse);
@@ -86,7 +90,13 @@ async function nouvelEngineurAvecJustificatif(
 ): Promise<DossierEngineur> {
   const telephone = telephoneNeuf();
   const inscription = await page.request.post(`${URL_API}/auth/inscription/`, {
-    data: { nom, telephone, mot_de_passe: MOT_DE_PASSE, role: 'ingenieur_agronome', region: 'Littoral' },
+    data: {
+      nom,
+      telephone,
+      mot_de_passe: MOT_DE_PASSE,
+      role: 'ingenieur_agronome',
+      region: 'Littoral',
+    },
   });
   expect(inscription.status(), 'inscription ingénieur should succeed').toBe(201);
   const session = (await inscription.json()) as {
@@ -117,7 +127,9 @@ async function nouvelEngineurAvecJustificatif(
 }
 
 /** Second contexte navigateur (session distincte dans la même suite). */
-async function nouvellePage(contexteParent: import('@playwright/test').BrowserContext): Promise<Page> {
+async function nouvellePage(
+  contexteParent: import('@playwright/test').BrowserContext
+): Promise<Page> {
   const browser = contexteParent.browser();
   const contexte = await browser!.newContext({
     baseURL: 'http://127.0.0.1:4173',
@@ -139,9 +151,7 @@ async function ouvrirDossierAdmin(page: Page, idUtilisateur: string, nom: string
   await page.getByLabel(/Rechercher un nom/).fill(nom);
   // Le tableau responsive rend chaque ligne en double (bureau + mobile, une
   // variante masquée par CSS) : seul le bouton visible est cliquable.
-  await page
-    .locator(`[data-testid="lien-detail-utilisateur-${idUtilisateur}"]:visible`)
-    .click();
+  await page.locator(`[data-testid="lien-detail-utilisateur-${idUtilisateur}"]:visible`).click();
   await expect(page.getByTestId('panneau-detail-utilisateur')).toBeVisible();
 }
 
@@ -164,7 +174,9 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
     // Écran « compte en attente » (D-13).
     await expect(page).toHaveURL('/ingenieur');
     await expect(page.getByTestId('ecran-attente')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Compte en attente de validation' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Compte en attente de validation' })
+    ).toBeVisible();
 
     // 2. ING-02 accessible dès l'attente : profil professionnel.
     await page.goto('/ingenieur/profil-pro');
@@ -179,11 +191,15 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
     await page.getByTestId('champ-rayon').fill('60');
     await page.getByTestId('champ-tarif').fill('15000');
     await page.getByTestId('bouton-enregistrer-profil-pro').click();
-    await expect(page.getByRole('status').filter({ hasText: 'Profil professionnel enregistré' })).toBeVisible();
+    await expect(
+      page.getByRole('status').filter({ hasText: 'Profil professionnel enregistré' })
+    ).toBeVisible();
 
     // 3. Justificatif : dépôt du diplôme (PDF).
     await page.getByTestId('selecteur-type-justificatif').selectOption('diplome');
-    await page.getByTestId('champ-fichier').setInputFiles(path.join(DOSSIER_FICHIERS, 'justificatif.pdf'));
+    await page
+      .getByTestId('champ-fichier')
+      .setInputFiles(path.join(DOSSIER_FICHIERS, 'justificatif.pdf'));
     const liste = page.getByTestId('liste-justificatifs');
     await expect(liste.getByTestId('justificatif-diplome')).toBeVisible();
     await expect(liste.getByTestId('justificatif-diplome')).toContainText('Soumise');
@@ -204,7 +220,9 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
       headers: bearer(jeton),
     });
     const pieces = await piecesReponse.json();
-    expect(Array.isArray(pieces) ? pieces.length : pieces.elements.length).toBeGreaterThanOrEqual(1);
+    expect(Array.isArray(pieces) ? pieces.length : pieces.elements.length).toBeGreaterThanOrEqual(
+      1
+    );
   });
 
   test('PW-F03-02 Mireille valide le dossier ; la nouvelle ingénieure reçoit la notification et accède à son espace', async ({
@@ -302,11 +320,15 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
     await pageAdmin.getByTestId('bouton-suspendre').click();
     await pageAdmin.getByTestId('champ-motif-suspension').fill('Litiges répétés (test E2E).');
     await pageAdmin.getByTestId('bouton-confirmer-suspension').click();
-    await expect(pageAdmin.getByRole('status').filter({ hasText: 'Compte suspendu' })).toBeVisible();
+    await expect(
+      pageAdmin.getByRole('status').filter({ hasText: 'Compte suspendu' })
+    ).toBeVisible();
 
     // Prochaine action de Jean → déconnexion vers /connexion (403 compte_suspendu,
-    // sessions révoquées) : « Disponibilité » appelle l'API, qui purge la session.
-    await page.locator('a:visible', { hasText: /^Disponibilité$/ }).first().click();
+    // sessions révoquées) : la page « Disponibilité » appelle l'API au montage,
+    // qui purge la session. Navigation directe : le lien latéral est caché sur
+    // petit écran (menu replié) et le test doit passer sur les deux vues.
+    await page.goto('/livreur/disponibilite');
     await expect(page).toHaveURL('/connexion');
 
     // Reconnexion refusée tant que le compte est suspendu.
@@ -336,14 +358,18 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
     await page.goto('/ingenieur/profil-pro');
 
     // 1. Extension .jpg mais contenu script : refusé sur le type réel (Q-14).
-    await page.getByTestId('champ-fichier').setInputFiles(path.join(DOSSIER_FICHIERS, 'faux-image.jpg'));
+    await page
+      .getByTestId('champ-fichier')
+      .setInputFiles(path.join(DOSSIER_FICHIERS, 'faux-image.jpg'));
     const alerte = page.getByTestId('erreur-televersement');
     await expect(alerte).toBeVisible();
     await expect(alerte).toContainText('son extension ne correspond pas à son contenu');
 
     // 2. Image au-dessus de la limite (paramètre fichiers.image_max_mo = 5 Mo).
     await expect(page.getByTestId('televersement-fichier')).toContainText('Images : 5 Mo max');
-    await page.getByTestId('champ-fichier').setInputFiles(path.join(DOSSIER_FICHIERS, 'image-trop-lourde.jpg'));
+    await page
+      .getByTestId('champ-fichier')
+      .setInputFiles(path.join(DOSSIER_FICHIERS, 'image-trop-lourde.jpg'));
     await expect(alerte).toContainText('Fichier trop volumineux (limite : 5 Mo)');
   });
 
@@ -357,7 +383,9 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
     // 3G lente (utils/reseau) : l'envoi dure assez pour observer la progression.
     const cdp = await simulerReseauLent(page);
     await page.getByTestId('selecteur-type-justificatif').selectOption('piece_identite');
-    await page.getByTestId('champ-fichier').setInputFiles(path.join(DOSSIER_FICHIERS, 'photo-tomates.jpg'));
+    await page
+      .getByTestId('champ-fichier')
+      .setInputFiles(path.join(DOSSIER_FICHIERS, 'photo-tomates.jpg'));
 
     await expect(page.getByTestId('apercu-image')).toBeVisible();
     const barre = page.getByTestId('barre-progression');
@@ -371,10 +399,14 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
       downloadThroughput: -1,
       uploadThroughput: -1,
     });
-    await expect(page.getByTestId('liste-justificatifs').getByTestId('justificatif-piece_identite')).toBeVisible();
+    await expect(
+      page.getByTestId('liste-justificatifs').getByTestId('justificatif-piece_identite')
+    ).toBeVisible();
   });
 
-  test('PW-F03-07 Amina ouvre l’URL d’un justificatif de Nadia : pas d’accès (404)', async ({ page }) => {
+  test('PW-F03-07 Amina ouvre l’URL d’un justificatif de Nadia : pas d’accès (404)', async ({
+    page,
+  }) => {
     // Nadia (seed) récupère l'identifiant d'un de ses justificatifs.
     const jetonNadia = await connexionApiAvecJeton(page, PERSONNAGES.nadia.telephone);
     const piecesReponse = await page.request.get(`${URL_API}/ingenieurs/moi/justificatifs/`, {
@@ -415,15 +447,21 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
       data: {},
     });
     expect(valider.status()).toBe(200);
-    const suspendre = await page.request.post(`${URL_API}/admin/utilisateurs/${dossier.id}/suspendre/`, {
-      headers: bearer(jetonAdmin),
-      data: { motif: 'Test notifications' },
-    });
+    const suspendre = await page.request.post(
+      `${URL_API}/admin/utilisateurs/${dossier.id}/suspendre/`,
+      {
+        headers: bearer(jetonAdmin),
+        data: { motif: 'Test notifications' },
+      }
+    );
     expect(suspendre.status()).toBe(200);
-    const reactiver = await page.request.post(`${URL_API}/admin/utilisateurs/${dossier.id}/reactiver/`, {
-      headers: bearer(jetonAdmin),
-      data: {},
-    });
+    const reactiver = await page.request.post(
+      `${URL_API}/admin/utilisateurs/${dossier.id}/reactiver/`,
+      {
+        headers: bearer(jetonAdmin),
+        data: {},
+      }
+    );
     expect(reactiver.status()).toBe(200);
 
     // L'ingénieure lit la notification de validation : page liée + statut lu.
@@ -456,7 +494,10 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
     await connexionUI(page, PERSONNAGES.jean.telephone);
     await page.goto('/livreur/disponibilite');
     await expect(page.getByTestId('page-disponibilite')).toBeVisible();
-    await expect(page.getByTestId('etat-disponibilite')).toHaveAttribute('data-disponible', 'false');
+    await expect(page.getByTestId('etat-disponibilite')).toHaveAttribute(
+      'data-disponible',
+      'false'
+    );
     await verifierAccessibilite(page);
 
     // Nouvelle position (Douala) saisie via le sélecteur réutilisable.
@@ -481,6 +522,9 @@ test.describe('F-03 — Fichiers, notifications, profils pro, validation admin',
 
     // Remise en état du compte de démonstration (indisponible).
     await page.getByTestId('bouton-basculer-disponibilite').click();
-    await expect(page.getByTestId('etat-disponibilite')).toHaveAttribute('data-disponible', 'false');
+    await expect(page.getByTestId('etat-disponibilite')).toHaveAttribute(
+      'data-disponible',
+      'false'
+    );
   });
 });

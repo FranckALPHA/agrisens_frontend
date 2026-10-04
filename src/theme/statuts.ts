@@ -128,6 +128,12 @@ export const STATUTS_GENERATION: Record<string, DefinitionStatut> = {
   echouee: { libelle: 'Échouée', variante: 'erreur' },
 };
 
+/** Types de conversation (F-13, docs/02 §2.7) — libellé + variante du badge. */
+export const STATUTS_CONVERSATION: Record<string, DefinitionStatut> = {
+  commande: { libelle: 'Commande', variante: 'info' },
+  accompagnement: { libelle: 'Accompagnement', variante: 'neutre' },
+};
+
 /**
  * Récupère la définition d'un statut donné dans l'un des registres ou une valeur par défaut.
  */

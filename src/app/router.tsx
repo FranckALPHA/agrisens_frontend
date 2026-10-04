@@ -43,6 +43,10 @@ import { PageAccompagnementsListe } from '@/pages/ingenieur/PageAccompagnementsL
 import { PageAccompagnementDetailIngenieur } from '@/pages/ingenieur/PageAccompagnementDetail';
 import { PageGenerationIA } from '@/pages/ingenieur/PageGenerationIA';
 import { PagePlanning } from '@/pages/agriculteur/PagePlanning';
+import { PageMesStatistiques } from '@/pages/statistiques/PageMesStatistiques';
+import { PageStatistiquesAdmin } from '@/pages/statistiques/PageStatistiquesAdmin';
+import { PageConversations } from '@/pages/messages/PageConversations';
+import { PageConversationDetail } from '@/pages/messages/PageConversationDetail';
 import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
@@ -278,6 +282,15 @@ export const router = createBrowserRouter([
               </RouteProtegee>
             ),
           },
+          {
+            // ADM-01 statistiques (F-14) — agrégats plateforme, admin et super-admin.
+            path: 'statistiques',
+            element: (
+              <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
+                <PageStatistiquesAdmin />
+              </RouteProtegee>
+            ),
+          },
         ],
       },
       {
@@ -291,6 +304,24 @@ export const router = createBrowserRouter([
       },
       { path: 'profil', element: <PageProfil /> },
       { path: 'notifications', element: <PageNotifications /> },
+      {
+        // F-13 — chat temps réel : tous les rôles connectés (la partie de la
+        // relation est contrôlée par l'API, non par un garde de rôle).
+        path: 'messages',
+        element: (
+          <RouteProtegee>
+            <PageConversations />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'messages/:identifiant',
+        element: (
+          <RouteProtegee>
+            <PageConversationDetail />
+          </RouteProtegee>
+        ),
+      },
       {
         path: 'agriculteur/exploitations',
         element: (
@@ -419,6 +450,15 @@ export const router = createBrowserRouter([
         element: (
           <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
             <PagePlanning />
+          </RouteProtegee>
+        ),
+      },
+      {
+        // AGR-09 (partie statistiques, F-14) — ventes, revenus, série et produits populaires.
+        path: 'agriculteur/statistiques',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageMesStatistiques />
           </RouteProtegee>
         ),
       },

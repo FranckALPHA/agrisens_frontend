@@ -231,6 +231,11 @@ const SectionPlanning: React.FC<{ exploitationId: string }> = ({ exploitationId 
 
   return (
     <section className="rounded-lg border border-bordure bg-surface p-5 flex flex-col gap-4">
+      {/* Avertissement toujours visible (AGR-07) : tant qu'aucun résultat
+          réussi n'affiche son propre bandeau, celui-ci rappelle que l'IA
+          recommande sans poser de diagnostic, y compris pendant un
+          chargement, une annulation ou un échec. */}
+      {resultat && resultat.statut !== 'echouee' ? null : <BandeauAvertissementIA />}
       <Champ
         label="Culture"
         required
@@ -424,6 +429,8 @@ const SectionRecommandation: React.FC<{ exploitationId: string }> = ({ exploitat
 
   return (
     <section className="rounded-lg border border-bordure bg-surface p-5 flex flex-col gap-4">
+      {/* Même règle d'avertissement permanent que l'onglet planning. */}
+      {resultat && resultat.statut !== 'echouee' ? null : <BandeauAvertissementIA />}
       <Champ
         label="Sujet"
         required
