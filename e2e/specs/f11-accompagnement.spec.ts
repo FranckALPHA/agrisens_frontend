@@ -132,14 +132,22 @@ test.describe('F-11 accompagnement', () => {
     const d = (await detailApres.json()) as { statut: string };
     expect(d.statut).toBe('planifiee');
 
-    const terminer = await request.post(`${URL_API}/accompagnements/${acc.id}/terminer/`, {
-      headers: bearer(jetonNadia),
-      data: { observation: 'Sol riche, prévoir rotation maïs/niéré.' },
+    // Avancer l'horloge pour simuler la fin du rendez-vous (backend vérifie maintenant() >= date_rdv_fin).
+    await request.post(`${URL_API}/dev/horloge`, {
+      data: { decalage_minutes: 3 * 24 * 60 + 120 },
     });
-    expect(terminer.ok()).toBeTruthy();
-    const term = (await terminer.json()) as { statut: string; observation: string };
-    expect(term.statut).toBe('terminee');
-    expect(term.observation).toContain('rotation');
+    try {
+      const terminer = await request.post(`${URL_API}/accompagnements/${acc.id}/terminer/`, {
+        headers: bearer(jetonNadia),
+        data: { observation: 'Sol riche, prévoir rotation maïs/niéré.' },
+      });
+      expect(terminer.ok()).toBeTruthy();
+      const term = (await terminer.json()) as { statut: string; observation: string };
+      expect(term.statut).toBe('terminee');
+      expect(term.observation).toContain('rotation');
+    } finally {
+      await request.delete(`${URL_API}/dev/horloge`);
+    }
   });
 
   test('PW-F11-02 : filtre par spécialité — uniquement validés et disponibles', async ({
@@ -163,10 +171,10 @@ test.describe('F-11 accompagnement', () => {
     // Test piloté par paramètre : distance_max_km est à 100 par défaut ;
     // Nadia en zone Yaoundé (≈12 km) reste sous le seuil. On abaisse le
     // paramètre pour vérifier le refus, puis on le restaure.
-    const mireille = await jeton(request, PERSONNAGES.mireille.telephone);
-    await request.put(`${URL_API}/admin/parametres/deplacement.distance_max_km/`, {
-      headers: bearer(mireille),
-      data: { valeur: 5 },
+    const sadm = await jeton(request, PERSONNAGES.superadmin.telephone);
+    await request.post(`${URL_API}/admin/parametres/deplacement.distance_max_km/`, {
+      headers: bearer(sadm),
+      data: { valeur: 5, motif: 'Test distance max (PW-F11-03)' },
     });
     try {
       const jetonPaul = await jeton(request, PERSONNAGES.paul.telephone);
@@ -188,9 +196,9 @@ test.describe('F-11 accompagnement', () => {
       expect(err.erreur.code).toBe('distance_max_depasee');
       expect(err.erreur.details?.modalite_suggeree).toBe('en_ligne');
     } finally {
-      await request.put(`${URL_API}/admin/parametres/deplacement.distance_max_km/`, {
-        headers: bearer(mireille),
-        data: { valeur: 100 },
+      await request.post(`${URL_API}/admin/parametres/deplacement.distance_max_km/`, {
+        headers: bearer(sadm),
+        data: { valeur: 100, motif: 'Restauration distance max (PW-F11-03)' },
       });
     }
   });
@@ -248,12 +256,13 @@ test.describe('F-11 accompagnement', () => {
     expect(conflit.status()).toBe(409);
     const err = (await conflit.json()) as { erreur: { code: string } };
     expect(err.erreur.code).toBe('conflit_creneau');
-    // Nettoyage : annuler acc2 pour ne pas gêner d'autres tests.
+    // Nettoyage : annuler acc2 et acc1 pour ne pas gêner d'autres tests.
     await request.post(`${URL_API}/accompagnements/${acc2.id}/annuler/`, {
       headers: bearer(jetonPaul),
     });
-    // acc1 n'a pas de route d'annulation après paiement : on le laisse en planifié.
-    expect(acc1.id).toBeTruthy();
+    await request.post(`${URL_API}/accompagnements/${acc1.id}/annuler/`, {
+      headers: bearer(jetonPaul),
+    });
   });
 
   test('PW-F11-05 : refus avec motif → notification Paul, statut refusee', async ({ request }) => {
@@ -319,15 +328,21 @@ test.describe('F-11 accompagnement', () => {
     const acc = (await manque.json()) as { statut: string; nb_rdv_manques: number };
     expect(acc.statut).toBe('manquee');
     expect(acc.nb_rdv_manques).toBeGreaterThanOrEqual(1);
-    // Le remboursement est visible dans la liste des litiges de Paul.
-    const remboursements = await request.get(`${URL_API}/remboursements/`, {
+    // Le remboursement est visible dans la liste des remboursements du demandeur (Paul).
+    const remboursements = await request.get(`${URL_API}/remboursements/mes-demandes/`, {
       headers: bearer(jetonPaul),
     });
     expect(remboursements.ok()).toBeTruthy();
-    const corps = (await remboursements.json()) as {
-      elements: Array<{ accompagnement?: string; statut: string }>;
-    };
-    expect(corps.elements.find((r) => r.accompagnement === paiement.id)).toBeDefined();
+    const corps = (await remboursements.json()) as
+      | Array<{ accompagnement?: string; statut: string }>
+      | { elements: Array<{ accompagnement?: string; statut: string }> };
+    const liste = Array.isArray(corps) ? corps : corps.elements;
+    expect(liste.find((r) => r.accompagnement === paiement.id)).toBeDefined();
+
+    // Nettoyage : annuler l'accompagnement manqué pour libérer l'accès exploitation.
+    await request.post(`${URL_API}/accompagnements/${paiement.id}/annuler/`, {
+      headers: bearer(jetonPaul),
+    });
   });
 
   test('PW-F11-07 : accès exploitation Nadia seulement pendant accompagnement actif', async ({
@@ -336,6 +351,23 @@ test.describe('F-11 accompagnement', () => {
     const jetonPaul = await jeton(request, PERSONNAGES.paul.telephone);
     const jetonNadia = await jeton(request, PERSONNAGES.nadia.telephone);
     const exploitation = await exploitationPaul(request);
+
+    // Nettoyage préventif des accompagnements actifs résiduels de Paul
+    const accExistants = await request.get(`${URL_API}/accompagnements/`, {
+      headers: bearer(jetonPaul),
+    });
+    if (accExistants.ok()) {
+      const data = await accExistants.json();
+      const elements = Array.isArray(data) ? data : data.elements || [];
+      for (const a of elements) {
+        if (['demandee', 'acceptee', 'planifiee', 'manquee'].includes(a.statut)) {
+          await request.post(`${URL_API}/accompagnements/${a.id}/annuler/`, {
+            headers: bearer(jetonPaul),
+          });
+        }
+      }
+    }
+
     // Avant demande : 404.
     const avant = await request.get(`${URL_API}/exploitations/${exploitation}/`, {
       headers: bearer(jetonNadia),

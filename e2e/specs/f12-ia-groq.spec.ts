@@ -191,42 +191,6 @@ test.describe('F-12 IA Groq', () => {
     await expect(page.getByTestId('form-correction')).toBeVisible();
   });
 
-  test('PW-F12-03 : dépassement du quota gratuit → 429 quota_atteint', async ({ request }) => {
-    // Test terminal : il épuise le quota mensuel de Paul (remise à zéro par la
-    // réinitialisation E2E). Doit rester le dernier du fichier à consommer du
-    // quota (l'ordre actuel des tests 01, 02, 04, 05, 06 suppose le quota
-    // disponible ; 04 est exonéré, 06 tolère un 429).
-    const exploitation = await exploitationPaul(request);
-    // Remplir le quota restant (déjà entamé par le seed), puis tenter un de plus.
-    let q = await quotaPlanning(request);
-    while (q.consomme < q.limite) {
-      const r = await genererPlanningApi(request, exploitation, `culture-${q.consomme}`);
-      expect(r.status).toBe(201);
-      q = await quotaPlanning(request);
-    }
-    const excedent = await genererPlanningApi(request, exploitation, 'trop');
-    expect(excedent.status).toBe(429);
-
-    const j = await jeton(request, PERSONNAGES.paul.telephone);
-    const rep = await request.post(
-      `${URL_API}/exploitations/${exploitation}/plannings/?test_simule=normal`,
-      {
-        headers: bearer(j),
-        data: { culture: 'encore', periode_debut: '2026-01-01', periode_fin: '2026-03-01' },
-      }
-    );
-    expect(rep.status()).toBe(429);
-    const err = (await rep.json()) as {
-      erreur: {
-        code: string;
-        details: { limite: number; consomme: number; date_reinitialisation: string };
-      };
-    };
-    expect(err.erreur.code).toBe('quota_atteint');
-    expect(err.erreur.details.limite).toBe(q.limite);
-    expect(err.erreur.details.consomme).toBe(q.limite);
-    expect(err.erreur.details.date_reinitialisation).toBeTruthy();
-  });
 
   test('PW-F12-04 : échec fournisseur (test_simule=echec) ne décompte pas le quota', async ({
     request,
@@ -248,10 +212,19 @@ test.describe('F-12 IA Groq', () => {
   }) => {
     const exploitation = await exploitationPaul(request);
     const j = await jeton(request, PERSONNAGES.paul.telephone);
-    // Interception lente côté réseau puis annulation côté navigateur.
+    // Interception lente : on laisse partir la requête vers le serveur (route.fetch),
+    // avec test_simule=echec pour ne pas bloquer sur le quota mensuel tout en créant la ligne côté serveur,
+    // puis on retarde la restitution de la réponse pour permettre le clic d'annulation UI.
     await page.route(`**/exploitations/${exploitation}/plannings/**`, async (route) => {
+      const url = new URL(route.request().url());
+      url.searchParams.set('test_simule', 'echec');
+      const response = await route.fetch({ url: url.toString() });
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      await route.continue();
+      try {
+        await route.fulfill({ response });
+      } catch {
+        // Ignorer si le navigateur a coupé la socket suite à l'annulation UI
+      }
     });
     await seConnecter(page, PERSONNAGES.paul.telephone);
     await page.goto('/agriculteur/planning');
@@ -265,13 +238,16 @@ test.describe('F-12 IA Groq', () => {
     await expect(page.getByTestId('bandeau-avertissement-ia')).toBeVisible();
 
     // Côté serveur, la génération a été créée (indépendamment de l'annulation UI).
-    const historique = await request.get(`${URL_API}/exploitations/${exploitation}/plannings/`, {
-      headers: bearer(j),
-    });
-    const generations = (await historique.json()) as {
-      elements: Array<{ culture: string }>;
-    };
-    expect(generations.elements.some((g) => g.culture === 'manioc')).toBeTruthy();
+    await expect.poll(async () => {
+      const historique = await request.get(`${URL_API}/exploitations/${exploitation}/plannings/`, {
+        headers: bearer(j),
+      });
+      if (!historique.ok()) return false;
+      const generations = (await historique.json()) as {
+        elements: Array<{ culture: string }>;
+      };
+      return generations.elements.some((g) => g.culture === 'manioc');
+    }, { timeout: 10000, intervals: [500] }).toBeTruthy();
   });
 
   test('PW-F12-06 : « Demander une vérification humaine » → AGR-08 pré-rempli', async ({
@@ -311,5 +287,42 @@ test.describe('F-12 IA Groq', () => {
     );
     await expect(page.getByTestId('page-accompagnement')).toBeVisible();
     await expect(page.getByTestId('form-accompagnement')).toBeVisible();
+  });
+
+  test('PW-F12-03 : dépassement du quota gratuit → 429 quota_atteint', async ({ request }) => {
+    // Test terminal : il épuise le quota mensuel de Paul (remise à zéro par la
+    // réinitialisation E2E). Doit rester le dernier du fichier à consommer du
+    // quota (l'ordre actuel des tests 01, 02, 04, 05, 06 suppose le quota
+    // disponible ; 04 est exonéré, 06 tolère un 429).
+    const exploitation = await exploitationPaul(request);
+    // Remplir le quota restant (déjà entamé par le seed), puis tenter un de plus.
+    let q = await quotaPlanning(request);
+    while (q.consomme < q.limite) {
+      const r = await genererPlanningApi(request, exploitation, `culture-${q.consomme}`);
+      expect(r.status).toBe(201);
+      q = await quotaPlanning(request);
+    }
+    const excedent = await genererPlanningApi(request, exploitation, 'trop');
+    expect(excedent.status).toBe(429);
+
+    const j = await jeton(request, PERSONNAGES.paul.telephone);
+    const rep = await request.post(
+      `${URL_API}/exploitations/${exploitation}/plannings/?test_simule=normal`,
+      {
+        headers: bearer(j),
+        data: { culture: 'encore', periode_debut: '2026-01-01', periode_fin: '2026-03-01' },
+      }
+    );
+    expect(rep.status()).toBe(429);
+    const err = (await rep.json()) as {
+      erreur: {
+        code: string;
+        details: { limite: number; consomme: number; date_reinitialisation: string };
+      };
+    };
+    expect(err.erreur.code).toBe('quota_atteint');
+    expect(err.erreur.details.limite).toBe(q.limite);
+    expect(err.erreur.details.consomme).toBe(q.limite);
+    expect(err.erreur.details.date_reinitialisation).toBeTruthy();
   });
 });

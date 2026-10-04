@@ -14,9 +14,9 @@ export type ListeAccompagnementsApi = components['schemas']['ListeAccompagnement
 export type AffectationIngenieurApi = components['schemas']['AffectationIngenieur'];
 export type DevisReponseApi = components['schemas']['DevisReponse'];
 export type ModaliteApi = components['schemas']['ModaliteEnum'];
-export type StatutAccompagnementApi = components['schemas']['Statut86dEnum'];
+export type StatutAccompagnementApi = components['schemas']['StatutAccompagnementEnum'];
 export type AbsentRdvApi = components['schemas']['AbsentEnum'];
-export type OperateurApi = components['schemas']['Operateur370Enum'];
+export type OperateurApi = components['schemas']['OperateurPaiementEnum'];
 
 export interface DevisEnvoi {
   exploitation_id: string;

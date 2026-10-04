@@ -2259,6 +2259,74 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/statistiques/mes-accompagnements/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Statistiques d'accompagnements de l'ingénieur connecté */
+    get: operations['statistiques_mes_accompagnements'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/statistiques/mes-livraisons/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Statistiques de livraisons du livreur connecté */
+    get: operations['statistiques_mes_livraisons'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/statistiques/mes-ventes/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Statistiques de ventes de l'agriculteur connecté */
+    get: operations['statistiques_mes_ventes'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/statistiques/plateforme/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Statistiques globales de la plateforme (admin / super-admin) */
+    get: operations['statistiques_plateforme'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/utilisateurs/moi/': {
     parameters: {
       query?: never;
@@ -2414,7 +2482,7 @@ export interface components {
       readonly modalite: components['schemas']['ModaliteEnum'];
       readonly motif: string;
       readonly description: string | null;
-      readonly statut: components['schemas']['Statut86dEnum'];
+      readonly statut: components['schemas']['StatutAccompagnementEnum'];
       /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
       lieu_rdv?: {
         type: string;
@@ -2468,7 +2536,7 @@ export interface components {
       readonly modalite: components['schemas']['ModaliteEnum'];
       readonly motif: string;
       readonly description: string | null;
-      readonly statut: components['schemas']['Statut86dEnum'];
+      readonly statut: components['schemas']['StatutAccompagnementEnum'];
       /** @description Géométrie GeoJSON (SRID 4326, ordre x=longitude, y=latitude). */
       lieu_rdv?: {
         type: string;
@@ -2656,7 +2724,7 @@ export interface components {
     };
     /** @description POST /{id}/confirmer — l'agriculteur accepte le montant et paie. */
     ConfirmerRequest: {
-      operateur: components['schemas']['Operateur370Enum'];
+      operateur: components['schemas']['OperateurPaiementEnum'];
       telephone?: string;
     };
     /** @description POST /auth/connexion — téléphone E.164 ou email + mot de passe. */
@@ -3216,11 +3284,42 @@ export interface components {
     MarquerManqueRequest: {
       absent: components['schemas']['AbsentEnum'];
     };
+    MesAccompagnements: {
+      periode: components['schemas']['Periode'];
+      nombre_accompagnements: number;
+      accompagnements_par_statut: {
+        [key: string]: number;
+      };
+      terminees: number;
+      revenu_net_fcfa: number;
+      serie: components['schemas']['PointSerie'][];
+    };
+    MesLivraisons: {
+      periode: components['schemas']['Periode'];
+      nombre_livraisons: number;
+      livraisons_par_statut: {
+        [key: string]: number;
+      };
+      livrees: number;
+      frais_cumules_fcfa: number;
+      serie: components['schemas']['PointSerie'][];
+    };
     MesProduits: {
       elements: components['schemas']['Produit'][];
       page: number;
       taille: number;
       total: number;
+    };
+    MesVentes: {
+      periode: components['schemas']['Periode'];
+      nombre_ventes: number;
+      chiffre_affaires_brut_fcfa: number;
+      commissions_fcfa: number;
+      revenu_net_fcfa: number;
+      /** Format: double */
+      quantite_totale: number;
+      produits_populaires: components['schemas']['ProduitPopulaire'][];
+      serie: components['schemas']['PointSerie'][];
     };
     /**
      * @description Message rendu au client. `contenu` est du **texte brut** ; le client le
@@ -3353,12 +3452,6 @@ export interface components {
       date_effet?: string;
     };
     /**
-     * @description * `mtn_momo` - MTN
-     *     * `orange_money` - Orange
-     * @enum {string}
-     */
-    Operateur370Enum: 'mtn_momo' | 'orange_money';
-    /**
      * @description * `mtn_momo` - MTN Mobile Money
      *     * `orange_money` - Orange Money
      * @enum {string}
@@ -3468,6 +3561,10 @@ export interface components {
       /** Format: decimal */
       quantite_stock?: string;
     };
+    Periode: {
+      du?: string | null;
+      au?: string | null;
+    };
     /** @description POST /produits/{id}/photos — rattache un fichier déjà téléversé. */
     PhotoAjout: {
       fichier_id: string;
@@ -3513,6 +3610,39 @@ export interface components {
       /** Format: date */
       periode_fin: string;
       infos_agronomiques?: string | null;
+    };
+    Plateforme: {
+      periode: components['schemas']['Periode'];
+      utilisateurs_par_role: {
+        [key: string]: number;
+      };
+      total_utilisateurs: number;
+      commandes_par_statut: {
+        [key: string]: number;
+      };
+      total_commandes: number;
+      chiffre_affaires_fcfa: number;
+      remboursements: components['schemas']['Remboursements'];
+      livraisons_par_statut: {
+        [key: string]: number;
+      };
+      total_livraisons: number;
+      accompagnements_par_statut: {
+        [key: string]: number;
+      };
+      total_accompagnements: number;
+      generations_ia_par_statut: {
+        [key: string]: number;
+      };
+      total_generations_ia: number;
+      revenus_plateforme_fcfa: number;
+      serie: components['schemas']['PointSerie'][];
+    };
+    PointSerie: {
+      /** @description Clé ISO : AAAA-MM-JJ, AAAA-SSnn ou AAAA-MM. */
+      periode: string;
+      nombre: number;
+      montant_fcfa: number;
     };
     /** @description POST /livraisons/{id}/position — GeoJSON Point pendant la course. */
     PositionLivreurRequest: {
@@ -3580,6 +3710,12 @@ export interface components {
       quantite_stock?: string;
       exploitation_id: string;
       photo_ids?: string[];
+    };
+    ProduitPopulaire: {
+      nom_produit: string;
+      /** Format: double */
+      unites: number;
+      total_fcfa: number;
     };
     /**
      * @description * `disponible` - Disponible
@@ -3686,6 +3822,10 @@ export interface components {
       justificatifs?: string[];
       signalement_id?: string | null;
     };
+    Remboursements: {
+      nombre: number;
+      montant_effectue_fcfa: number;
+    };
     /** @description Réponse neutre uniforme (demande de réinitialisation, Q-23). */
     ReponseMessage: {
       readonly message: string;
@@ -3711,7 +3851,7 @@ export interface components {
     ReprogrammerRequest: {
       adresse_id?: string | null;
       operateur?:
-        (components['schemas']['Operateur370Enum'] | components['schemas']['NullEnum']) | null;
+        (components['schemas']['OperateurPaiementEnum'] | components['schemas']['NullEnum']) | null;
       /** @default  */
       telephone: string;
     };
@@ -3828,7 +3968,7 @@ export interface components {
      *     * `manquee` - Manquée
      * @enum {string}
      */
-    Statut86dEnum:
+    StatutAccompagnementEnum:
       'demandee' | 'acceptee' | 'refusee' | 'annulee' | 'planifiee' | 'terminee' | 'manquee';
     /**
      * @description * `en_attente` - En attente
@@ -7646,6 +7786,110 @@ export interface operations {
         };
         content: {
           'application/json': components['schemas']['SoldeDetail'];
+        };
+      };
+    };
+  };
+  statistiques_mes_accompagnements: {
+    parameters: {
+      query?: {
+        /** @description Date de fin inclusive (AAAA-MM-JJ). */
+        au?: string;
+        /** @description Date de début inclusive (AAAA-MM-JJ). */
+        du?: string;
+        /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+        granularite?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MesAccompagnements'];
+        };
+      };
+    };
+  };
+  statistiques_mes_livraisons: {
+    parameters: {
+      query?: {
+        /** @description Date de fin inclusive (AAAA-MM-JJ). */
+        au?: string;
+        /** @description Date de début inclusive (AAAA-MM-JJ). */
+        du?: string;
+        /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+        granularite?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MesLivraisons'];
+        };
+      };
+    };
+  };
+  statistiques_mes_ventes: {
+    parameters: {
+      query?: {
+        /** @description Date de fin inclusive (AAAA-MM-JJ). */
+        au?: string;
+        /** @description Date de début inclusive (AAAA-MM-JJ). */
+        du?: string;
+        /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+        granularite?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['MesVentes'];
+        };
+      };
+    };
+  };
+  statistiques_plateforme: {
+    parameters: {
+      query?: {
+        /** @description Date de fin inclusive (AAAA-MM-JJ). */
+        au?: string;
+        /** @description Date de début inclusive (AAAA-MM-JJ). */
+        du?: string;
+        /** @description Granularité de la série : jour, semaine ou mois (défaut : mois). */
+        granularite?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Plateforme'];
         };
       };
     };

@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { expect, test } from '@playwright/test';
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -28,7 +29,7 @@ test.describe('remise à zéro de la base E2E', () => {
       'globalSetup a déjà fourni une base neuve pour la première passe'
     );
 
-    const backendDir = path.resolve(__dirname, '../../agrisens-backend');
+    const backendDir = path.resolve(__dirname, '../../../agrisens-backend');
     execSync('uv run python manage.py reinitialiser_e2e', {
       cwd: backendDir,
       stdio: 'inherit',
