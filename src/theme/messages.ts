@@ -46,3 +46,33 @@ export const MESSAGES = {
   nouvelleVersion: "Une nouvelle version d'AgriSens est disponible.",
   mettreAJour: 'Mettre à jour',
 } as const;
+
+/**
+ * Textes du chat temps réel (F-13). Centralisés comme le reste pour préparer
+ * l'internationalisation ; les erreurs métier propres au chat sont traduites
+ * par `messageErreurConversations` côté service.
+ */
+export const TEXTES_CHAT = {
+  titreMessages: 'Messages',
+  sousTitreMessages: 'Échangez avec vos acheteurs, agriculteurs et ingénieurs.',
+  aucuneConversation: 'Aucune conversation',
+  aucuneConversationMessage: 'Ouvrez une commande ou un accompagnement pour écrire.',
+  ecrireMessage: 'Écrire un message…',
+  envoyer: 'Envoyer',
+  joindre: 'Joindre un fichier',
+  enAttente: 'En attente d’envoi',
+  envoye: 'Envoyé',
+  recu: 'Reçu',
+  lu: 'Lu',
+  connecte: 'En ligne',
+  reconnexion: 'Reconnexion…',
+  horsLigne: 'Hors ligne — vos messages sont en file',
+  bloquer: 'Bloquer',
+  debloquer: 'Débloquer',
+  signaler: 'Signaler',
+  retourListe: 'Retour aux conversations',
+  chargerPlus: 'Charger les messages plus anciens',
+  pieceJointe: 'Pièce jointe',
+  motifSignalement: 'Contenu abusif ou inapproprié',
+  descriptionSignalement: 'Message signalé depuis une conversation pour contenu inapproprié.',
+} as const;

@@ -76,7 +76,12 @@ test.describe('F-11 accompagnement', () => {
     await page.goto('/connexion');
     await page.getByLabel(/^Téléphone ou email/).fill(PERSONNAGES.paul.telephone);
     await page.getByLabel(/^Mot de passe/).fill(MOT_DE_PASSE);
-    await page.getByRole('button', { name: /^connexion$/i }).click();
+    await Promise.all([
+      page.waitForResponse(
+        (rep) => rep.url().includes('/auth/connexion') && rep.request().method() === 'POST'
+      ),
+      page.getByRole('button', { name: /^connexion$/i }).click(),
+    ]);
     await page.goto('/agriculteur/accompagnement');
     await expect(page.getByTestId('page-accompagnement')).toBeVisible();
 

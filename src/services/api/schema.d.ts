@@ -891,6 +891,46 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/blocages/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Bloquer un utilisateur
+     * @description Un blocage empêche tout échange de messages entre les deux comptes (Q-15).
+     */
+    post: operations['blocages_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/blocages/{utilisateur_id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /**
+     * Débloquer un utilisateur
+     * @description DELETE /blocages/{utilisateur_id} — débloque un utilisateur.
+     */
+    delete: operations['blocages_destroy'];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   '/api/v1/commandes/': {
     parameters: {
       query?: never;
@@ -1136,6 +1176,94 @@ export interface paths {
     get: operations['commandes_mes_ventes_retrieve'];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/conversations/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister ses conversations
+     * @description GET/POST /conversations — liste des siennes, ouverture/obtention.
+     */
+    get: operations['conversations_list'];
+    put?: never;
+    /**
+     * Ouvrir ou obtenir une conversation
+     * @description Exige exactement un rattachement : `commande_id` ou `accompagnement_id`. L'appelant doit être une partie de la relation, sinon 404. Une seule conversation par relation (Q-46a).
+     */
+    post: operations['conversations_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/conversations/{id}/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Obtenir une conversation
+     * @description GET /conversations/{id} — détail d'une conversation participante.
+     */
+    get: operations['conversations_retrieve'];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/conversations/{id}/lu/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Marquer les messages comme lus
+     * @description POST /conversations/{id}/lu — pointe le dernier message lu (accusé).
+     */
+    post: operations['conversations_lu_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  '/api/v1/conversations/{id}/messages/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * Lister les messages d'une conversation
+     * @description GET/POST /conversations/{id}/messages — historique et envoi.
+     */
+    get: operations['conversations_messages_list'];
+    put?: never;
+    /**
+     * Envoyer un message
+     * @description `id_client` (UUID) requis et idempotent : un renvoi après reconnexion ne crée jamais de doublon. `contenu` et/ou `fichier_id` obligatoire, sinon 422 `message_vide`. Si un participant a bloqué l'autre, 403 `blocage_actif` (Q-15). Le `contenu` est stocké en texte brut.
+     */
+    post: operations['conversations_messages_create'];
     delete?: never;
     options?: never;
     head?: never;
@@ -2243,6 +2371,26 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  '/api/v1/ws/ticket/': {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * Demander un ticket WebSocket
+     * @description Émet un ticket jetable stocké au cache, à passer en query string (`/ws?ticket=…`) pour authentifier le canal. Le consumer le consomme à la connexion puis l'invalide.
+     */
+    post: operations['ws_ticket_create'];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2421,6 +2569,17 @@ export interface components {
       /** Format: date-time */
       cree_le: string;
     };
+    Blocage: {
+      readonly id: string;
+      readonly bloqueur: string;
+      readonly bloque: string;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /** @description POST /blocages — l'utilisateur à bloquer. */
+    BlocageCreationRequest: {
+      utilisateur_id: string;
+    };
     CatalogueProduits: {
       elements: components['schemas']['ProduitCatalogue'][];
       page: number;
@@ -2516,6 +2675,30 @@ export interface components {
      */
     ContexteEnum:
       'produit' | 'signalement' | 'accompagnement' | 'justificatif' | 'chat' | 'incident';
+    /**
+     * @description Conversation enrichie de son autre participant et de ses non-lus.
+     *
+     *     `autre_participant` et `non_lus` dépendent de l'utilisateur qui consulte :
+     *     ils sont injectés via le `context["utilisateur"]` par la vue/le service.
+     */
+    Conversation: {
+      readonly id: string;
+      readonly type: components['schemas']['TypeConversationEnum'];
+      readonly commande: string | null;
+      readonly accompagnement: string | null;
+      readonly autre_participant: unknown;
+      readonly non_lus: number;
+      readonly dernier_message: unknown;
+      /** Format: date-time */
+      readonly cree_le: string;
+      /** Format: date-time */
+      readonly maj_le: string;
+    };
+    /** @description POST /conversations — exactement un de `commande_id` / `accompagnement_id`. */
+    ConversationCreationRequest: {
+      commande_id?: string;
+      accompagnement_id?: string;
+    };
     /** @description POST /generations-ia/{id}/corrections. */
     CorrectionCreationRequest: {
       commentaire: string;
@@ -2926,6 +3109,12 @@ export interface components {
       taille: number;
       total: number;
     };
+    ListeConversations: {
+      elements: components['schemas']['Conversation'][];
+      page: number;
+      taille: number;
+      total: number;
+    };
     ListeDemandesReinitialisation: {
       elements: components['schemas']['UtilisateurAdminListe'][];
       page: number;
@@ -3019,6 +3208,10 @@ export interface components {
       /** @description Zone d'intervention déclarée */
       readonly zone: string | null;
     };
+    /** @description POST /conversations/{id}/lu — pointe le dernier message lu du participant. */
+    MarquerLuRequest: {
+      dernier_message_lu_id: string;
+    };
     /** @description POST /{id}/marquer-manque — qui est absent (Q-30). */
     MarquerManqueRequest: {
       absent: components['schemas']['AbsentEnum'];
@@ -3028,6 +3221,33 @@ export interface components {
       page: number;
       taille: number;
       total: number;
+    };
+    /**
+     * @description Message rendu au client. `contenu` est du **texte brut** ; le client le
+     *     rend échappé (React) — aucune exécution de script (PW-F13-04).
+     */
+    Message: {
+      readonly id: string;
+      readonly conversation: string;
+      readonly auteur: string;
+      /** @description Identifiant client (UUID) : clé d'idempotence, unique par auteur. */
+      readonly id_client: string;
+      /** @description Texte brut ; rendu comme du texte côté client (aucune exécution de script). */
+      readonly contenu: string | null;
+      readonly fichier: components['schemas']['Fichier'];
+      /**
+       * Format: date-time
+       * @description Soft delete ; null = message visible.
+       */
+      readonly supprime_le: string | null;
+      /** Format: date-time */
+      readonly cree_le: string;
+    };
+    /** @description POST /conversations/{id}/messages — `id_client` requis (idempotence). */
+    MessageCreationRequest: {
+      contenu?: string;
+      fichier_id?: string;
+      id_client: string;
     };
     /**
      * @description * `en_ligne` - En ligne
@@ -3082,6 +3302,7 @@ export interface components {
        *     * `abonnement` - Abonnement
        *     * `administration` - Administration
        *     * `signalement` - Signalement
+       *     * `chat` - Chat
        */
       readonly type: components['schemas']['TypeNotificationEnum'];
       readonly titre: string;
@@ -3727,6 +3948,12 @@ export interface components {
      */
     TraiterSignalementStatutEnum: 'en_examen' | 'clos_fonde' | 'clos_non_fonde';
     /**
+     * @description * `commande` - Commande
+     *     * `accompagnement` - Accompagnement
+     * @enum {string}
+     */
+    TypeConversationEnum: 'commande' | 'accompagnement';
+    /**
      * @description * `planning` - Planning cultural
      *     * `recommandation` - Recommandation agronomique
      * @enum {string}
@@ -3755,6 +3982,7 @@ export interface components {
      *     * `abonnement` - Abonnement
      *     * `administration` - Administration
      *     * `signalement` - Signalement
+     *     * `chat` - Chat
      * @enum {string}
      */
     TypeNotificationEnum:
@@ -3764,7 +3992,8 @@ export interface components {
       | 'accompagnement'
       | 'abonnement'
       | 'administration'
-      | 'signalement';
+      | 'signalement'
+      | 'chat';
     /** @description Représentation de « moi » pour tout utilisateur connecté. */
     Utilisateur: {
       readonly id: string;
@@ -5315,6 +5544,57 @@ export interface operations {
       };
     };
   };
+  blocages_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['BlocageCreationRequest'];
+        'multipart/form-data': components['schemas']['BlocageCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Blocage'];
+        };
+      };
+    };
+  };
+  blocages_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        utilisateur_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Débloqué */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description aucun blocage actif */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   commandes_create: {
     parameters: {
       query?: never;
@@ -5677,6 +5957,176 @@ export interface operations {
         content: {
           'application/json': components['schemas']['ListeCommandes'];
         };
+      };
+    };
+  };
+  conversations_list: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['ListeConversations'];
+        };
+      };
+    };
+  };
+  conversations_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        'application/json': components['schemas']['ConversationCreationRequest'];
+        'multipart/form-data': components['schemas']['ConversationCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Conversation'];
+        };
+      };
+    };
+  };
+  conversations_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Conversation'];
+        };
+      };
+      /** @description conversation_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  conversations_lu_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MarquerLuRequest'];
+        'multipart/form-data': components['schemas']['MarquerLuRequest'];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  conversations_messages_list: {
+    parameters: {
+      query?: {
+        /** @description Curseur : id du message le plus ancien déjà vu */
+        avant?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Message'][];
+        };
+      };
+      /** @description conversation_introuvable */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  conversations_messages_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MessageCreationRequest'];
+        'multipart/form-data': components['schemas']['MessageCreationRequest'];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': components['schemas']['Message'];
+        };
+      };
+      /** @description blocage_actif */
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description message_vide */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
@@ -7424,6 +7874,27 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  ws_ticket_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          'application/json': {
+            [key: string]: unknown;
+          };
+        };
       };
     };
   };

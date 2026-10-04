@@ -7,6 +7,7 @@ import { Champ } from '@/components/Champ';
 import { EtatChargement } from '@/components/EtatChargement';
 import { EtatErreur } from '@/components/EtatErreur';
 import { Select } from '@/components/Select';
+import { BoutonContacter } from '@/components/messages/BoutonContacter';
 import { Timeline, type EtapeTimeline } from '@/components/Timeline';
 import { STATUTS_ACCOMPAGNEMENT } from '@/theme/statuts';
 import { formaterPrix } from '@/services/api/produits';
@@ -78,6 +79,11 @@ export const PageAccompagnementDetail: React.FC<{ vue?: 'agriculteur' | 'ingenie
         </div>
         <BadgeStatut statut={a.statut} registre={STATUTS_ACCOMPAGNEMENT} />
       </header>
+
+      {/* F-13 AGR-08 : contacter l'ingénieur de l'accompagnement. */}
+      <div className="-mt-2">
+        <BoutonContacter accompagnementId={a.id} />
+      </div>
 
       {erreur ? (
         <p

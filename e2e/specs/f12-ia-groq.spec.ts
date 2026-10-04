@@ -38,7 +38,9 @@ async function exploitationPaul(api: APIRequestContext): Promise<string> {
   return liste[0]!.id;
 }
 
-async function quotaPlanning(api: APIRequestContext): Promise<{ consomme: number; limite: number }> {
+async function quotaPlanning(
+  api: APIRequestContext
+): Promise<{ consomme: number; limite: number }> {
   const j = await jeton(api, PERSONNAGES.paul.telephone);
   const r = await api.get(`${URL_API}/ia/quota/`, { headers: bearer(j) });
   expect(r.ok()).toBeTruthy();
@@ -68,7 +70,14 @@ async function seConnecter(page: Page, telephone: string): Promise<void> {
   await page.goto('/connexion');
   await page.getByLabel(/^Téléphone ou email/).fill(telephone);
   await page.getByLabel(/^Mot de passe/).fill(MOT_DE_PASSE);
-  await page.getByRole('button', { name: /^connexion$/i }).click();
+  const [reponse] = await Promise.all([
+    page.waitForResponse(
+      (rep) => rep.url().includes('/auth/connexion') && rep.request().method() === 'POST'
+    ),
+    page.getByRole('button', { name: /^connexion$/i }).click(),
+  ]);
+  expect(reponse.ok(), 'la connexion UI doit réussir').toBeTruthy();
+  await expect(page).not.toHaveURL('/connexion');
 }
 
 test.describe('F-12 IA Groq', () => {
@@ -88,7 +97,15 @@ test.describe('F-12 IA Groq', () => {
     // Le payload envoyé ne contient aucune clé personnelle.
     const entrees = corps.entrees as Record<string, unknown>;
     expect(new Set(Object.keys(entrees))).toEqual(
-      new Set(['culture', 'sol', 'superficie_m2', 'periode', 'region', 'centre', 'infos_agronomiques'])
+      new Set([
+        'culture',
+        'sol',
+        'superficie_m2',
+        'periode',
+        'region',
+        'centre',
+        'infos_agronomiques',
+      ])
     );
     expect(entrees).not.toHaveProperty('nom');
     expect(entrees).not.toHaveProperty('telephone');
@@ -97,7 +114,7 @@ test.describe('F-12 IA Groq', () => {
     await seConnecter(page, PERSONNAGES.paul.telephone);
     await page.goto('/agriculteur/planning');
     await expect(page.getByTestId('page-planning')).toBeVisible();
-    await page.getByLabel(/^Exploitation/).selectOption({ index: 0 });
+    await page.getByLabel(/^Exploitation/).selectOption({ value: exploitation });
     await expect(page.getByTestId('compteur-quota')).toBeVisible();
     await expect(page.getByTestId('historique-plannings')).toBeVisible();
   });
@@ -149,13 +166,10 @@ test.describe('F-12 IA Groq', () => {
     });
     const originaleAvant = (await detailAvant.json()) as { reponse_originale: unknown };
 
-    const correction = await request.post(
-      `${URL_API}/generations-ia/${cible.id}/corrections/`,
-      {
-        headers: bearer(jetonNadia),
-        data: { commentaire: 'Étape de fertilisation à confirmer sur le terrain.' },
-      }
-    );
+    const correction = await request.post(`${URL_API}/generations-ia/${cible.id}/corrections/`, {
+      headers: bearer(jetonNadia),
+      data: { commentaire: 'Étape de fertilisation à confirmer sur le terrain.' },
+    });
     expect(correction.status(), 'Nadia affectée peut corriger').toBe(201);
 
     // La réponse originale est immuable.
@@ -178,6 +192,10 @@ test.describe('F-12 IA Groq', () => {
   });
 
   test('PW-F12-03 : dépassement du quota gratuit → 429 quota_atteint', async ({ request }) => {
+    // Test terminal : il épuise le quota mensuel de Paul (remise à zéro par la
+    // réinitialisation E2E). Doit rester le dernier du fichier à consommer du
+    // quota (l'ordre actuel des tests 01, 02, 04, 05, 06 suppose le quota
+    // disponible ; 04 est exonéré, 06 tolère un 429).
     const exploitation = await exploitationPaul(request);
     // Remplir le quota restant (déjà entamé par le seed), puis tenter un de plus.
     let q = await quotaPlanning(request);
@@ -199,7 +217,10 @@ test.describe('F-12 IA Groq', () => {
     );
     expect(rep.status()).toBe(429);
     const err = (await rep.json()) as {
-      erreur: { code: string; details: { limite: number; consomme: number; date_reinitialisation: string } };
+      erreur: {
+        code: string;
+        details: { limite: number; consomme: number; date_reinitialisation: string };
+      };
     };
     expect(err.erreur.code).toBe('quota_atteint');
     expect(err.erreur.details.limite).toBe(q.limite);
@@ -210,6 +231,8 @@ test.describe('F-12 IA Groq', () => {
   test('PW-F12-04 : échec fournisseur (test_simule=echec) ne décompte pas le quota', async ({
     request,
   }) => {
+    // Une simulation forcée en échec n'est pas soumise à la limite mensuelle
+    // (elle ne décompte pas le quota) : ce test passe quota épuisé ou non.
     const exploitation = await exploitationPaul(request);
     const avant = await quotaPlanning(request);
     const r = await genererPlanningApi(request, exploitation, 'echec-test', 'echec');
@@ -219,7 +242,7 @@ test.describe('F-12 IA Groq', () => {
     expect(apres.consomme).toBe(avant.consomme);
   });
 
-  test("PW-F12-05 : annulation client ≠ annulation serveur (génération toujours en cours côté serveur)", async ({
+  test('PW-F12-05 : annulation client ≠ annulation serveur (génération toujours en cours côté serveur)', async ({
     request,
     page,
   }) => {
@@ -232,7 +255,7 @@ test.describe('F-12 IA Groq', () => {
     });
     await seConnecter(page, PERSONNAGES.paul.telephone);
     await page.goto('/agriculteur/planning');
-    await page.getByLabel(/^Exploitation/).selectOption({ index: 0 });
+    await page.getByLabel(/^Exploitation/).selectOption({ value: exploitation });
     await page.getByLabel(/^Culture/).fill('manioc');
     await page.getByLabel(/Début de période/).fill('2026-01-01');
     await page.getByLabel(/Fin de période/).fill('2026-08-01');
@@ -258,22 +281,21 @@ test.describe('F-12 IA Groq', () => {
     const exploitation = await exploitationPaul(request);
     // S'assurer d'une génération réussie à vérifier.
     let cibleId = '';
-    const historique = await request.get(
-      `${URL_API}/exploitations/${exploitation}/plannings/`,
-      { headers: bearer(await jeton(request, PERSONNAGES.paul.telephone)) }
-    );
+    const historique = await request.get(`${URL_API}/exploitations/${exploitation}/plannings/`, {
+      headers: bearer(await jeton(request, PERSONNAGES.paul.telephone)),
+    });
     const gens = (await historique.json()) as { elements: Array<{ id: string; statut: string }> };
     cibleId = gens.elements.find((g) => g.statut === 'reussie')?.id ?? '';
 
     await seConnecter(page, PERSONNAGES.paul.telephone);
     await page.goto('/agriculteur/planning');
-    await page.getByLabel(/^Exploitation/).selectOption({ index: 0 });
+    await page.getByLabel(/^Exploitation/).selectOption({ value: exploitation });
 
     // Générer (si quota disponible) ou ouvrir le résultat du seed via l'historique.
     const { status } = await genererPlanningApi(request, exploitation, 'arachide');
     if (status === 201) {
       await page.reload();
-      await page.getByLabel(/^Exploitation/).selectOption({ index: 0 });
+      await page.getByLabel(/^Exploitation/).selectOption({ value: exploitation });
     }
 
     // Ouvre le détail d'une génération depuis l'historique puis clic sur la vérification humaine.

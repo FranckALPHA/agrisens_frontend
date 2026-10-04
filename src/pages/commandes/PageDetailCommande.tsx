@@ -6,6 +6,7 @@ import { Bouton } from '@/components/Bouton';
 import { Champ } from '@/components/Champ';
 import { DialogueConfirmation } from '@/components/DialogueConfirmation';
 import { EtatChargement } from '@/components/EtatChargement';
+import { BoutonContacter } from '@/components/messages/BoutonContacter';
 import { STATUTS_COMMANDE } from '@/theme/statuts';
 import { useSessionStore } from '@/stores/session';
 import {
@@ -196,6 +197,10 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
             ? `Vendeur : ${commande.agriculteur_nom}`
             : `Client : ${commande.acheteur_nom}`}
         </p>
+        {/* F-13 ACH-07 / AGR-06 : contacter la contrepartie de la commande. */}
+        <div className="mt-3">
+          <BoutonContacter commandeId={commande.id} />
+        </div>
       </section>
 
       <section aria-label="Historique">

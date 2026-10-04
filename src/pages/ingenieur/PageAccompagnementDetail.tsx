@@ -6,6 +6,7 @@ import { Bouton } from '@/components/Bouton';
 import { Champ } from '@/components/Champ';
 import { EtatChargement } from '@/components/EtatChargement';
 import { EtatErreur } from '@/components/EtatErreur';
+import { BoutonContacter } from '@/components/messages/BoutonContacter';
 import { STATUTS_ACCOMPAGNEMENT } from '@/theme/statuts';
 import { formaterPrix } from '@/services/api/produits';
 import {
@@ -71,6 +72,11 @@ export const PageAccompagnementDetailIngenieur: React.FC = () => {
         </div>
         <BadgeStatut statut={a.statut} registre={STATUTS_ACCOMPAGNEMENT} />
       </header>
+
+      {/* F-13 ING-04 : contacter l'agriculteur de l'accompagnement. */}
+      <div className="-mt-2">
+        <BoutonContacter accompagnementId={a.id} />
+      </div>
 
       <section className="rounded-lg border border-bordure bg-surface p-4">
         <h2 className="font-bold mb-2">Demande</h2>

@@ -43,6 +43,8 @@ import { PageAccompagnementsListe } from '@/pages/ingenieur/PageAccompagnementsL
 import { PageAccompagnementDetailIngenieur } from '@/pages/ingenieur/PageAccompagnementDetail';
 import { PageGenerationIA } from '@/pages/ingenieur/PageGenerationIA';
 import { PagePlanning } from '@/pages/agriculteur/PagePlanning';
+import { PageConversations } from '@/pages/messages/PageConversations';
+import { PageConversationDetail } from '@/pages/messages/PageConversationDetail';
 import type { RoleUtilisateur } from '@/app/menus';
 
 // Pages provisoires en attente des features verticales dédiées
@@ -291,6 +293,24 @@ export const router = createBrowserRouter([
       },
       { path: 'profil', element: <PageProfil /> },
       { path: 'notifications', element: <PageNotifications /> },
+      {
+        // F-13 — chat temps réel : tous les rôles connectés (la partie de la
+        // relation est contrôlée par l'API, non par un garde de rôle).
+        path: 'messages',
+        element: (
+          <RouteProtegee>
+            <PageConversations />
+          </RouteProtegee>
+        ),
+      },
+      {
+        path: 'messages/:identifiant',
+        element: (
+          <RouteProtegee>
+            <PageConversationDetail />
+          </RouteProtegee>
+        ),
+      },
       {
         path: 'agriculteur/exploitations',
         element: (

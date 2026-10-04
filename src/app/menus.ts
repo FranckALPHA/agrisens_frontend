@@ -45,6 +45,13 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     {
+      id: 'messages',
+      libelle: 'Messages',
+      chemin: '/messages',
+      icone: 'MessageCircle',
+      pourNavigationBasse: true,
+    },
+    {
       id: 'profil',
       libelle: 'Mon profil',
       chemin: '/profil',
@@ -81,6 +88,7 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     { id: 'gains', libelle: 'Mes gains', chemin: '/mes-gains', icone: 'Wallet' },
+    { id: 'messages', libelle: 'Messages', chemin: '/messages', icone: 'MessageCircle' },
     { id: 'planning', libelle: 'Planning IA', chemin: '/agriculteur/planning', icone: 'Calendar' },
     {
       id: 'accompagnement',
@@ -113,6 +121,7 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     { id: 'gains', libelle: 'Mes gains', chemin: '/mes-gains', icone: 'Wallet' },
+    { id: 'messages', libelle: 'Messages', chemin: '/messages', icone: 'MessageCircle' },
     {
       id: 'profil',
       libelle: 'Profil pro',
