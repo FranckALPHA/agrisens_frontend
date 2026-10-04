@@ -179,12 +179,16 @@ describe('appels API conversations (client simulé)', () => {
 });
 
 describe('file d’attente hors ligne (vidanger)', () => {
+  // Les tests n’utilisent que des MessageEnAttente ; raccourci typé.
+  const messagesEnAttente = (depot: ReturnType<typeof creerDepotMemoire>) =>
+    lister(depot) as MessageEnAttente[];
+
   it('empiler déduplique par id_client et préserve l’ordre', () => {
     const depot = creerDepotMemoire();
     empiler(depot, item('a'));
     empiler(depot, item('b'));
     empiler(depot, item('a')); // doublon ignoré
-    expect(lister(depot).map((i) => i.corps.id_client)).toEqual(['a', 'b']);
+    expect(messagesEnAttente(depot).map((i) => i.corps.id_client)).toEqual(['a', 'b']);
   });
 
   it('vidanger envoie tout et vide la file', async () => {
@@ -195,7 +199,7 @@ describe('file d’attente hors ligne (vidanger)', () => {
     const n = await vidanger(
       depot,
       async (i) => {
-        envoyes.push(i.corps.id_client as string);
+        envoyes.push((i as MessageEnAttente).corps.id_client as string);
       },
       () => false
     );
@@ -212,12 +216,12 @@ describe('file d’attente hors ligne (vidanger)', () => {
     const n = await vidanger(
       depot,
       async (i) => {
-        if (i.corps.id_client === 'b') throw erreurReseau;
+        if ((i as MessageEnAttente).corps.id_client === 'b') throw erreurReseau;
       },
       (e) => e instanceof ErreurApi && e.code === CODE_ERREUR_RESEAU
     );
     expect(n).toBe(1); // 'a' parti, 'b' reste
-    expect(lister(depot).map((i) => i.corps.id_client)).toEqual(['b']);
+    expect(messagesEnAttente(depot).map((i) => i.corps.id_client)).toEqual(['b']);
   });
 
   it('sur erreur métier définitive, abandonne le message sans bloquer la suite', async () => {
@@ -227,7 +231,8 @@ describe('file d’attente hors ligne (vidanger)', () => {
     const n = await vidanger(
       depot,
       async (i) => {
-        if (i.corps.id_client === 'a') throw new ErreurApi('blocage_actif', 'x', 403);
+        if ((i as MessageEnAttente).corps.id_client === 'a')
+          throw new ErreurApi('blocage_actif', 'x', 403);
       },
       (e) => e instanceof ErreurApi && e.code === CODE_ERREUR_RESEAU
     );

@@ -45,6 +45,19 @@ export const MESSAGES = {
   // PWA
   nouvelleVersion: "Une nouvelle version d'AgriSens est disponible.",
   mettreAJour: 'Mettre à jour',
+  titreInstallation: 'Installer AgriSens',
+  sousTitreInstallation: 'Accédez plus vite et economisez les données mobiles.',
+  instructionIOS: 'Ouvrez dans Safari → Partager → Sur l’écran d’accueil.',
+  installer: 'Installer',
+  plusTard: 'Plus tard',
+  pageHorsConnexion: 'Page indisponible hors ligne',
+  pageHorsConnexionDetail: 'Consultez un écran déjà chargé ou reconnectez-vous.',
+  permissionGPS: 'AgriSens utilise votre position pour la navigation et les livraisons.',
+  permissionCamera: 'AgriSens utilise la caméra pour les photos de produits et litiges.',
+  autoriser: 'Autoriser',
+  refuser: 'Refuser',
+  paiementHorsLigne:
+    'Paiement indisponible hors connexion. Reconnectez-vous pour payer — aucune action de paiement n’est mise en file.',
 } as const;
 
 /**

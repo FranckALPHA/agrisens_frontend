@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { CheckCheck, MailOpen } from 'lucide-react';
@@ -9,6 +9,8 @@ import { EtatErreur } from '@/components/EtatErreur';
 import { EtatVide } from '@/components/EtatVide';
 import { Pagination } from '@/components/Pagination';
 import { Select } from '@/components/Select';
+import { ErreurApi } from '@/services/api/client';
+import { CODE_ERREUR_RESEAU } from '@/services/api/auth';
 import {
   listerNotifications,
   marquerNotificationLue,
@@ -16,6 +18,7 @@ import {
   type NotificationApi,
   type TypeNotificationApi,
 } from '@/services/api/notifications';
+import { depotPartage, empiler } from '@/services/fileAttente';
 import { STATUTS_NOTIFICATION } from '@/theme/statuts';
 import { useToast } from '@/components/Toast';
 import { MESSAGES } from '@/theme/messages';
@@ -60,8 +63,43 @@ export const PageNotifications: React.FC = () => {
     queryFn: () => listerNotifications(seulementNonLues),
   });
 
+  const depot = useRef(depotPartage());
+
   const fraichir = () => {
     queryClient.invalidateQueries({ queryKey: ['notifications'] });
+  };
+
+  /** Marque lue côté cache sans attendre le serveur (file hors ligne + optimistic). */
+  const marquerLueLocal = useCallback(
+    (id: string) => {
+      queryClient.setQueryData<{ elements: NotificationApi[]; total: number } | undefined>(
+        ['notifications', 'liste', seulementNonLues, page],
+        (precedent) =>
+          precedent
+            ? {
+                ...precedent,
+                elements: precedent.elements.map((n) =>
+                  n.id === id ? { ...n, non_lue: false } : n
+                ),
+              }
+            : precedent
+      );
+    },
+    [queryClient, seulementNonLues, page]
+  );
+
+  const horsLigne = () => typeof navigator !== 'undefined' && navigator.onLine === false;
+
+  // Action sûre F-15 : hors ligne, le marquage part en file (jamais perçu côté serveur)
+  // puis est rejoué à la reconnexion par le fournisseur de temps réel.
+  const demanderLecture = (id: string) => {
+    if (horsLigne()) {
+      empiler(depot.current, { type: 'notification-lue', notificationId: id });
+      marquerLueLocal(id);
+      fraichir();
+      return true;
+    }
+    return false;
   };
 
   const mutationLue = useMutation({
@@ -72,7 +110,16 @@ export const PageNotifications: React.FC = () => {
       const cible = requete.data?.elements.find((n) => n.id === id)?.lien;
       if (cible) navigate(cible);
     },
-    onError: () => afficherToast(MESSAGES.erreurReseau, 'erreur'),
+    onError: (erreur: unknown, id) => {
+      // Erreur réseau : on met en file plutôt que d'échouer (F-15).
+      if (erreur instanceof ErreurApi && erreur.code === CODE_ERREUR_RESEAU) {
+        empiler(depot.current, { type: 'notification-lue', notificationId: id });
+        marquerLueLocal(id);
+        afficherToast(MESSAGES.horsLigne, 'info');
+        return;
+      }
+      afficherToast(MESSAGES.erreurReseau, 'erreur');
+    },
   });
 
   const mutationTout = useMutation({
@@ -165,8 +212,14 @@ export const PageNotifications: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                if (notification.non_lue) mutationLue.mutate(notification.id);
-                else if (notification.lien) navigate(notification.lien);
+                if (notification.non_lue) {
+                  const misEnFile = demanderLecture(notification.id);
+                  if (!misEnFile) {
+                    mutationLue.mutate(notification.id);
+                  } else if (notification.lien) {
+                    navigate(notification.lien);
+                  }
+                } else if (notification.lien) navigate(notification.lien);
               }}
               className={`w-full text-left p-4 rounded-lg border transition-colors hover:bg-surface-survol ${
                 notification.non_lue

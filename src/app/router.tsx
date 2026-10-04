@@ -7,6 +7,7 @@ import { PageAccueil } from '@/pages/Accueil';
 import { PageEtat } from '@/pages/Etat';
 import { Page404 } from '@/pages/Page404';
 import { PageAccesInterdit } from '@/pages/PageAccesInterdit';
+import { PageHorsConnexion } from '@/pages/PageHorsConnexion';
 import { RouteProtegee } from '@/pages/RouteProtegee';
 import { PageTableauDeBord } from '@/pages/PageTableauDeBord';
 import { PageConnexion } from '@/pages/auth/PageConnexion';
@@ -91,6 +92,7 @@ export const router = createBrowserRouter([
         ),
       },
       { path: 'acces-interdit', element: <PageAccesInterdit /> },
+      { path: 'hors-connexion', element: <PageHorsConnexion /> },
     ],
   },
 
