@@ -236,6 +236,9 @@ test.describe('F-09 — Signalements, remboursements, évaluations', () => {
   test('PW-F09-01 @critique Amina signale, demande 2 000 FCFA, Mireille approuve et exécute, remboursée (E2E-10)', async ({
     page,
   }) => {
+    // Scénario le plus long de la suite (course complète + litige + webhook +
+    // exécution admin) : dépasse 30 s en emulation mobile, timeout relevé.
+    test.slow();
     const course = await commandeLivree(page, suffixeUnique());
 
     // Amina : signalement avec photo puis demande de remboursement partiel.
