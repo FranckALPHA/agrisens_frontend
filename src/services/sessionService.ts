@@ -17,6 +17,7 @@ import {
   type InscriptionDonnees,
 } from '@/services/api/auth';
 import { mapperUtilisateur, useSessionStore, type UtilisateurSession } from '@/stores/session';
+import { demarrerPersistance, purgerCache } from '@/services/persistance';
 
 let rafraichissementEnCours: Promise<string | null> | null = null;
 let initialisationEnCours: Promise<void> | null = null;
@@ -42,6 +43,8 @@ async function executerRafraichissement(): Promise<string | null> {
     const donnees = await rafraichirSessionHttp();
     if (donnees && donnees.jeton_acces) {
       store.definirSession(donnees.jeton_acces, mapperUtilisateur(donnees.utilisateur));
+      // F-15 : reprise de session (cookie) → relancer la persistance du cache.
+      demarrerPersistance(donnees.utilisateur.id);
       return donnees.jeton_acces;
     }
   } catch {
@@ -77,6 +80,8 @@ async function executerInitialisation(): Promise<void> {
     const donnees = await rafraichirSessionHttp();
     if (donnees && donnees.jeton_acces) {
       store.definirSession(donnees.jeton_acces, mapperUtilisateur(donnees.utilisateur));
+      // F-15 : rechargement à froid connecté → écrans déjà consultés relisible hors ligne.
+      demarrerPersistance(donnees.utilisateur.id);
     } else {
       store.marquerInitialise();
     }
@@ -94,13 +99,20 @@ export function etablirSession(donnees: {
 }): UtilisateurSession {
   const session = mapperUtilisateur(donnees.utilisateur);
   useSessionStore.getState().definirSession(donnees.jeton_acces, session);
+  // F-15 : activer la persistance TanStack Query pour cet utilisateur.
+  demarrerPersistance(session.id);
   return session;
 }
 
-/** Déconnexion complète : API (rotation révoquée) puis store. */
+/** Déconnexion complète : API (rotation révoquée) puis store + purge cache IndexedDB. */
 export async function seDeconnecter(): Promise<void> {
+  const userId = useSessionStore.getState().utilisateur?.id;
   await deconnecterSession();
   useSessionStore.getState().deconnecter();
+  // F-15 : aucune donnée privée ne reste après déconnexion.
+  if (userId) {
+    await purgerCache(userId);
+  }
 }
 
 /** Connexion via le formulaire (identifiant = téléphone ou email). */

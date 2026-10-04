@@ -27,6 +27,8 @@ import {
   type OperateurPaiement,
 } from '@/services/api/paiements';
 import { ErreurApi } from '@/services/api/client';
+import { useConnexion } from '@/hooks/useConnexion';
+import { MESSAGES } from '@/theme/messages';
 import { obtenirLivraisonParCommande } from '@/services/api/livraisons';
 import { Select } from '@/components/Select';
 import { TimelineCommande } from './TimelineCommande';
@@ -56,6 +58,8 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
   const [erreurPaiement, setErreurPaiement] = useState<unknown>(null);
   const [travail, setTravail] = useState(false);
   const [erreur, setErreur] = useState<unknown>(null);
+  // F-15 : le paiement reste une action en ligne — jamais mise en file hors connexion.
+  const enLigne = useConnexion();
 
   const requete = useQuery({
     queryKey: ['commande', identifiant],
@@ -274,6 +278,8 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
             <Bouton
               taille="lg"
               chargement={travail}
+              disabled={!enLigne}
+              data-testid="bouton-payer"
               onClick={() =>
                 void (async () => {
                   setErreurPaiement(null);
@@ -300,6 +306,15 @@ export const PageDetailCommande: React.FC<{ vue: 'achats' | 'ventes' }> = ({ vue
             >
               Payer {formaterPrix(commande.total_fcfa)}
             </Bouton>
+            {!enLigne && (
+              <p
+                role="status"
+                className="text-sm text-erreur mt-2"
+                data-testid="explication-paiement-hors-ligne"
+              >
+                {MESSAGES.paiementHorsLigne}
+              </p>
+            )}
           </div>
           <p className="text-xs text-texte-secondaire">
             Redirection vers l’opérateur (ou le simulateur en local). La commande ne sera marquée

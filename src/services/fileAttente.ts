@@ -1,11 +1,13 @@
 /**
- * File d'attente hors ligne des messages de chat (F-13, hypothèse Q-46d).
+ * File d’attente hors ligne des actions sûres (F-13 chat, F-15 notifications).
  *
- * Quand le réseau est indisponible, un message est mis en attente dans le
+ * Quand le réseau est indisponible, l'action est mise en attente dans le
  * dépôt (localStorage en production, mémoire dans les tests). À la reconnexion,
- * `vidanger` renvoie chaque message **une seule fois** grâce à l'idempotence
- * serveur par `id_client` : un doublon ne peut pas être créé, même si la
- * fenêtre est large ou si le renvoi échoue puis réussit.
+ * `vidanger` renvoie chaque élément **une seule fois** grâce à l'idempotence
+ * serveur.
+ *
+ * Actions mises en file : message de chat, marquage notification lue.
+ * JAMAIS de commande ni de paiement.
  */
 
 import type { MessageCreationApi } from './api/conversations';
@@ -15,17 +17,26 @@ export interface MessageEnAttente {
   corps: MessageCreationApi;
 }
 
-/** Abstraction du stockage pour rendre la file testable sans `window`. */
-export interface DepotFile {
-  lire: () => MessageEnAttente[];
-  ecrire: (items: MessageEnAttente[]) => void;
+/** Action sûre : marquage d'une notification comme lue (F-15). */
+export interface NotificationLueEnAttente {
+  type: 'notification-lue';
+  notificationId: string;
 }
 
-const CLE_STOCKAGE = 'agrisens:file-attente-chat';
+/** Type union des éléments en file. */
+export type ElementEnAttente = MessageEnAttente | NotificationLueEnAttente;
+
+/** Abstraction du stockage pour rendre la file testable sans `window`. */
+export interface DepotFile {
+  lire: () => ElementEnAttente[];
+  ecrire: (items: ElementEnAttente[]) => void;
+}
+
+const CLE_STOCKAGE = 'agrisens:file-attente';
 
 /** Dépôt en mémoire (tests, environments sans localStorage). */
 export function creerDepotMemoire(): DepotFile {
-  let elements: MessageEnAttente[] = [];
+  let elements: ElementEnAttente[] = [];
   return {
     lire: () => [...elements],
     ecrire: (items) => {
@@ -41,7 +52,7 @@ export function creerDepot(): DepotFile {
       lire: () => {
         try {
           const brut = localStorage.getItem(CLE_STOCKAGE);
-          return brut ? (JSON.parse(brut) as MessageEnAttente[]) : [];
+          return brut ? (JSON.parse(brut) as ElementEnAttente[]) : [];
         } catch {
           return [];
         }
@@ -59,19 +70,35 @@ export function creerDepot(): DepotFile {
 }
 
 /**
- * Empile un message en préservant l'ordre et en dédupliquant par `id_client`
- * (un même message jamais mis deux fois en attente).
+ * Empile une action en préservant l’ordre et en dédupliquant :
+ * messages par `id_client`, marquages de lecture par `notificationId`
+ * (une même action jamais mise deux fois en attente).
  */
-export function empiler(depot: DepotFile, item: MessageEnAttente): void {
+export function empiler(depot: DepotFile, item: ElementEnAttente): void {
   const items = depot.lire();
-  if (items.some((existant) => existant.corps.id_client === item.corps.id_client)) {
+  if ('corps' in item) {
+    if (
+      items.some(
+        (existant) => 'corps' in existant && existant.corps.id_client === item.corps.id_client
+      )
+    ) {
+      return;
+    }
+  } else if (
+    items.some(
+      (existant) =>
+        'type' in existant &&
+        existant.type === 'notification-lue' &&
+        existant.notificationId === item.notificationId
+    )
+  ) {
     return;
   }
   depot.ecrire([...items, item]);
 }
 
-/** Renvoie la file courante (ordre d'empilement). */
-export function lister(depot: DepotFile): MessageEnAttente[] {
+/** Renvoie la file courante (ordre d’empilement). */
+export function lister(depot: DepotFile): ElementEnAttente[] {
   return depot.lire();
 }
 
@@ -81,15 +108,27 @@ export function vider(depot: DepotFile): void {
 }
 
 /**
- * Renvoie la file, dans l'ordre, via `envoyer`. S'arrête à la première erreur
+ * Dépôt partagé (singleton) : chat et notifications écrivent dans la même
+ * file, vidangée à la reconnexion par le fournisseur de temps réel.
+ */
+let depotPartageInstance: DepotFile | null = null;
+export function depotPartage(): DepotFile {
+  if (!depotPartageInstance) {
+    depotPartageInstance = creerDepot();
+  }
+  return depotPartageInstance;
+}
+
+/**
+ * Renvoie la file, dans l’ordre, via `envoyer`. S’arrête à la première erreur
  * **réseau** (les messages restants gardent leur tour) ; une erreur **métier**
- * définitive (blocage, message vide…) retire le message sans bloquer la suite.
+ * définitive (blocage, message vide…) retire l’élément sans bloquer la suite.
  *
- * @returns le nombre de messages effectivement sortis de la file.
+ * @returns le nombre d’actions effectivement sorties de la file.
  */
 export async function vidanger(
   depot: DepotFile,
-  envoyer: (item: MessageEnAttente) => Promise<void>,
+  envoyer: (item: ElementEnAttente) => Promise<void>,
   estErreurReseau: (erreur: unknown) => boolean
 ): Promise<number> {
   const items = depot.lire();

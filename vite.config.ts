@@ -37,6 +37,47 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api/],
+        runtimeCaching: [
+          // F-15 : catalogue et détail produits – stale-while-revalidate.
+          // Motif sur `url.pathname` : la requête réelle porte un query (page,
+          // filtres), que l'ancre `$` exclusive aurait rejeté (pas de cache).
+          {
+            urlPattern: ({ url }) =>
+              /\/api\/v1\/produits\/?$/.test(url.pathname) ||
+              /\/api\/v1\/produits\/[0-9a-fA-F-]+\/?$/.test(url.pathname),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'api-catalogue',
+              expiration: { maxEntries: 100, maxAgeSeconds: 300 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          // F-15 : données privées – network-first avec timeout 4 s.
+          {
+            urlPattern: ({ url }) =>
+              /\/api\/v1\/(commandes|paiements|livraisons|accompagnements|notifications|statistiques|conversations)\//.test(
+                url.pathname
+              ),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-prive',
+              networkTimeoutSeconds: 4,
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          // F-15 : images (fichiers signés) – cache-first avec expiration.
+          {
+            urlPattern: ({ url }) => /\/api\/v1\/fichiers\//.test(url.pathname),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images',
+              expiration: { maxEntries: 100, maxAgeSeconds: 7 * 24 * 3600 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
       },
     }),
   ],

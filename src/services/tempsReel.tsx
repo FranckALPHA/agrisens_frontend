@@ -19,8 +19,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { URL_API_SANS_PREFICE, ErreurApi } from '@/services/api/client';
 import { CODE_ERREUR_RESEAU } from '@/services/api/auth';
 import { demanderTicketWs, envoyerMessage } from '@/services/api/conversations';
-import type { MessageEnAttente } from '@/services/fileAttente';
-import { creerDepot, vidanger } from '@/services/fileAttente';
+import { marquerNotificationLue } from '@/services/api/notifications';
+import { depotPartage, vidanger, type ElementEnAttente } from '@/services/fileAttente';
 import { useSessionStore } from '@/stores/session';
 import { Contexte, deriverUrlWs, type StatutConnexion } from '@/services/tempsReelContext';
 
@@ -37,7 +37,7 @@ export const FournisseurTempsReel: React.FC<{ children: React.ReactNode }> = ({ 
   const utilisateurId = useSessionStore((etat) => etat.utilisateur?.id ?? null);
   const queryClient = useQueryClient();
   const [statut, setStatut] = useState<StatutConnexion>('hors_ligne');
-  const depot = useRef(creerDepot());
+  const depot = useRef(depotPartage());
 
   // Toute la machinerie de connexion vit dans une seule closure d'effet :
   // `ouvrir` et `planifierReconnexion` se renvoient l'une l'autre sans dépendance
@@ -59,9 +59,15 @@ export const FournisseurTempsReel: React.FC<{ children: React.ReactNode }> = ({ 
     const vidangerFile = async () => {
       const envoyes = await vidanger(
         depot.current,
-        async (item: MessageEnAttente) => {
-          await envoyerMessage(item.conversationId, item.corps);
-          queryClient.invalidateQueries({ queryKey: ['messages', item.conversationId] });
+        async (item: ElementEnAttente) => {
+          if ('corps' in item) {
+            await envoyerMessage(item.conversationId, item.corps);
+            queryClient.invalidateQueries({ queryKey: ['messages', item.conversationId] });
+          } else {
+            // F-15 : marquage de notification comme lue, remis à la reconnexion.
+            await marquerNotificationLue(item.notificationId);
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+          }
         },
         estErreurReseau
       );

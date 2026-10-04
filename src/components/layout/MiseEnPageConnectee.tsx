@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LogOut, User as UserIcon } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { BandeauConnexion } from '@/components/BandeauConnexion';
+import { BandeauInstallation } from '@/pwa/BandeauInstallation';
 import { ClocheNotifications } from '@/components/ClocheNotifications';
 import { FournisseurTempsReel } from '@/services/tempsReel';
 import { BandeauMiseAJour } from '@/pwa/BandeauMiseAJour';
@@ -31,6 +32,7 @@ export const MiseEnPageConnectee: React.FC = () => {
       <div className="min-h-screen flex flex-col md:flex-row bg-fond text-texte">
         <BandeauConnexion />
         <BandeauMiseAJour />
+        <BandeauInstallation />
 
         {/* 1. Menu latéral pour Ordinateur & Tablette */}
         <aside

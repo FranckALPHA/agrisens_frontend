@@ -25,7 +25,7 @@ import {
   signalerMessage,
   type MessageApi,
 } from '@/services/api/conversations';
-import { creerDepot, empiler, type MessageEnAttente } from '@/services/fileAttente';
+import { depotPartage, empiler, type MessageEnAttente } from '@/services/fileAttente';
 import { useTempsReel } from '@/services/tempsReelContext';
 import { useSessionStore } from '@/stores/session';
 import { STATUTS_CONVERSATION } from '@/theme/statuts';
@@ -86,7 +86,7 @@ export const PageConversationDetail: React.FC = () => {
   const utilisateur = useSessionStore((etat) => etat.utilisateur);
   const { statut } = useTempsReel();
 
-  const depot = useRef(creerDepot());
+  const depot = useRef(depotPartage());
   const filRef = useRef<HTMLDivElement>(null);
 
   const [texte, setTexte] = useState('');
@@ -126,7 +126,14 @@ export const PageConversationDetail: React.FC = () => {
 
   // Remettre la file à jour : messages en attente de CETTE conversation.
   const rafraichirFile = useCallback(() => {
-    setEnAttente(depot.current.lire().filter((item) => item.conversationId === identifiant));
+    const tous = depot.current.lire();
+    const messages: MessageEnAttente[] = [];
+    for (const item of tous) {
+      if ('conversationId' in item && item.conversationId === identifiant) {
+        messages.push(item);
+      }
+    }
+    setEnAttente(messages);
   }, [identifiant]);
 
   useEffect(() => {

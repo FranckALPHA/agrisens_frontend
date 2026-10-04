@@ -24,6 +24,7 @@ export const BandeauConnexion: React.FC = () => {
     <aside
       role="status"
       aria-live="polite"
+      data-testid="bandeau-hors-ligne"
       className="bg-amber-600 text-white px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2 shadow-sm transition-all"
     >
       <WifiOff size={18} aria-hidden="true" className="shrink-0" />
