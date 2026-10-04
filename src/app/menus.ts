@@ -88,6 +88,13 @@ export const MENUS_PAR_ROLE: Record<RoleUtilisateur, ElementMenu[]> = {
       pourNavigationBasse: true,
     },
     { id: 'gains', libelle: 'Mes gains', chemin: '/mes-gains', icone: 'Wallet' },
+    {
+      // AGR-09 (F-14) — statistiques de ventes.
+      id: 'statistiques',
+      libelle: 'Statistiques',
+      chemin: '/agriculteur/statistiques',
+      icone: 'BarChart3',
+    },
     { id: 'messages', libelle: 'Messages', chemin: '/messages', icone: 'MessageCircle' },
     { id: 'planning', libelle: 'Planning IA', chemin: '/agriculteur/planning', icone: 'Calendar' },
     {

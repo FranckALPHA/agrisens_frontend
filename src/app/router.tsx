@@ -43,6 +43,8 @@ import { PageAccompagnementsListe } from '@/pages/ingenieur/PageAccompagnementsL
 import { PageAccompagnementDetailIngenieur } from '@/pages/ingenieur/PageAccompagnementDetail';
 import { PageGenerationIA } from '@/pages/ingenieur/PageGenerationIA';
 import { PagePlanning } from '@/pages/agriculteur/PagePlanning';
+import { PageMesStatistiques } from '@/pages/statistiques/PageMesStatistiques';
+import { PageStatistiquesAdmin } from '@/pages/statistiques/PageStatistiquesAdmin';
 import { PageConversations } from '@/pages/messages/PageConversations';
 import { PageConversationDetail } from '@/pages/messages/PageConversationDetail';
 import type { RoleUtilisateur } from '@/app/menus';
@@ -280,6 +282,15 @@ export const router = createBrowserRouter([
               </RouteProtegee>
             ),
           },
+          {
+            // ADM-01 statistiques (F-14) — agrégats plateforme, admin et super-admin.
+            path: 'statistiques',
+            element: (
+              <RouteProtegee rolesAutorises={['admin', 'super_admin']}>
+                <PageStatistiquesAdmin />
+              </RouteProtegee>
+            ),
+          },
         ],
       },
       {
@@ -439,6 +450,15 @@ export const router = createBrowserRouter([
         element: (
           <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
             <PagePlanning />
+          </RouteProtegee>
+        ),
+      },
+      {
+        // AGR-09 (partie statistiques, F-14) — ventes, revenus, série et produits populaires.
+        path: 'agriculteur/statistiques',
+        element: (
+          <RouteProtegee rolesAutorises={['agriculteur', 'super_admin']}>
+            <PageMesStatistiques />
           </RouteProtegee>
         ),
       },
