@@ -2,11 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Bouton } from '@/components/Bouton';
 import { EtatChargement } from '@/components/EtatChargement';
-import { messageErreurPaiement, obtenirPaiement, type PaiementApi } from '@/services/api/paiements';
+import {
+  messageErreurPaiement,
+  obtenirPaiement,
+  obtenirPaiementParReference,
+  verifierPaiementGateway,
+  type PaiementApi,
+} from '@/services/api/paiements';
 import { ErreurApi } from '@/services/api/client';
 
 const DELAI_INTERROGATION_MS = 2000;
 const TENTATIVES_MAX = 45;
+const DECLANCLE_VERIF_GATEWAY = 3; // après 3 polls en_attente → vérifier via NotchPay API
 
 type PhaseRetour = 'verification' | 'reussi' | 'echoue' | 'expire' | 'erreur';
 
@@ -18,23 +25,29 @@ type PhaseRetour = 'verification' | 'reussi' | 'echoue' | 'expire' | 'erreur';
 export const PageRetourPaiement: React.FC = () => {
   const [params] = useSearchParams();
   const paiementId = params.get('paiement') ?? '';
+  const reference = params.get('reference') ?? '';
   const [phase, setPhase] = useState<PhaseRetour>('verification');
   const [paiement, setPaiement] = useState<PaiementApi | null>(null);
   const [erreur, setErreur] = useState<unknown>(null);
 
   useEffect(() => {
-    if (!paiementId) {
+    if (!paiementId && !reference) {
       setPhase('erreur');
       return;
     }
     let actif = true;
     let tentatives = 0;
+    let idLocal = paiementId;
+    let gatewayVerifie = false;
     const interroger = async () => {
       tentatives += 1;
       try {
-        const etat = await obtenirPaiement(paiementId);
+        const etat = idLocal
+          ? await obtenirPaiement(idLocal)
+          : await obtenirPaiementParReference(reference);
         if (!actif) return;
         setPaiement(etat);
+        idLocal = etat.id || idLocal;
         if (etat.statut === 'reussi') {
           setPhase('reussi');
           return;
@@ -46,6 +59,22 @@ export const PageRetourPaiement: React.FC = () => {
         if (etat.statut === 'expire') {
           setPhase('expire');
           return;
+        }
+        // Après N polls toujours “en_attente”, déclencher la vérification gateway
+        if (
+          !gatewayVerifie &&
+          tentatives >= DECLANCLE_VERIF_GATEWAY &&
+          idLocal
+        ) {
+          gatewayVerifie = true;
+          try {
+            const sync = await verifierPaiementGateway(idLocal);
+            if (!actif) return;
+            setPaiement(sync);
+            if (sync.statut === 'reussi') { setPhase('reussi'); return; }
+            if (sync.statut === 'echoue') { setPhase('echoue'); return; }
+            if (sync.statut === 'expire') { setPhase('expire'); return; }
+          } catch { /* erreur réseau : continuer le polling */ }
         }
       } catch (cause) {
         if (!actif) return;

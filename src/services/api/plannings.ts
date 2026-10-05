@@ -5,7 +5,7 @@
  * (conventions §3, seul point de vérité). Aucun tarif/quota n'est codé ici.
  */
 
-import { apiClient, ErreurApi, convertirReponseErreur, PREFICE_API_V1 } from './client';
+import { apiClient, ErreurApi } from './client';
 import { normaliserErreur } from './auth';
 import type { components } from './schema';
 
@@ -99,21 +99,14 @@ export function lireReponseRecommandation(reponse: unknown): RecommandationRepon
 
 /** GET /ia/quota — quota mensuel de l'utilisateur connecté (agriculteur). */
 export async function obtenirQuota(): Promise<QuotaIA> {
-  // Réponse documentée comme objet libre (schéma sans corps typé) : fetch direct.
-  const reponse = await fetch(`${PREFICE_API_V1}/ia/quota/`, {
-    credentials: 'include',
-    headers: { Accept: 'application/json' },
-  });
-  if (!reponse.ok) {
-    let corps: unknown = null;
-    try {
-      corps = await reponse.clone().json();
-    } catch {
-      // corps non JSON
-    }
-    throw convertirReponseErreur(reponse.status, corps);
+  // Le corps n'est pas typé dans OpenAPI (objet libre) ; on passe par
+  // `apiClient` pour bénéficier du middleware d'authentification
+  // (Bearer injecté depuis le store mémoire), sinon 401 systématique.
+  const { data, error } = await apiClient.GET('/api/v1/ia/quota/');
+  if (error || !data) {
+    throw normaliserErreur(error ?? new ErreurApi('erreur_serveur', 'Quota indisponible', 500));
   }
-  return (await reponse.json()) as QuotaIA;
+  return data as unknown as QuotaIA;
 }
 
 /** POST /exploitations/{id}/plannings — génère un planning cultural. */

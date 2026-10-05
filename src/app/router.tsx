@@ -3,6 +3,7 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { MiseEnPagePublique } from '@/components/layout/MiseEnPagePublique';
 import { MiseEnPageConnectee } from '@/components/layout/MiseEnPageConnectee';
+import { MiseEnPageAdaptative } from '@/components/layout/MiseEnPageAdaptative';
 import { PageAccueil } from '@/pages/Accueil';
 import { PageEtat } from '@/pages/Etat';
 import { Page404 } from '@/pages/Page404';
@@ -75,8 +76,6 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <PageAccueil /> },
       { path: 'etat', element: <PageEtat /> },
-      { path: 'catalogue', element: <PageCatalogue /> },
-      { path: 'catalogue/:identifiant', element: <PageDetailProduit /> },
       { path: 'connexion', element: <PageConnexion /> },
       { path: 'inscription', element: <PageInscription /> },
       { path: 'mot-de-passe-oublie', element: <PageMotDePasseOublie /> },
@@ -91,9 +90,30 @@ export const router = createBrowserRouter([
           />
         ),
       },
-      { path: 'acces-interdit', element: <PageAccesInterdit /> },
       { path: 'hors-connexion', element: <PageHorsConnexion /> },
     ],
+  },
+
+  // 1b. Catalogue : layout adaptatif (public pour les visiteurs, connecté si session).
+  // Le backend sert `Cache-Control: public, max-age=60` + ETag sur /api/v1/produits,
+  // donc le service worker Workbox met les réponses en StaleWhileRevalidate que
+  // l'utilisateur soit connecté ou non — la route HTTP reste strictement identique.
+  {
+    path: '/catalogue',
+    element: <MiseEnPageAdaptative />,
+    children: [
+      { index: true, element: <PageCatalogue /> },
+      { path: ':identifiant', element: <PageDetailProduit /> },
+    ],
+  },
+
+  // 1c. Accès interdit : layout adaptatif, même rationale que /catalogue.
+  // Atteignable par un visiteur (URL directe) ou par un connecté redirigé par
+  // RouteProtegee (rôle non autorisé) — ce dernier doit garder sa sidebar.
+  {
+    path: '/acces-interdit',
+    element: <MiseEnPageAdaptative />,
+    children: [{ index: true, element: <PageAccesInterdit /> }],
   },
 
   // 2. Démonstration de mise en page connectée (PW-F01-05)

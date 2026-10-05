@@ -29,7 +29,21 @@ function relativeDepuis(iso: string): string {
   return `il y a ${jours} j`;
 }
 
-export const ClocheNotifications: React.FC = () => {
+export type CotePanneauNotifications = 'gauche' | 'droite';
+
+export interface ClocheNotificationsProps {
+  /**
+   * Côté d'ouverture du panneau : `gauche` quand la cloche est collée au bord
+   * droit d'un conteneur étroit (ex. sidebar — sinon le panneau déborde
+   * hors-écran à gauche), `droite` quand elle est à droite d'un header large
+   * (ex. en-tête mobile). Défaut : `droite`.
+   */
+  cote?: CotePanneauNotifications;
+}
+
+export const ClocheNotifications: React.FC<ClocheNotificationsProps> = ({
+  cote = 'droite',
+}) => {
   const navigate = useNavigate();
   const { statut } = useTempsReel();
   // Repli de rafraîchissement : inutile tant que le push WS est vivant.
@@ -94,7 +108,7 @@ export const ClocheNotifications: React.FC = () => {
 
       {ouverte && (
         <div
-          className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-lg border border-bordure bg-surface shadow-lg z-50 overflow-hidden"
+          className={`absolute ${cote === 'gauche' ? 'left-0' : 'right-0'} top-full mt-2 flex flex-col w-80 max-w-[calc(100vw-2rem)] max-h-[calc(100vh-4rem)] rounded-lg border border-bordure bg-surface shadow-lg z-50 overflow-hidden`}
           data-testid="panneau-notifications"
           role="menu"
         >
@@ -107,7 +121,7 @@ export const ClocheNotifications: React.FC = () => {
             )}
           </div>
 
-          <div className="max-h-72 overflow-y-auto">
+          <div className="max-h-72 min-h-0 flex-1 overflow-y-auto">
             {requeteApercu.isError && (
               <p className="p-4 text-sm text-erreur">{MESSAGES.erreurReseau}</p>
             )}
@@ -145,7 +159,7 @@ export const ClocheNotifications: React.FC = () => {
               setOuverte(false);
               navigate('/notifications');
             }}
-            className="w-full px-4 py-3 text-sm font-medium text-primaire hover:bg-surface-survol border-t border-bordure text-center min-h-tactile"
+            className="w-full shrink-0 px-4 py-3 text-sm font-medium text-primaire hover:bg-surface-survol border-t border-bordure text-center min-h-tactile"
             data-testid="voir-toutes-notifications"
           >
             Voir toutes les notifications

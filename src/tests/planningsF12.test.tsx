@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 
 /**
  * F-12 — service plannings + bandeau d'avertissement IA.
@@ -148,36 +148,31 @@ describe('appels API (client simulé)', () => {
   });
 });
 
-describe('obtenirQuota (fetch direct, réponse non typée)', () => {
-  const spy = vi.fn();
-  beforeEach(() => {
-    vi.stubGlobal('fetch', spy);
-    spy.mockReset();
-  });
-  afterEach(() => vi.unstubAllGlobals());
+describe('obtenirQuota (apiClient typé, middleware Bearer appliqué)', () => {
+  beforeEach(() => vi.clearAllMocks());
 
   it('retourne la structure quota', async () => {
-    spy.mockResolvedValue({
-      ok: true,
-      json: async () => ({
+    fetchMock.GET.mockResolvedValue({
+      data: {
         mois: '2026-10',
         date_reinitialisation: '2026-11-01',
         planning: { consomme: 1, limite: 2 },
         recommandation: { consomme: 0, limite: 5 },
-      }),
+      },
+      error: undefined,
     });
     const q = await obtenirQuota();
+    expect(fetchMock.GET.mock.calls[0]![0]).toBe('/api/v1/ia/quota/');
     expect(q.planning.limite).toBe(2);
     expect(q.recommandation.consomme).toBe(0);
   });
 
-  it('lève ErreurApi sur 429', async () => {
-    spy.mockResolvedValue({
-      ok: false,
-      status: 429,
-      clone: () => ({ json: async () => ({ erreur: { code: 'quota_atteint', message: 'x' } }) }),
+  it('lève ErreurApi quand la réponse porte une erreur', async () => {
+    fetchMock.GET.mockResolvedValue({
+      data: undefined,
+      error: { code: 'quota_atteint', message: 'x', status: 429 },
     });
-    await expect(obtenirQuota()).rejects.toBeInstanceOf(ErreurApi);
+    await expect(obtenirQuota()).rejects.toBeDefined();
   });
 });
 

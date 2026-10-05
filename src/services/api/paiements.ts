@@ -1,5 +1,6 @@
-import { apiClient, ErreurApi } from './client';
+import { apiClient, ErreurApi, PREFICE_API_V1 } from './client';
 import { normaliserErreur } from './auth';
+import { useSessionStore } from '@/stores/session';
 import type { components } from './schema';
 
 export type PaiementApi = components['schemas']['Paiement'];
@@ -32,6 +33,49 @@ export async function obtenirPaiement(paiementId: string): Promise<PaiementApi> 
   });
   if (!data) throw normaliserErreur(error);
   return data;
+}
+
+/** GET /paiements/par-reference/{ref} — callback NotchPay (reference PAY-NNNN-NNNNNN). */
+export async function obtenirPaiementParReference(reference: string): Promise<PaiementApi> {
+  const token = useSessionStore.getState().token;
+  const reponse = await fetch(`${PREFICE_API_V1}/paiements/par-reference/${reference}/`, {
+    headers: {
+      Accept: 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    credentials: 'include',
+  });
+  if (!reponse.ok) {
+    const corps = await reponse.json().catch(() => ({}));
+    throw new ErreurApi(
+      (corps as { code?: string }).code ?? 'ressource_introuvable',
+      (corps as { message?: string }).message ?? 'Paiement introuvable.',
+      reponse.status
+    );
+  }
+  return (await reponse.json()) as PaiementApi;
+}
+
+/** POST /paiements/{id}/verifier/ — force la vérification gateway (webhook indisponible). */
+export async function verifierPaiementGateway(paiementId: string): Promise<PaiementApi> {
+  const token = useSessionStore.getState().token;
+  const reponse = await fetch(`${PREFICE_API_V1}/paiements/${paiementId}/verifier/`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    credentials: 'include',
+  });
+  if (!reponse.ok) {
+    const corps = await reponse.json().catch(() => ({}));
+    throw new ErreurApi(
+      (corps as { code?: string }).code ?? 'erreur_serveur',
+      (corps as { message?: string }).message ?? 'Vérification impossible.',
+      reponse.status
+    );
+  }
+  return (await reponse.json()) as PaiementApi;
 }
 
 export function messageErreurPaiement(erreur: unknown): string {

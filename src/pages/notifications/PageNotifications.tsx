@@ -59,8 +59,9 @@ export const PageNotifications: React.FC = () => {
   const taillePage = 20;
 
   const requete = useQuery({
-    queryKey: ['notifications', 'liste', seulementNonLues, page],
-    queryFn: () => listerNotifications(seulementNonLues),
+    queryKey: ['notifications', 'liste', seulementNonLues, categorie, page],
+    queryFn: () =>
+      listerNotifications(seulementNonLues, { page, taille: taillePage, type: categorie }),
   });
 
   const depot = useRef(depotPartage());
@@ -73,7 +74,7 @@ export const PageNotifications: React.FC = () => {
   const marquerLueLocal = useCallback(
     (id: string) => {
       queryClient.setQueryData<{ elements: NotificationApi[]; total: number } | undefined>(
-        ['notifications', 'liste', seulementNonLues, page],
+        ['notifications', 'liste', seulementNonLues, categorie, page],
         (precedent) =>
           precedent
             ? {
@@ -85,7 +86,7 @@ export const PageNotifications: React.FC = () => {
             : precedent
       );
     },
-    [queryClient, seulementNonLues, page]
+    [queryClient, seulementNonLues, categorie, page]
   );
 
   const horsLigne = () => typeof navigator !== 'undefined' && navigator.onLine === false;
@@ -136,9 +137,7 @@ export const PageNotifications: React.FC = () => {
     onError: () => afficherToast(MESSAGES.erreurReseau, 'erreur'),
   });
 
-  const elements = (requete.data?.elements ?? []).filter(
-    (n) => categorie === 'toutes' || n.type === categorie
-  );
+  const elements = requete.data?.elements ?? [];
   const total = requete.data?.total ?? 0;
 
   return (

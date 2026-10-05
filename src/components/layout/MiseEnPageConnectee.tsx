@@ -59,8 +59,8 @@ export const MiseEnPageConnectee: React.FC = () => {
                 {roleActuel.replace('_', ' ')}
               </p>
             </div>
-            {/* Cloche de notifications (F-03) */}
-            <ClocheNotifications />
+            {/* Cloche de notifications (F-03) — panneau vers la gauche pour ne pas déborder de la sidebar */}
+            <ClocheNotifications cote="gauche" />
           </div>
 
           {/* Liens de navigation */}

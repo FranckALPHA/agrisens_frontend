@@ -3,6 +3,8 @@ import { ShieldAlert, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Bouton } from './Bouton';
 import { MESSAGES } from '@/theme/messages';
+import { useSessionStore } from '@/stores/session';
+import { cheminTableauDeBord } from '@/app/menus';
 
 export interface AccesInterditProps {
   titre?: string;
@@ -18,6 +20,12 @@ export const AccesInterdit: React.FC<AccesInterditProps> = ({
   className = '',
 }) => {
   const navigate = useNavigate();
+  const { estConnecte, utilisateur } = useSessionStore();
+  // Un connecté redirigé ici doit revenir dans son espace (dashboard du rôle),
+  // pas sur la landing marketing publique : sinon il perd sa sidebar et son
+  // badge de notifications.
+  const cheminRetour = estConnecte ? cheminTableauDeBord(utilisateur?.role) : '/';
+  const libelleRetour = estConnecte ? 'Retour à mon espace' : MESSAGES.retourAccueil;
 
   return (
     <div
@@ -35,10 +43,11 @@ export const AccesInterdit: React.FC<AccesInterditProps> = ({
         <Bouton
           type="button"
           variante="primaire"
-          onClick={() => navigate('/')}
+          onClick={() => navigate(cheminRetour)}
           iconeGauche={<ArrowLeft size={16} aria-hidden="true" />}
+          data-testid="bouton-retour-acces-interdit"
         >
-          {MESSAGES.retourAccueil}
+          {libelleRetour}
         </Bouton>
         {actionAlternative}
       </div>

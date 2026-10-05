@@ -12,10 +12,18 @@ export type NotificationApi = components['schemas']['Notification'];
 export type TypeNotificationApi = components['schemas']['TypeNotificationEnum'];
 export type ListeNotificationsApi = components['schemas']['ListeNotifications'];
 
-/** GET /notifications — liste du destinataire connecté, non lues en option. */
-export async function listerNotifications(nonLues = false): Promise<ListeNotificationsApi> {
+/** GET /notifications — liste du destinataire connecté, non lues + catégorie + page. */
+export async function listerNotifications(
+  nonLues = false,
+  opts: { page?: number; taille?: number; type?: TypeNotificationApi | 'toutes' } = {}
+): Promise<ListeNotificationsApi> {
+  const query: Record<string, string | number | boolean> = {};
+  if (nonLues) query['non_lues'] = true;
+  if (opts.page && opts.page > 1) query['page'] = opts.page;
+  if (opts.taille) query['taille'] = opts.taille;
+  if (opts.type && opts.type !== 'toutes') query['type'] = opts.type;
   const { data, error } = await apiClient.GET('/api/v1/notifications/', {
-    params: { query: nonLues ? { non_lues: true } : {} },
+    params: { query: query as never },
   });
   if (!data) throw erreurDepuisReponse(error, undefined);
   return data as ListeNotificationsApi;
